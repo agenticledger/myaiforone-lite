@@ -157,7 +157,7 @@ export async function freshInstall({ packageRoot, dataDir, version }) {
     writeJson(targetConfig, {
       service: {
         logLevel: "info",
-        webUI: { enabled: true, port: 4888 },
+        webUI: { enabled: true, port: 4889 },
         voiceModeEnabled: false,
         licenseKey: "",
         auth: { enabled: false },
@@ -193,7 +193,7 @@ export async function freshInstall({ packageRoot, dataDir, version }) {
   console.log("  Next steps:");
   console.log(`    1. cd into the package and start the server:`);
   console.log(`       npx myaiforone start`);
-  console.log(`    2. Open http://localhost:4888`);
+  console.log(`    2. Open http://localhost:4889`);
   console.log(`    3. Follow the onboarding wizard (API key + first agent)`);
   console.log("");
 }

@@ -4,7 +4,7 @@
   "identifier": "ai.myaiforone.lite",
   "build": {
     "beforeDevCommand": "",
-    "devUrl": "http://localhost:4888",
+    "devUrl": "http://localhost:4889",
     "beforeBuildCommand": "npm run build",
     "frontendDist": "../public"
   },

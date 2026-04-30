@@ -31,9 +31,6 @@ jobs:
           node-version: '20'
           cache: 'npm'
 
-      - name: Install Bun
-        uses: oven-sh/setup-bun@v1
-
       - name: Install Rust stable
         uses: dtolnay/rust-toolchain@stable
         with:
@@ -48,17 +45,23 @@ jobs:
       - name: Install Node dependencies
         run: npm ci
 
+      - name: Compile TypeScript
+        run: npm run build
+
+      - name: Install pkg
+        run: npm install -g @yao-pkg/pkg
+
       - name: Compile server binary (macOS arm64)
         if: matrix.platform == 'macos-latest' && contains(matrix.args, 'aarch64')
-        run: bun build --compile src/index.ts --outfile src-tauri/binaries/myaiforone-server-aarch64-apple-darwin --target bun-darwin-arm64
+        run: pkg dist/index.js --targets node20-macos-arm64 --output src-tauri/binaries/myaiforone-server-aarch64-apple-darwin
 
       - name: Compile server binary (macOS x64)
         if: matrix.platform == 'macos-latest' && contains(matrix.args, 'x86_64')
-        run: bun build --compile src/index.ts --outfile src-tauri/binaries/myaiforone-server-x86_64-apple-darwin --target bun-darwin-x64
+        run: pkg dist/index.js --targets node20-macos-x64 --output src-tauri/binaries/myaiforone-server-x86_64-apple-darwin
 
       - name: Compile server binary (Windows)
         if: matrix.platform == 'windows-latest'
-        run: bun build --compile src/index.ts --outfile src-tauri/binaries/myaiforone-server-x86_64-pc-windows-msvc.exe --target bun-windows-x64
+        run: pkg dist/index.js --targets node20-win-x64 --output src-tauri/binaries/myaiforone-server-x86_64-pc-windows-msvc.exe
 
       - name: Build Tauri app
         uses: tauri-apps/tauri-action@v0

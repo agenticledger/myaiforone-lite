@@ -127,7 +127,7 @@ export function searchAgentRegistry(
 export function buildGroupAgentPrompt(
   registry: AgentRegistryEntry[],
   query: string,
-  port: number = 4888,
+  port: number = 4889,
 ): string {
   // Search for relevant agents
   const relevant = searchAgentRegistry(registry, query, 5);

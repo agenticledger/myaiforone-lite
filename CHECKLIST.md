@@ -117,7 +117,7 @@ Tauri shell files are in place. Using Node.js for the server binary (Claude CLI 
 - [x] `src-tauri/Cargo.toml` — package metadata + tauri v2 + tauri-plugin-shell
 - [x] `src-tauri/build.rs` — tauri_build::build()
 - [x] `src-tauri/src/main.rs` — sidecar launch + 2s startup wait
-- [x] `src-tauri/tauri.conf.json` — app name "MyAIforOne", identifier `ai.myaiforone.lite`, 1200×800 window, devUrl `http://localhost:4888`, externalBin sidecar
+- [x] `src-tauri/tauri.conf.json` — app name "MyAIforOne", identifier `ai.myaiforone.lite`, 1200×800 window, devUrl `http://localhost:4889`, externalBin sidecar
 - [x] `src-tauri/capabilities/default.json` — core:default, shell:allow-open, shell:allow-execute
 - [x] `src-tauri/icons/README.md` — icon placement instructions
 - [x] `src-tauri/binaries/README.md` — binary build instructions (per-platform triple)
@@ -126,16 +126,16 @@ Tauri shell files are in place. Using Node.js for the server binary (Claude CLI 
 ### Node.js Sidecar (the backend)
 - [x] Binary location: `src-tauri/binaries/myaiforone-server-<target-triple>` (CI builds these)
 - [-] Bun compile tested locally — Decided: using Node.js instead of Bun (Claude CLI requires Node anyway)
-- [ ] Sidecar port fallback (4888 → free port) — deferred to v1.1
+- [x] Lite uses port 4889 (separate from Full on 4888) — no fallback needed
 
 ### Packaging
 - [ ] macOS `.dmg` — produced by `tauri-action` in CI
 - [ ] Windows `.exe` NSIS — produced by `tauri-action` in CI
-- [ ] Linux `.AppImage` — optional, lower priority
+- [-] Linux `.AppImage` — not doing for now
 
 ### App Behavior
 - [x] Single instance enforcement — `tauri-plugin-single-instance` registered, focuses existing window
-- [ ] macOS tray / Windows tray — deferred to v1.1
+- [x] macOS tray / Windows tray — minimize to tray on close, tray menu with Open + Quit
 
 ---
 
@@ -145,7 +145,7 @@ Tauri shell files are in place. Using Node.js for the server binary (Claude CLI 
 - [x] Build matrix: macOS arm64, macOS x64, Windows x64
 - [x] CI compiles server binary per platform before Tauri build
 - [x] `tauri-apps/tauri-action@v0` publishes a draft GitHub Release with `.dmg` + `.exe`
-- [ ] Code signing (macOS notarization, Windows Authenticode) — deferred, add secrets when ready
+- [-] Code signing — deferred, not doing for now (future item)
 
 ---
 
@@ -162,7 +162,7 @@ Tauri shell files are in place. Using Node.js for the server binary (Claude CLI 
 - [x] `package.json` — `bin.myaiforone` entry + npm package name `myaiforone`
 - [x] Version tracking via `.myaiforone-version` marker in data dir
 - [x] `docs/upgrade-guide.md` — manual Drive migration steps (Lite → Full) + automatic upgrade docs
-- [ ] Script or in-app button: "Upgrade to Full MyAIforOne" — opens download page (deferred to v1.1)
+- [x] "Upgrade to Full MyAIforOne" link in sidebar footer — opens https://myaiforone.com/download
 - [x] Verify the copy-Drive-over upgrade works end to end (agents carry over untouched)
 
 ---

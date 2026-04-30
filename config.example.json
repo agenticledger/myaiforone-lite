@@ -1,7 +1,7 @@
 {
   "service": {
     "logLevel": "info",
-    "webUI": { "enabled": true, "port": 4888 },
+    "webUI": { "enabled": true, "port": 4889 },
     "voiceModeEnabled": false,
     "licenseKey": "",
     "auth": { "enabled": false }

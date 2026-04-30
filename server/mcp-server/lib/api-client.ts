@@ -6,7 +6,7 @@
 // Read env vars lazily on each request so the in-process gateway can
 // configure the MCP server's target URL + token AFTER module import.
 function getBaseUrl(): string {
-  return process.env.MYAGENT_API_URL || "http://localhost:4888";
+  return process.env.MYAGENT_API_URL || "http://localhost:4889";
 }
 function getApiToken(): string | undefined {
   return process.env.MYAGENT_API_TOKEN;

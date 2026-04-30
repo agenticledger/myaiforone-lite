@@ -31,7 +31,7 @@ npm run build
 npm start
 ```
 
-Open http://localhost:4888 — serves the chat UI directly.
+Open http://localhost:4889 — serves the chat UI directly.
 
 ## Tech Stack
 

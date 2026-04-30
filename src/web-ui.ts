@@ -323,7 +323,7 @@ export function startWebUI(opts: WebUIOptions): void {
       deploymentMode,
       personalAgentsDir: (s as any).personalAgentsDir || "~/Desktop/MyAIforOne Drive/PersonalAgents",
       personalRegistryDir: (s as any).personalRegistryDir || "~/Desktop/MyAIforOne Drive/PersonalRegistry",
-      webUIPort: (s as any).webUI?.port || 4888,
+      webUIPort: (s as any).webUI?.port || 4889,
       webUIEnabled: (s as any).webUI?.enabled ?? true,
       webhookSecret: (s as any).webUI?.webhookSecret ? "(set)" : null,
       logLevel: (s as any).logLevel || "info",
