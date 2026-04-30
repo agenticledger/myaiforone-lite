@@ -857,18 +857,7 @@ text-decoration:none;}
     <img class="logo-mark" src="/MyAIforOne-logomark-transparent.svg" alt="MyAIforOne">
     <span class="logo-text">MyAIforOne</span>
   </a>
-  <nav class="tab-group">
-    <a class="tab-btn" href="/">Home</a>
-    <a class="tab-btn" href="/org">Agents</a>
-    <a class="tab-btn active" href="/ui">Chat</a>
-    <a class="tab-btn" href="/library">Library</a>
-      <a class="tab-btn" href="/lab">Lab</a>
-  </nav>
   <div class="topbar-right">
-    <a href="/boards" class="gear-btn" title="Boards" style="font-size:11px;font-weight:700;letter-spacing:.03em;padding:0 10px;width:auto">Boards</a>
-    <a href="/monitor" class="gear-btn" title="Monitor" style="font-size:11px;font-weight:700;letter-spacing:.03em;padding:0 10px;width:auto">Monitor</a>
-    <a href="/admin" class="gear-btn" title="Admin" style="font-size:11px;font-weight:700;letter-spacing:.03em;padding:0 10px;width:auto">Admin</a>
-    <button onclick="window.open('/mini','minibar','width=440,height=460,resizable=yes,scrollbars=no')" title="Open Mini Bar" style="display:flex;align-items:center;justify-content:center;width:34px;height:34px;border-radius:8px;border:1px solid var(--border-dim);background:transparent;color:var(--text-muted);cursor:pointer;font-size:15px;transition:all .2s" onmouseover="this.style.borderColor='var(--border-glow)'" onmouseout="this.style.borderColor='var(--border-dim)'">⊡</button>
     <button class="theme-toggle" onclick="toggleTheme()" title="Toggle theme">☀</button>
   </div>
 </div>
@@ -883,9 +872,6 @@ text-decoration:none;}
     </div>
     <div class="sidebar-filters" style="padding:8px 12px;display:flex;gap:6px;border-bottom:1px solid var(--border-dim)">
       <input type="text" id="sidebarSearch" placeholder="Search..." oninput="renderAgentList()" style="flex:1;min-width:0;font-family:var(--font-sans);font-size:11px;padding:5px 8px;border-radius:6px;border:1px solid var(--border-dim);background:var(--bg-input);color:var(--text-primary);outline:none">
-      <select id="sidebarOrgFilter" onchange="renderAgentList()" style="min-width:0;font-family:var(--font-sans);font-size:11px;padding:5px 8px;border-radius:6px;border:1px solid var(--border-dim);background:var(--bg-input);color:var(--text-primary);outline:none;cursor:pointer;max-width:120px">
-        <option value="">All Orgs</option>
-      </select>
     </div>
     <div class="agent-list" id="agentList"></div>
     <div class="sidebar-collapse">
@@ -3255,5 +3241,190 @@ loadVoiceServerConfig();
   </div>
 </div>
 <script src="/license-check.js"></script>
+
+<!-- ─── First-Run Onboarding Wizard ──────────────────────────────── -->
+<style>
+#onboardingOverlay{
+  position:fixed;inset:0;z-index:9999;
+  background:var(--bg-deep);
+  display:flex;align-items:center;justify-content:center;
+  font-family:var(--font-sans);
+}
+#onboardingOverlay.hidden{display:none}
+.onboarding-card{
+  width:480px;max-width:90vw;
+  background:var(--bg-surface);
+  border:1px solid var(--border-glow);
+  border-radius:16px;padding:40px;
+  box-shadow:0 24px 64px rgba(0,0,0,0.5),0 0 40px rgba(34,211,238,0.06);
+}
+.onboarding-logo{display:flex;align-items:center;gap:12px;margin-bottom:32px}
+.onboarding-logo img{width:36px;height:36px;border-radius:10px}
+.onboarding-logo span{font-family:var(--font-display);font-size:20px;font-weight:700;color:var(--accent)}
+.onboarding-step{display:none}
+.onboarding-step.active{display:block}
+.onboarding-h1{font-size:22px;font-weight:700;color:var(--text-primary);margin-bottom:8px}
+.onboarding-sub{font-size:14px;color:var(--text-secondary);margin-bottom:28px;line-height:1.5}
+.onboarding-label{font-size:12px;font-weight:600;color:var(--text-muted);text-transform:uppercase;letter-spacing:.07em;margin-bottom:8px}
+.onboarding-input{
+  width:100%;padding:10px 14px;border-radius:8px;
+  border:1px solid var(--border-dim);background:var(--bg-input);
+  color:var(--text-primary);font-family:var(--font-mono);font-size:13px;
+  outline:none;transition:border-color .2s;
+}
+.onboarding-input:focus{border-color:var(--accent)}
+.onboarding-input::placeholder{color:var(--text-muted)}
+.onboarding-btn{
+  margin-top:20px;width:100%;padding:12px;border-radius:10px;border:none;
+  background:var(--accent);color:#fff;font-family:var(--font-sans);
+  font-size:14px;font-weight:700;cursor:pointer;transition:opacity .2s,transform .15s;
+}
+.onboarding-btn:hover{opacity:.88;transform:translateY(-1px)}
+.onboarding-btn:disabled{opacity:.45;cursor:not-allowed;transform:none}
+.onboarding-msg{margin-top:12px;font-size:13px;min-height:18px;color:var(--green)}
+.onboarding-msg.error{color:#f87171}
+.onboarding-progress{display:flex;gap:6px;margin-bottom:28px}
+.onboarding-dot{width:8px;height:8px;border-radius:50%;background:var(--border-glow);transition:background .3s}
+.onboarding-dot.active{background:var(--accent)}
+.onboarding-dot.done{background:var(--green)}
+.onboarding-checkmark{font-size:48px;text-align:center;margin:16px 0 24px;color:var(--green)}
+</style>
+
+<div id="onboardingOverlay" class="hidden">
+  <div class="onboarding-card">
+    <div class="onboarding-logo">
+      <img src="/MyAIforOne-logomark-transparent.svg" alt="MyAIforOne">
+      <span>MyAIforOne</span>
+    </div>
+    <div class="onboarding-progress">
+      <div class="onboarding-dot active" id="obDot0"></div>
+      <div class="onboarding-dot" id="obDot1"></div>
+      <div class="onboarding-dot" id="obDot2"></div>
+    </div>
+
+    <!-- Step 1: API Key -->
+    <div class="onboarding-step active" id="obStep0">
+      <div class="onboarding-h1">Welcome to MyAIforOne</div>
+      <div class="onboarding-sub">To get started, enter your Anthropic API key. This stays on your computer — it's never sent anywhere except Anthropic's servers when you chat.</div>
+      <div class="onboarding-label">Anthropic API Key</div>
+      <input class="onboarding-input" id="obApiKeyInput" type="password" placeholder="sk-ant-api03-..." autocomplete="off" spellcheck="false">
+      <div class="onboarding-msg" id="obApiKeyMsg"></div>
+      <button class="onboarding-btn" id="obApiKeyBtn" onclick="obSaveApiKey()">Save Key &amp; Continue →</button>
+      <div style="margin-top:14px;font-size:12px;color:var(--text-muted)">Don't have a key? <a href="https://console.anthropic.com" target="_blank" style="color:var(--accent)">Get one at console.anthropic.com</a></div>
+    </div>
+
+    <!-- Step 2: Name your agent -->
+    <div class="onboarding-step" id="obStep1">
+      <div class="onboarding-h1">Name your first agent</div>
+      <div class="onboarding-sub">Your agent is a Claude-powered AI assistant that will remember your conversations and can use tools on your computer.</div>
+      <div class="onboarding-label">Agent Name</div>
+      <input class="onboarding-input" id="obAgentNameInput" type="text" placeholder="My Assistant" maxlength="60">
+      <div class="onboarding-msg" id="obAgentMsg"></div>
+      <button class="onboarding-btn" id="obAgentBtn" onclick="obCreateAgent()">Create Agent →</button>
+    </div>
+
+    <!-- Step 3: All set -->
+    <div class="onboarding-step" id="obStep2">
+      <div class="onboarding-checkmark">✓</div>
+      <div class="onboarding-h1" style="text-align:center">You're all set!</div>
+      <div class="onboarding-sub" style="text-align:center">Your agent is ready. Start a conversation below.</div>
+      <button class="onboarding-btn" onclick="obFinish()">Start Chatting →</button>
+    </div>
+  </div>
+</div>
+
+<script>
+(function() {
+  // Check on page load — show wizard only if no agents exist
+  async function checkFirstRun() {
+    try {
+      const r = await fetch('/api/agents');
+      if (!r.ok) return; // server not ready or auth issue — skip wizard
+      const data = await r.json();
+      const agentList = Array.isArray(data) ? data : (data.agents || []);
+      if (agentList.length === 0) {
+        document.getElementById('onboardingOverlay').classList.remove('hidden');
+      }
+    } catch (e) {
+      // Can't reach server — skip wizard silently
+    }
+  }
+  checkFirstRun();
+
+  let obCurrentStep = 0;
+
+  function obSetStep(step) {
+    document.getElementById('obStep' + obCurrentStep).classList.remove('active');
+    document.getElementById('obDot' + obCurrentStep).classList.remove('active');
+    document.getElementById('obDot' + obCurrentStep).classList.add('done');
+    obCurrentStep = step;
+    document.getElementById('obStep' + step).classList.add('active');
+    document.getElementById('obDot' + step).classList.add('active');
+  }
+
+  window.obSaveApiKey = async function() {
+    const keyInput = document.getElementById('obApiKeyInput');
+    const msg = document.getElementById('obApiKeyMsg');
+    const btn = document.getElementById('obApiKeyBtn');
+    const key = (keyInput.value || '').trim();
+    if (!key) { msg.textContent = 'Please enter your API key.'; msg.className = 'onboarding-msg error'; return; }
+    if (!key.startsWith('sk-ant-')) { msg.textContent = 'Key must start with sk-ant-'; msg.className = 'onboarding-msg error'; return; }
+    btn.disabled = true;
+    msg.textContent = 'Saving...';
+    msg.className = 'onboarding-msg';
+    try {
+      const r = await fetch('/api/config/anthropic-key', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ key })
+      });
+      const data = await r.json();
+      if (!r.ok) { throw new Error(data.error || 'Save failed'); }
+      msg.textContent = 'Key saved ✓';
+      msg.className = 'onboarding-msg';
+      setTimeout(() => obSetStep(1), 700);
+    } catch (e) {
+      msg.textContent = e.message || 'Failed to save key';
+      msg.className = 'onboarding-msg error';
+      btn.disabled = false;
+    }
+  };
+
+  window.obCreateAgent = async function() {
+    const nameInput = document.getElementById('obAgentNameInput');
+    const msg = document.getElementById('obAgentMsg');
+    const btn = document.getElementById('obAgentBtn');
+    const name = (nameInput.value || '').trim();
+    if (!name) { msg.textContent = 'Please enter a name for your agent.'; msg.className = 'onboarding-msg error'; return; }
+    btn.disabled = true;
+    msg.textContent = 'Creating agent...';
+    msg.className = 'onboarding-msg';
+    const agentId = name.toLowerCase().replace(/\s+/g, '-').replace(/[^a-z0-9-]/g, '');
+    const alias = '@' + name.toLowerCase().replace(/\s+/g, '').replace(/[^a-z0-9]/g, '');
+    try {
+      const r = await fetch('/api/agents', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ name, agentId, alias })
+      });
+      const data = await r.json();
+      if (!r.ok) { throw new Error(data.error || 'Failed to create agent'); }
+      msg.textContent = 'Agent created ✓';
+      msg.className = 'onboarding-msg';
+      setTimeout(() => obSetStep(2), 700);
+    } catch (e) {
+      msg.textContent = e.message || 'Failed to create agent';
+      msg.className = 'onboarding-msg error';
+      btn.disabled = false;
+    }
+  };
+
+  window.obFinish = function() {
+    document.getElementById('onboardingOverlay').classList.add('hidden');
+    // Reload agent list so the new agent shows up
+    if (typeof loadAgents === 'function') loadAgents();
+  };
+})();
+</script>
 </body>
 </html>

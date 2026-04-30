@@ -355,6 +355,32 @@ export function startWebUI(opts: WebUIOptions): void {
     });
   });
 
+  // ─── API: First-run onboarding — save Anthropic API key ─────────────
+  // Called by the onboarding wizard on first launch.
+  // Stores the key as service.anthropicApiKey in config.json and sets it
+  // as the ANTHROPIC_API_KEY environment variable for the current process
+  // so the executor picks it up immediately (no restart needed).
+  app.post("/api/config/anthropic-key", (req, res) => {
+    try {
+      const { key } = req.body as { key?: string };
+      if (!key || !key.startsWith("sk-ant-")) {
+        return res.status(400).json({ error: "Invalid Anthropic API key — must start with sk-ant-" });
+      }
+      const configPath = configFilePath();
+      const rawConfig = JSON.parse(readFileSync(configPath, "utf-8"));
+      if (!rawConfig.service) rawConfig.service = {};
+      rawConfig.service.anthropicApiKey = key;
+      writeFileSync(configPath, JSON.stringify(rawConfig, null, 2));
+      // Also update in-memory config and process env so it takes effect immediately
+      (opts.config.service as any).anthropicApiKey = key;
+      process.env.ANTHROPIC_API_KEY = key;
+      log.info("[Onboarding] Anthropic API key saved");
+      return res.json({ ok: true });
+    } catch (e: any) {
+      return res.status(500).json({ error: e.message });
+    }
+  });
+
   // Proxy for Ollama API (avoids CORS when browser fetches model list)
   // ─── API: Voice Mode (TTS + STT) ─────────────────────────────────────
   // See docs/voice-mode-plan.md
