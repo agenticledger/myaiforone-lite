@@ -1,8 +1,11 @@
 {
-  "name": "myaiforone-lite",
+  "name": "myaiforone",
   "version": "1.0.0",
   "type": "module",
   "description": "MyAIforOne Lite — one agent, one chat, full power",
+  "bin": {
+    "myaiforone": "./bin/cli.js"
+  },
   "scripts": {
     "build": "tsc",
     "start": "node dist/index.js",

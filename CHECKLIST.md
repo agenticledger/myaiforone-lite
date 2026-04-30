@@ -155,10 +155,15 @@ Tauri shell files are in place. Binary compile requires Bun (not yet installed l
 
 ---
 
-## ⬜ Upgrade Path (Polish)
+## ✅ Upgrade Path (Done)
 
-- [ ] Script or in-app button: "Upgrade to Full MyAIforOne" — opens download page
-- [ ] Verify the copy-Drive-over upgrade works end to end (agents carry over untouched)
+- [x] `bin/cli.js` — CLI entrypoint: `npx myaiforone@latest` detects fresh install vs upgrade
+- [x] `scripts/upgrade.js` — upgrade logic: backup config, merge new fields (additive only), preserve agents/Drive, restart service
+- [x] `package.json` — `bin.myaiforone` entry + npm package name `myaiforone`
+- [x] Version tracking via `.myaiforone-version` marker in data dir
+- [x] `docs/upgrade-guide.md` — manual Drive migration steps (Lite → Full) + automatic upgrade docs
+- [ ] Script or in-app button: "Upgrade to Full MyAIforOne" — opens download page (deferred to v1.1)
+- [x] Verify the copy-Drive-over upgrade works end to end (agents carry over untouched)
 
 ---
 
