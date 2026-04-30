@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="512" height="512" viewBox="0 0 512 512" xmlns="http://www.w3.org/2000/svg">
+  <!-- MyAIforOne — Logomark (512×512, dark bg) -->
+  <rect width="512" height="512" rx="96" fill="#060a13"/>
+  <!-- Left leg -->
+  <line x1="256" y1="128" x2="160" y2="364" stroke="#22d3ee" stroke-width="32" stroke-linecap="round"/>
+  <!-- Right leg -->
+  <line x1="256" y1="128" x2="352" y2="364" stroke="#22d3ee" stroke-width="32" stroke-linecap="round"/>
+  <!-- Crossbar -->
+  <line x1="202" y1="290" x2="310" y2="290" stroke="#22d3ee" stroke-width="24" stroke-linecap="round"/>
+  <!-- Apex node — the "one" -->
+  <circle cx="256" cy="128" r="32" fill="#22d3ee"/>
+  <!-- Crossbar end nodes -->
+  <circle cx="202" cy="290" r="14" fill="#22d3ee" opacity="0.45"/>
+  <circle cx="310" cy="290" r="14" fill="#22d3ee" opacity="0.45"/>
+</svg>

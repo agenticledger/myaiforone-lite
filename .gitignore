@@ -1,0 +1,36 @@
+node_modules/
+mcps/*/node_modules/
+dist/
+logs/*.log
+*.tsbuildinfo
+config.json
+data/
+tmp/
+
+# Agent runtime data (created by /setup, personal to each install)
+agents/*/memory/conversation_log.jsonl
+agents/*/tasks.json
+agents/*/FileStorage/
+# Platform agent runtime data (nested under agents/platform/)
+agents/platform/*/memory/
+agents/platform/*/tasks.json
+agents/platform/*/FileStorage/
+docs/appcreator_plan.md
+
+# Personal registry data lives outside the repo at ~/Desktop/MyAIforOne Drive/PersonalRegistry
+# Only platform items in registry/ are committed
+registry/installed-drafts.json
+
+# Per-install settings (each user gets their own)
+.claude/settings.local.json
+profile.json
+
+# OS files
+.DS_Store
+
+# Test scratch files
+test-mcp-*.mjs
+mcp-test-report.md
+
+# Symlink artifacts
+~/

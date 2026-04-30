@@ -1,0 +1,270 @@
+/* ─── Canvas / Preview Panel ─────────────────────────────────── */
+/* Shared canvas styles — imported by any page that uses canvas */
+
+.chat-body-wrap{
+  display:flex;flex:1;overflow:hidden;min-height:0;
+}
+.chat-body-wrap .chat-messages{flex:1;min-width:0;transition:flex .3s ease}
+.chat-body-wrap.canvas-open .chat-messages{flex:0 0 55%}
+.chat-body-wrap.canvas-resizing .chat-messages{transition:none}
+
+.canvas-panel{
+  width:0;overflow:hidden;
+  background:var(--bg-surface);
+  border-left:1px solid var(--border-dim);
+  backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);
+  display:flex;flex-direction:column;
+  transition:width .3s ease,opacity .3s ease;
+  opacity:0;
+  position:relative;
+}
+.chat-body-wrap.canvas-open .canvas-panel{
+  width:45%;opacity:1;
+}
+.chat-body-wrap.canvas-resizing .canvas-panel{transition:none}
+
+/* Drag handle on the left edge of the canvas panel */
+.canvas-resize-handle{
+  position:absolute;left:0;top:0;bottom:0;width:5px;
+  cursor:col-resize;z-index:10;
+  background:transparent;
+  transition:background .15s;
+}
+.canvas-resize-handle:hover,
+.canvas-resize-handle.dragging{
+  background:var(--accent);
+  opacity:.35;
+}
+.canvas-header{
+  display:flex;align-items:center;gap:8px;
+  padding:10px 14px;
+  border-bottom:1px solid var(--border-dim);
+  flex-shrink:0;
+}
+.canvas-file-icon{
+  font-size:16px;flex-shrink:0;
+}
+.canvas-filename{
+  flex:1;font-family:var(--font-mono);font-size:12px;font-weight:500;
+  color:var(--text-primary);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;
+}
+.canvas-header-btn{
+  width:28px;height:28px;border-radius:6px;border:1px solid var(--border-dim);
+  background:transparent;color:var(--text-muted);cursor:pointer;
+  display:flex;align-items:center;justify-content:center;font-size:13px;
+  transition:all .2s;flex-shrink:0;
+}
+.canvas-header-btn:hover{border-color:var(--border-glow);color:var(--text-secondary)}
+.canvas-content{
+  flex:1;overflow:auto;padding:0;min-height:0;
+}
+.canvas-content iframe{
+  width:100%;height:100%;border:none;background:#fff;
+}
+.canvas-content img{
+  max-width:100%;height:auto;display:block;margin:0 auto;padding:12px;
+}
+.canvas-content pre{
+  margin:0;padding:12px 14px;font-family:var(--font-mono);font-size:12px;
+  line-height:1.6;color:var(--text-primary);white-space:pre-wrap;word-break:break-word;
+}
+.canvas-content .canvas-md{
+  padding:16px 18px;font-size:13px;line-height:1.7;color:var(--text-primary);
+}
+.canvas-content .canvas-md h1,.canvas-content .canvas-md h2,.canvas-content .canvas-md h3{
+  font-family:var(--font-display);margin:1em 0 .5em;
+}
+.canvas-content .canvas-md h1{font-size:22px}
+.canvas-content .canvas-md h2{font-size:18px}
+.canvas-content .canvas-md h3{font-size:15px}
+.canvas-content .canvas-md p{margin:0 0 .8em}
+.canvas-content .canvas-md code{
+  font-family:var(--font-mono);font-size:12px;background:var(--bg-input);
+  padding:1px 5px;border-radius:4px;
+}
+.canvas-content .canvas-md pre{
+  background:var(--bg-input);border:1px solid var(--border-dim);
+  border-radius:8px;padding:10px 12px;margin:8px 0;overflow-x:auto;
+}
+.canvas-content .canvas-md ul,.canvas-content .canvas-md ol{
+  padding-left:1.5em;margin:0 0 .8em;
+}
+.canvas-csv-table{
+  width:100%;border-collapse:collapse;font-size:12px;font-family:var(--font-mono);
+}
+.canvas-csv-table th{
+  position:sticky;top:0;background:var(--bg-card);
+  padding:8px 10px;text-align:left;font-weight:600;color:var(--accent);
+  border-bottom:2px solid var(--border-glow);cursor:pointer;user-select:none;
+  white-space:nowrap;
+}
+.canvas-csv-table th:hover{color:var(--text-primary)}
+.canvas-csv-table td{
+  padding:6px 10px;border-bottom:1px solid var(--border-dim);
+  color:var(--text-secondary);white-space:nowrap;
+}
+.canvas-csv-table tr:hover td{background:var(--accent-bg)}
+
+.download-btn{
+  display:inline-flex;align-items:center;gap:4px;
+  padding:3px 10px;margin:2px 0;border-radius:6px;
+  border:1px solid var(--border-glow);
+  background:var(--accent-bg);color:var(--accent);
+  font-family:var(--font-sans);font-size:11px;font-weight:500;
+  cursor:pointer;transition:all .2s;vertical-align:middle;
+}
+.download-btn:hover{background:var(--accent);color:#000;border-color:var(--accent)}
+
+.canvas-btn{
+  display:inline-flex;align-items:center;gap:4px;
+  padding:3px 10px;margin:2px 0;border-radius:6px;
+  border:1px solid rgba(139,92,246,0.2);
+  background:var(--purple-bg);color:var(--purple);
+  font-family:var(--font-sans);font-size:11px;font-weight:500;
+  cursor:pointer;transition:all .2s;vertical-align:middle;
+}
+.canvas-btn:hover{background:rgba(139,92,246,0.25);border-color:rgba(139,92,246,0.4)}
+.canvas-toggle-btn{
+  font-family:var(--font-mono);font-size:10px;font-weight:500;
+  padding:6px 12px;border-radius:8px;
+  border:1px solid var(--border-dim);background:transparent;
+  color:var(--text-muted);cursor:pointer;transition:all .2s;
+}
+.canvas-toggle-btn:hover{border-color:var(--border-glow);color:var(--text-secondary)}
+.canvas-toggle-btn.active{border-color:rgba(139,92,246,0.3);color:var(--purple);background:var(--purple-bg)}
+
+/* ─── DOCX Canvas Styles ─────────────────────────────────────── */
+.canvas-docx{
+  padding:20px 24px;font-size:13px;line-height:1.7;color:var(--text-primary);
+}
+.canvas-docx h1,.canvas-docx h2,.canvas-docx h3{font-family:var(--font-display);margin:1em 0 .5em}
+.canvas-docx h1{font-size:22px}
+.canvas-docx h2{font-size:18px}
+.canvas-docx h3{font-size:15px}
+.canvas-docx p{margin:0 0 .8em}
+.canvas-docx table{width:100%;border-collapse:collapse;margin:8px 0}
+.canvas-docx table td,.canvas-docx table th{
+  padding:6px 10px;border:1px solid var(--border-dim);color:var(--text-secondary);font-size:12px;
+}
+.canvas-docx img{max-width:100%;height:auto}
+
+/* ─── PPTX Slide Viewer Styles ───────────────────────────────── */
+.pptx-viewer{padding:16px;display:flex;flex-direction:column;gap:12px;height:100%}
+.pptx-nav{
+  display:flex;align-items:center;justify-content:center;gap:12px;
+  padding:8px 0;flex-shrink:0;
+}
+.pptx-nav-btn{
+  padding:6px 16px;border-radius:8px;
+  border:1px solid var(--border-dim);background:var(--bg-card);
+  color:var(--text-primary);font-family:var(--font-sans);font-size:12px;font-weight:500;
+  cursor:pointer;transition:all .2s;
+}
+.pptx-nav-btn:hover:not(:disabled){border-color:var(--border-glow);background:var(--accent-bg)}
+.pptx-nav-btn:disabled{opacity:0.3;cursor:default}
+.pptx-slide-counter{font-family:var(--font-mono);font-size:11px;color:var(--text-muted)}
+.pptx-slide{
+  flex:1;overflow:auto;
+  background:var(--bg-card);border:1px solid var(--border-dim);border-radius:var(--radius);
+  padding:24px 28px;
+}
+.pptx-slide-title{
+  font-family:var(--font-display);font-size:18px;font-weight:700;
+  margin-bottom:12px;color:var(--accent);
+}
+.pptx-slide-text{font-size:13px;line-height:1.7;color:var(--text-primary)}
+.pptx-slide-text p{margin:0 0 .6em}
+.pptx-slide-images{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px}
+.pptx-slide-images img{max-width:100%;height:auto;border-radius:8px;border:1px solid var(--border-dim)}
+
+/* ─── XLSX Tab Styles ────────────────────────────────────────── */
+.canvas-xlsx-tabs{
+  display:flex;gap:4px;padding:8px 12px;border-bottom:1px solid var(--border-dim);
+  flex-shrink:0;overflow-x:auto;
+}
+.canvas-xlsx-tabs button{
+  padding:5px 14px;border-radius:6px;
+  border:1px solid var(--border-dim);background:transparent;
+  color:var(--text-muted);font-family:var(--font-mono);font-size:11px;font-weight:500;
+  cursor:pointer;transition:all .2s;white-space:nowrap;
+}
+.canvas-xlsx-tabs button:hover{border-color:var(--border-glow);color:var(--text-secondary)}
+.canvas-xlsx-tabs button.active{
+  border-color:var(--accent);color:var(--accent);background:var(--accent-bg);
+}
+
+/* ─── JSON Tree View Styles ──────────────────────────────────── */
+.json-tree{
+  padding:14px 16px;font-family:var(--font-mono);font-size:12px;line-height:1.7;
+  color:var(--text-primary);
+}
+.json-tree ul{list-style:none;padding-left:20px;margin:0}
+.json-tree>ul{padding-left:0}
+.json-toggle{
+  cursor:pointer;user-select:none;display:inline-block;width:14px;text-align:center;
+  color:var(--text-muted);font-size:10px;margin-right:2px;transition:transform .15s;
+}
+.json-toggle:hover{color:var(--text-primary)}
+.json-key{color:var(--purple)}
+.json-string{color:var(--green)}
+.json-number{color:var(--accent-soft)}
+.json-bool{color:var(--amber)}
+.json-null{color:var(--text-muted);font-style:italic}
+.json-bracket{color:var(--text-muted)}
+.json-summary{color:var(--text-muted);font-size:11px;font-style:italic}
+.json-children{overflow:hidden}
+.json-children.collapsed{display:none}
+
+/* ─── Presentation (Fullscreen) Mode ─────────────────────────── */
+.canvas-panel.canvas-fullscreen{
+  position:fixed !important;
+  top:0;left:0;right:0;bottom:0;
+  width:100vw !important;height:100vh !important;
+  z-index:9998;
+  border-left:none;
+  background:var(--bg-primary, var(--bg-surface));
+  opacity:1 !important;
+}
+.canvas-panel.canvas-fullscreen .canvas-resize-handle{display:none}
+body.canvas-fullscreen-active{overflow:hidden}
+
+.canvas-presentation-nav{
+  position:fixed;
+  bottom:12px;left:12px;
+  display:flex;align-items:center;gap:4px;
+  padding:3px 5px;
+  background:var(--bg-card);
+  border:1px solid var(--border-dim);
+  border-radius:8px;
+  backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);
+  z-index:10000;
+  box-shadow:0 4px 12px rgba(0,0,0,.3);
+  max-width:calc(100vw - 24px);
+  opacity:.18;
+  transition:opacity .25s ease;
+}
+.canvas-presentation-nav:hover{opacity:1}
+.canvas-presentation-nav .presentation-nav-btn{
+  padding:2px 7px;border-radius:5px;
+  border:1px solid transparent;background:transparent;
+  color:var(--text-primary);font-family:var(--font-sans);font-size:10px;font-weight:500;
+  cursor:pointer;transition:all .15s;white-space:nowrap;line-height:1.4;
+}
+.canvas-presentation-nav .presentation-nav-btn:hover:not(:disabled){
+  border-color:var(--border-dim);background:var(--accent-bg);
+}
+.canvas-presentation-nav .presentation-nav-btn:disabled{opacity:.3;cursor:default}
+.canvas-presentation-nav .presentation-nav-btn.presentation-exit{
+  margin-left:2px;padding:2px 6px;
+}
+.canvas-presentation-nav .presentation-counter{
+  font-family:var(--font-mono);font-size:9px;color:var(--text-muted);
+  padding:0 4px;max-width:25vw;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;
+}
+
+/* ─── SVG Canvas Styles ──────────────────────────────────────── */
+.canvas-svg{
+  padding:16px;display:flex;align-items:center;justify-content:center;
+  min-height:200px;background:rgba(30,30,30,0.5);border-radius:8px;margin:12px;
+}
+.canvas-svg svg{max-width:100%;height:auto}

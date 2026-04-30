@@ -1,0 +1,1055 @@
+{
+  "skills": [
+    {
+      "id": "opProjectCreate",
+      "name": "Project Create & Execute",
+      "provider": "AgenticLedger",
+      "description": "Create and execute a cross-agent project from a high-level description. Plans tasks, creates the project entity, links agents/artifacts, and optionally kicks off autonomous background execution.",
+      "category": "projects",
+      "verified": true,
+      "source": "agenticledger/platform",
+      "tags": ["projects", "planning", "automation"],
+      "localPath": "registry/skills/platform/opProjectCreate.md",
+      "fetch": { "type": "file" }
+    },
+    {
+      "id": "sop_brandguidelines",
+      "name": "Sop Brandguidelines",
+      "provider": "AgenticLedger",
+      "description": "",
+      "category": "design",
+      "verified": true,
+      "source": "agenticledger/platform",
+      "tags": [
+        "design"
+      ],
+      "localPath": "registry/skills/platform/sop_brandguidelines.md",
+      "fetch": {
+        "type": "file"
+      }
+    },
+    {
+      "id": "sop_docx",
+      "name": "Sop Docx",
+      "provider": "AgenticLedger",
+      "description": "",
+      "category": "documents",
+      "verified": true,
+      "source": "agenticledger/platform",
+      "tags": [
+        "documents"
+      ],
+      "localPath": "registry/skills/platform/sop_docx.md",
+      "fetch": {
+        "type": "file"
+      }
+    },
+    {
+      "id": "sop_frontenddesign",
+      "name": "Sop Frontenddesign",
+      "provider": "AgenticLedger",
+      "description": "",
+      "category": "design",
+      "verified": true,
+      "source": "agenticledger/platform",
+      "tags": [
+        "design"
+      ],
+      "localPath": "registry/skills/platform/sop_frontenddesign.md",
+      "fetch": {
+        "type": "file"
+      }
+    },
+    {
+      "id": "sop_frontenddesign_v2",
+      "name": "ui-ux-pro-max",
+      "provider": "AgenticLedger",
+      "description": "\"UI/UX design intelligence for web and mobile. Includes 50+ styles, 161 color palettes, 57 font pairings, 161 product types, 99 UX guidelines, and 25 chart types across 10 stacks (React, Next.js, Vue, Svelte, SwiftUI, React Native, Flutter, Tailwind, shadcn/ui, and HTML/CSS). Actions: plan, build, create, design, implement, review, fix, improve, optimize, enhance, refactor, and check UI/UX code. Projects: website, landing page, dashboard, admin panel, e-commerce, SaaS, portfolio, blog, and mobile app. Elements: button, modal, navbar, sidebar, card, table, form, and chart. Styles: glassmorphism, claymorphism, minimalism, brutalism, neumorphism, bento grid, dark mode, responsive, skeuomorphism, and flat design. Topics: color systems, accessibility, animation, layout, typography, font pairing, spacing, interaction states, shadow, and gradient. Integrations: shadcn/ui MCP for component search and examples.\"",
+      "category": "devtools",
+      "verified": true,
+      "source": "agenticledger/platform",
+      "tags": [
+        "devtools"
+      ],
+      "localPath": "registry/skills/platform/sop_frontenddesign_v2.md",
+      "fetch": {
+        "type": "file"
+      }
+    },
+    {
+      "id": "sop_mcpbuilder",
+      "name": "Sop Mcpbuilder",
+      "provider": "AgenticLedger",
+      "description": "",
+      "category": "devtools",
+      "verified": true,
+      "source": "agenticledger/platform",
+      "tags": [
+        "devtools"
+      ],
+      "localPath": "registry/skills/platform/sop_mcpbuilder.md",
+      "fetch": {
+        "type": "file"
+      }
+    },
+    {
+      "id": "sop_pdf",
+      "name": "Sop Pdf",
+      "provider": "AgenticLedger",
+      "description": "",
+      "category": "documents",
+      "verified": true,
+      "source": "agenticledger/platform",
+      "tags": [
+        "documents"
+      ],
+      "localPath": "registry/skills/platform/sop_pdf.md",
+      "fetch": {
+        "type": "file"
+      }
+    },
+    {
+      "id": "sop_pptx",
+      "name": "Sop Pptx",
+      "provider": "AgenticLedger",
+      "description": "",
+      "category": "documents",
+      "verified": true,
+      "source": "agenticledger/platform",
+      "tags": [
+        "documents"
+      ],
+      "localPath": "registry/skills/platform/sop_pptx.md",
+      "fetch": {
+        "type": "file"
+      }
+    },
+    {
+      "id": "sop_skillcreator",
+      "name": "Sop Skillcreator",
+      "provider": "AgenticLedger",
+      "description": "",
+      "category": "devtools",
+      "verified": true,
+      "source": "agenticledger/platform",
+      "tags": [
+        "devtools"
+      ],
+      "localPath": "registry/skills/platform/sop_skillcreator.md",
+      "fetch": {
+        "type": "file"
+      }
+    },
+    {
+      "id": "sop_themefactory",
+      "name": "Sop Themefactory",
+      "provider": "AgenticLedger",
+      "description": "",
+      "category": "general",
+      "verified": true,
+      "source": "agenticledger/platform",
+      "tags": [
+        "general"
+      ],
+      "localPath": "registry/skills/platform/sop_themefactory.md",
+      "fetch": {
+        "type": "file"
+      }
+    },
+    {
+      "id": "sop_webapptesting",
+      "name": "Sop Webapptesting",
+      "provider": "AgenticLedger",
+      "description": "",
+      "category": "testing",
+      "verified": true,
+      "source": "agenticledger/platform",
+      "tags": [
+        "testing"
+      ],
+      "localPath": "registry/skills/platform/sop_webapptesting.md",
+      "fetch": {
+        "type": "file"
+      }
+    },
+    {
+      "id": "sop_webartifactsbuilder",
+      "name": "Sop Webartifactsbuilder",
+      "provider": "AgenticLedger",
+      "description": "",
+      "category": "devtools",
+      "verified": true,
+      "source": "agenticledger/platform",
+      "tags": [
+        "devtools"
+      ],
+      "localPath": "registry/skills/platform/sop_webartifactsbuilder.md",
+      "fetch": {
+        "type": "file"
+      }
+    },
+    {
+      "id": "sop_xlsx",
+      "name": "Sop Xlsx",
+      "provider": "AgenticLedger",
+      "description": "",
+      "category": "documents",
+      "verified": true,
+      "source": "agenticledger/platform",
+      "tags": [
+        "documents"
+      ],
+      "localPath": "registry/skills/platform/sop_xlsx.md",
+      "fetch": {
+        "type": "file"
+      }
+    },
+    {
+      "id": "op_devbrowser",
+      "name": "Dev Browser",
+      "provider": "AgenticLedger",
+      "description": "Control a real Chromium browser \u2014 navigate pages, scrape content, fill forms, take screenshots, and automate web workflows using the dev-browser CLI.",
+      "category": "devtools",
+      "verified": true,
+      "source": "agenticledger/platform",
+      "tags": [
+        "devtools",
+        "browser",
+        "automation"
+      ],
+      "localPath": "registry/skills/platform/op_devbrowser.md",
+      "fetch": {
+        "type": "file"
+      }
+    },
+    {
+      "id": "allium-onchain-data",
+      "name": "Allium Onchain Data",
+      "provider": "AgenticLedger",
+      "description": ">-",
+      "category": "global",
+      "verified": false,
+      "source": "local",
+      "tags": [
+        "global"
+      ],
+      "localPath": "/Users/oreph/.claude/commands/allium-onchain-data.md"
+    },
+    {
+      "id": "frexplorer",
+      "name": "Frexplorer",
+      "provider": "AgenticLedger",
+      "description": ">-",
+      "category": "global",
+      "verified": false,
+      "source": "local",
+      "tags": [
+        "global"
+      ],
+      "localPath": "/Users/oreph/.claude/commands/frexplorer.md"
+    },
+    {
+      "id": "lightspark-sdk",
+      "name": "Lightspark Sdk",
+      "provider": "AgenticLedger",
+      "description": ">-",
+      "category": "global",
+      "verified": false,
+      "source": "local",
+      "tags": [
+        "global"
+      ],
+      "localPath": "/Users/oreph/.claude/commands/lightspark-sdk.md"
+    },
+    {
+      "id": "opAgentHubAddFeatureLicense",
+      "name": "OpAgentHubAddFeatureLicense",
+      "provider": "AgenticLedger",
+      "description": "'What this feature does' },",
+      "category": "global",
+      "verified": false,
+      "source": "local",
+      "tags": [
+        "global"
+      ],
+      "localPath": "/Users/oreph/.claude/commands/opAgentHubAddFeatureLicense.md"
+    },
+    {
+      "id": "opAgents_AddNew",
+      "name": "OpAgents AddNew",
+      "provider": "AgenticLedger",
+      "description": "Add a new agent to the channelToAgentToClaude gateway. Gathers agent info (or accepts it inline), creates folder structure, writes system prompt, updates config.json, registers MCPs, rebuilds, and restarts the service. Use when adding a new phone-accessible Claude agent.",
+      "category": "global",
+      "verified": false,
+      "source": "local",
+      "tags": [
+        "global"
+      ],
+      "localPath": "/Users/oreph/.claude/commands/opAgents_AddNew.md"
+    },
+    {
+      "id": "opDeployPaths",
+      "name": "OpDeployPaths",
+      "provider": "AgenticLedger",
+      "description": "",
+      "category": "global",
+      "verified": false,
+      "source": "local",
+      "tags": [
+        "global"
+      ],
+      "localPath": "/Users/oreph/.claude/commands/opDeployPaths.md"
+    },
+    {
+      "id": "opMCPAddTools",
+      "name": "OpMCPAddTools",
+      "provider": "AgenticLedger",
+      "description": "\"Add new tools to an existing MCP server. Updates api-client, tools, tests, docs, AgentHub copy, and MCPLive demo. Use when new API endpoints need to be added to an already-released MCP server.\"",
+      "category": "global",
+      "verified": false,
+      "source": "local",
+      "tags": [
+        "global"
+      ],
+      "localPath": "/Users/oreph/.claude/commands/opMCPAddTools.md"
+    },
+    {
+      "id": "opMCPAgentLiteCreate",
+      "name": "OpMCPAgentLiteCreate",
+      "provider": "AgenticLedger",
+      "description": "Create production MCP servers WITH a bundled AgentLite demo agent. Scaffolds MCP server + full AI chat product (Express + React + PostgreSQL). Deploy both on Railway as a single service.",
+      "category": "global",
+      "verified": false,
+      "source": "local",
+      "tags": [
+        "global"
+      ],
+      "localPath": "/Users/oreph/.claude/commands/opMCPAgentLiteCreate.md"
+    },
+    {
+      "id": "opMCPExpose",
+      "name": "OpMCPExpose",
+      "provider": "AgenticLedger",
+      "description": "Take an existing stdio MCP server and expose it as a Streamable HTTP server with a public URL. Dual-mode auth (Bearer passthrough + OAuth 2.0 Client Credentials) so it works with Claude Code, Claude Desktop, AND Claude.ai Cowork/agent platforms. Duplicates the MCP into a new folder, adds Express + Streamable HTTP transport, creates a GitHub repo under agenticledger org, deploys to Railway, and tests end-to-end. No hardcoded API keys on the server. Use when someone asks for an MCP server URL or you need to expose an MCP over HTTP.",
+      "category": "global",
+      "verified": false,
+      "source": "local",
+      "tags": [
+        "global"
+      ],
+      "localPath": "/Users/oreph/.claude/commands/opMCPExpose.md"
+    },
+    {
+      "id": "opMCPcreate",
+      "name": "OpMCPcreate",
+      "provider": "AgenticLedger",
+      "description": "Create production MCP servers following the proven Orphil/AgenticLedger pattern. Scaffolds all files, generates interactive docs, and builds test suites. Use when building MCP servers for any API or service.",
+      "category": "global",
+      "verified": false,
+      "source": "local",
+      "tags": [
+        "global"
+      ],
+      "localPath": "/Users/oreph/.claude/commands/opMCPcreate.md"
+    },
+    {
+      "id": "opMCPdocs",
+      "name": "OpMCPdocs",
+      "provider": "AgenticLedger",
+      "description": "\"Generate an interactive MCP Tool Documentation page for any project's MCP server. The Swagger-builder equivalent for MCP tools. Creates a React component (McpDocsPage.tsx) with categorized tool cards, parameter tables, search, expand/collapse, copy buttons, and example blocks. Reads the MCP tool definitions from the project's server/mcp-server/tools/ directory.\"",
+      "category": "global",
+      "verified": false,
+      "source": "local",
+      "tags": [
+        "global"
+      ],
+      "localPath": "/Users/oreph/.claude/commands/opMCPdocs.md"
+    },
+    {
+      "id": "opMCPfullrelease",
+      "name": "OpMCPfullrelease",
+      "provider": "AgenticLedger",
+      "description": "\"Full MCP server lifecycle: create, demo, agent hub, catalog. Creates production MCP server (Phases 1-7), adds to MCPLive demo hub (Phase 8), bundles in AgentHub (Phase 8.5), registers in PlatformAuth catalog (Phase 9). Use when building AND releasing MCP servers end-to-end.\"",
+      "category": "global",
+      "verified": false,
+      "source": "local",
+      "tags": [
+        "global"
+      ],
+      "localPath": "/Users/oreph/.claude/commands/opMCPfullrelease.md"
+    },
+    {
+      "id": "opSkillBackup",
+      "name": "OpSkillBackup",
+      "provider": "AgenticLedger",
+      "description": "Backup all Claude skills to ClaudeSkillTransfer folder for syncing to another computer. Zips commands/, settings, MCP config, and memory. Logs the backup date.",
+      "category": "global",
+      "verified": false,
+      "source": "local",
+      "tags": [
+        "global"
+      ],
+      "localPath": "/Users/oreph/.claude/commands/opSkillBackup.md"
+    },
+    {
+      "id": "opWebappTestFactory",
+      "name": "OpWebappTestFactory",
+      "provider": "AgenticLedger",
+      "description": "\"Auto-generate a complete runtest/ E2E harness (Smoke, Use, Volume) for any web app. Discovers routes, endpoints, entities, AND the core product workflow. Generates CRUD tests, workflow chain tests, branch tests, and utility endpoint coverage for near-100% API coverage. Use when you want automated browser testing for any web application.\"",
+      "category": "global",
+      "verified": false,
+      "source": "local",
+      "tags": [
+        "global"
+      ],
+      "localPath": "/Users/oreph/.claude/commands/opWebappTestFactory.md"
+    },
+    {
+      "id": "opappbuild_agentready",
+      "name": "Opappbuild Agentready",
+      "provider": "AgenticLedger",
+      "description": "\"Master orchestrator: make any project fully agent-ready with APIs, API docs, MCP server, and MCP docs. Delegates to child skills (/opswaggerbuilder, /opMCPcreate, /opMCPdocs) and ensures all 4 layers are built and connected. Use when setting up a new project for MCP/agent access or adding agent capabilities to an existing app.\"",
+      "category": "global",
+      "verified": false,
+      "source": "local",
+      "tags": [
+        "global"
+      ],
+      "localPath": "/Users/oreph/.claude/commands/opappbuild_agentready.md"
+    },
+    {
+      "id": "opappbuild_agentready_trueup",
+      "name": "Opappbuild Agentready Trueup",
+      "provider": "AgenticLedger",
+      "description": "\"Audit and catch up a project's API docs, MCP tools, MCP docs, and api-client methods. Compares API routes against docs and MCP coverage, reports gaps, and fixes them. Use after adding features or anytime you want to see how far behind documentation is. Does NOT cover tests \u2014 use /opappbuild_testsuite_trueup for that.\"",
+      "category": "global",
+      "verified": false,
+      "source": "local",
+      "tags": [
+        "global"
+      ],
+      "localPath": "/Users/oreph/.claude/commands/opappbuild_agentready_trueup.md"
+    },
+    {
+      "id": "opappbuild_testsuite",
+      "name": "Opappbuild Testsuite",
+      "provider": "AgenticLedger",
+      "description": "\"Set up the Comprehensive Test Suite for any project and bake testing discipline into CLAUDE.md. Delegates to /optestcreate for scaffolding, then adds standing orders to CLAUDE.md ensuring tests are created and run after every feature. Use when starting a new project or adding test infrastructure.\"",
+      "category": "global",
+      "verified": false,
+      "source": "local",
+      "tags": [
+        "global"
+      ],
+      "localPath": "/Users/oreph/.claude/commands/opappbuild_testsuite.md"
+    },
+    {
+      "id": "opappbuild_testsuite_trueup",
+      "name": "Opappbuild Testsuite Trueup",
+      "provider": "AgenticLedger",
+      "description": "\"Audit test coverage gaps against API routes. Compares API route domains against Comprehensive Test Suite files, reports missing tests, and adds them. Use after adding features or anytime you want to check test coverage. Does NOT cover API docs or MCP \u2014 use /opappbuild_agentready_trueup for that.\"",
+      "category": "global",
+      "verified": false,
+      "source": "local",
+      "tags": [
+        "global"
+      ],
+      "localPath": "/Users/oreph/.claude/commands/opappbuild_testsuite_trueup.md"
+    },
+    {
+      "id": "opbranchsetup",
+      "name": "Opbranchsetup",
+      "provider": "AgenticLedger",
+      "description": "Standardize git branch structure to main + Claude_Desktop_Local + Claude_Web_Local. Use when setting up a repo for multi-environment Claude development.",
+      "category": "global",
+      "verified": false,
+      "source": "local",
+      "tags": [
+        "global"
+      ],
+      "localPath": "/Users/oreph/.claude/commands/opbranchsetup.md"
+    },
+    {
+      "id": "opclient_processcontrols_viz",
+      "name": "Opclient Processcontrols Viz",
+      "provider": "AgenticLedger",
+      "description": "\"Generate a standalone HTML visualization of business processes, steps, and controls matching the P&C platform's exact visual style with full interactivity. Use when the user provides process documents, SOPs, or control matrices and wants a polished dark-themed HTML report. Supports incremental building (add processes one at a time) then produce final combined HTML. Output goes to ~/Desktop/APPs/Process&Controls_Ondemand_Outputs/\"",
+      "category": "global",
+      "verified": false,
+      "source": "local",
+      "tags": [
+        "global"
+      ],
+      "localPath": "/Users/oreph/.claude/commands/opclient_processcontrols_viz.md"
+    },
+    {
+      "id": "opcodereview",
+      "name": "Opcodereview",
+      "provider": "AgenticLedger",
+      "description": "Review all work done in this session for best practices, efficiency, and security",
+      "category": "global",
+      "verified": false,
+      "source": "local",
+      "tags": [
+        "global"
+      ],
+      "localPath": "/Users/oreph/.claude/commands/opcodereview.md"
+    },
+    {
+      "id": "opcompact",
+      "name": "Opcompact",
+      "provider": "AgenticLedger",
+      "description": "Save important context from the current agent conversation before resetting the session. Writes key information to the agent's persistent context.md file so it survives session resets.",
+      "category": "global",
+      "verified": false,
+      "source": "local",
+      "tags": [
+        "global"
+      ],
+      "localPath": "/Users/oreph/.claude/commands/opcompact.md"
+    },
+    {
+      "id": "opdevlog",
+      "name": "Opdevlog",
+      "provider": "AgenticLedger",
+      "description": "Create or update the development log to track session progress and enable continuity",
+      "category": "global",
+      "verified": false,
+      "source": "local",
+      "tags": [
+        "global"
+      ],
+      "localPath": "/Users/oreph/.claude/commands/opdevlog.md"
+    },
+    {
+      "id": "opfullrelease",
+      "name": "Opfullrelease",
+      "provider": "AgenticLedger",
+      "description": "Execute full feature release workflow with documentation, testing, and UI verification",
+      "category": "global",
+      "verified": false,
+      "source": "local",
+      "tags": [
+        "global"
+      ],
+      "localPath": "/Users/oreph/.claude/commands/opfullrelease.md"
+    },
+    {
+      "id": "opgetlogs",
+      "name": "Opgetlogs",
+      "provider": "AgenticLedger",
+      "description": "",
+      "category": "global",
+      "verified": false,
+      "source": "local",
+      "tags": [
+        "global"
+      ],
+      "localPath": "/Users/oreph/.claude/commands/opgetlogs.md"
+    },
+    {
+      "id": "opprodoverview",
+      "name": "Opprodoverview",
+      "provider": "AgenticLedger",
+      "description": "Create or update the product overview document with all domains, features, and architecture",
+      "category": "global",
+      "verified": false,
+      "source": "local",
+      "tags": [
+        "global"
+      ],
+      "localPath": "/Users/oreph/.claude/commands/opprodoverview.md"
+    },
+    {
+      "id": "opralph",
+      "name": "Opralph",
+      "provider": "AgenticLedger",
+      "description": "",
+      "category": "global",
+      "verified": false,
+      "source": "local",
+      "tags": [
+        "global"
+      ],
+      "localPath": "/Users/oreph/.claude/commands/opralph.md"
+    },
+    {
+      "id": "opreset",
+      "name": "Opreset",
+      "provider": "AgenticLedger",
+      "description": "Reset an agent's persistent session in the channelToAgentToClaude gateway. Clears session state so the next message starts a fresh conversation. Use /opcompact first to save important context.",
+      "category": "global",
+      "verified": false,
+      "source": "local",
+      "tags": [
+        "global"
+      ],
+      "localPath": "/Users/oreph/.claude/commands/opreset.md"
+    },
+    {
+      "id": "opskillslist",
+      "name": "Opskillslist",
+      "provider": "AgenticLedger",
+      "description": "\"List all available skills with their descriptions, organized by category. Use anytime you want to see what skills you have.\"",
+      "category": "global",
+      "verified": false,
+      "source": "local",
+      "tags": [
+        "global"
+      ],
+      "localPath": "/Users/oreph/.claude/commands/opskillslist.md"
+    },
+    {
+      "id": "opswaggerbuilder",
+      "name": "Opswaggerbuilder",
+      "provider": "AgenticLedger",
+      "description": "Generate an interactive Swagger-like API documentation and testing page for any web application. Creates a fully functional API playground with endpoint navigation, request builder, live execution, cURL generation, and response viewer. Use when adding API docs to any project.",
+      "category": "global",
+      "verified": false,
+      "source": "local",
+      "tags": [
+        "global"
+      ],
+      "localPath": "/Users/oreph/.claude/commands/opswaggerbuilder.md"
+    },
+    {
+      "id": "optestadd",
+      "name": "Optestadd",
+      "provider": "AgenticLedger",
+      "description": "Add tests to an existing Comprehensive Test Suite for newly built features",
+      "category": "global",
+      "verified": false,
+      "source": "local",
+      "tags": [
+        "global"
+      ],
+      "localPath": "/Users/oreph/.claude/commands/optestadd.md"
+    },
+    {
+      "id": "optestcreate",
+      "name": "Optestcreate",
+      "provider": "AgenticLedger",
+      "description": "Create a comprehensive test suite structure for the current project with domain-based organization",
+      "category": "global",
+      "verified": false,
+      "source": "local",
+      "tags": [
+        "global"
+      ],
+      "localPath": "/Users/oreph/.claude/commands/optestcreate.md"
+    },
+    {
+      "id": "rw_database",
+      "name": "Rw Database",
+      "provider": "AgenticLedger",
+      "description": "",
+      "category": "global",
+      "verified": false,
+      "source": "local",
+      "tags": [
+        "global"
+      ],
+      "localPath": "/Users/oreph/.claude/commands/rw_database.md"
+    },
+    {
+      "id": "rw_deploy",
+      "name": "Rw Deploy",
+      "provider": "AgenticLedger",
+      "description": "",
+      "category": "global",
+      "verified": false,
+      "source": "local",
+      "tags": [
+        "global"
+      ],
+      "localPath": "/Users/oreph/.claude/commands/rw_deploy.md"
+    },
+    {
+      "id": "rw_deployment",
+      "name": "Rw Deployment",
+      "provider": "AgenticLedger",
+      "description": "",
+      "category": "global",
+      "verified": false,
+      "source": "local",
+      "tags": [
+        "global"
+      ],
+      "localPath": "/Users/oreph/.claude/commands/rw_deployment.md"
+    },
+    {
+      "id": "rw_docs",
+      "name": "Rw Docs",
+      "provider": "AgenticLedger",
+      "description": "",
+      "category": "global",
+      "verified": false,
+      "source": "local",
+      "tags": [
+        "global"
+      ],
+      "localPath": "/Users/oreph/.claude/commands/rw_docs.md"
+    },
+    {
+      "id": "rw_domain",
+      "name": "Rw Domain",
+      "provider": "AgenticLedger",
+      "description": "",
+      "category": "global",
+      "verified": false,
+      "source": "local",
+      "tags": [
+        "global"
+      ],
+      "localPath": "/Users/oreph/.claude/commands/rw_domain.md"
+    },
+    {
+      "id": "rw_environment",
+      "name": "Rw Environment",
+      "provider": "AgenticLedger",
+      "description": "",
+      "category": "global",
+      "verified": false,
+      "source": "local",
+      "tags": [
+        "global"
+      ],
+      "localPath": "/Users/oreph/.claude/commands/rw_environment.md"
+    },
+    {
+      "id": "rw_metrics",
+      "name": "Rw Metrics",
+      "provider": "AgenticLedger",
+      "description": "",
+      "category": "global",
+      "verified": false,
+      "source": "local",
+      "tags": [
+        "global"
+      ],
+      "localPath": "/Users/oreph/.claude/commands/rw_metrics.md"
+    },
+    {
+      "id": "rw_new",
+      "name": "Rw New",
+      "provider": "AgenticLedger",
+      "description": "",
+      "category": "global",
+      "verified": false,
+      "source": "local",
+      "tags": [
+        "global"
+      ],
+      "localPath": "/Users/oreph/.claude/commands/rw_new.md"
+    },
+    {
+      "id": "rw_projects",
+      "name": "Rw Projects",
+      "provider": "AgenticLedger",
+      "description": "",
+      "category": "global",
+      "verified": false,
+      "source": "local",
+      "tags": [
+        "global"
+      ],
+      "localPath": "/Users/oreph/.claude/commands/rw_projects.md"
+    },
+    {
+      "id": "rw_service",
+      "name": "Rw Service",
+      "provider": "AgenticLedger",
+      "description": "",
+      "category": "global",
+      "verified": false,
+      "source": "local",
+      "tags": [
+        "global"
+      ],
+      "localPath": "/Users/oreph/.claude/commands/rw_service.md"
+    },
+    {
+      "id": "rw_status",
+      "name": "Rw Status",
+      "provider": "AgenticLedger",
+      "description": "",
+      "category": "global",
+      "verified": false,
+      "source": "local",
+      "tags": [
+        "global"
+      ],
+      "localPath": "/Users/oreph/.claude/commands/rw_status.md"
+    },
+    {
+      "id": "rw_templates",
+      "name": "Rw Templates",
+      "provider": "AgenticLedger",
+      "description": "",
+      "category": "global",
+      "verified": false,
+      "source": "local",
+      "tags": [
+        "global"
+      ],
+      "localPath": "/Users/oreph/.claude/commands/rw_templates.md"
+    },
+    {
+      "id": "wac_impairment",
+      "name": "Wac Impairment",
+      "provider": "AgenticLedger",
+      "description": "Process crypto transactions CSV to compute WAC (Weighted Average Cost) impairment adjustments. Calculates D-tracking, year-end recapture, impairment expense, and correct realized G/L. Use when applying annual impairment to existing WAC-based crypto accounting without recalculating historical disposals. Input is a CSV of transactions.",
+      "category": "global",
+      "verified": false,
+      "source": "local",
+      "tags": [
+        "global"
+      ],
+      "localPath": "/Users/oreph/.claude/commands/wac_impairment.md"
+    },
+    {
+      "id": "ai41_app_orchestrator",
+      "name": "App Build Orchestrator",
+      "provider": "AgenticLedger",
+      "description": "Master orchestration runbook for building full-stack apps autonomously",
+      "category": "devtools",
+      "verified": true,
+      "source": "agenticledger/platform",
+      "tags": [
+        "app",
+        "build",
+        "orchestrator"
+      ],
+      "localPath": "registry/skills/platform/ai41_app_orchestrator.md",
+      "fetch": {
+        "type": "file"
+      }
+    },
+    {
+      "id": "ai41_app_scaffold",
+      "name": "App Scaffold",
+      "provider": "AgenticLedger",
+      "description": "Deterministic project scaffolding for Express 5 + React 19 + Prisma + Tailwind + shadcn/ui",
+      "category": "devtools",
+      "verified": true,
+      "source": "agenticledger/platform",
+      "tags": [
+        "app",
+        "scaffold",
+        "template"
+      ],
+      "localPath": "registry/skills/platform/ai41_app_scaffold.md",
+      "fetch": {
+        "type": "file"
+      }
+    },
+    {
+      "id": "ai41_app_patterns",
+      "name": "App Patterns",
+      "provider": "AgenticLedger",
+      "description": "Architecture patterns and coding conventions for Express + React apps",
+      "category": "devtools",
+      "verified": true,
+      "source": "agenticledger/platform",
+      "tags": [
+        "app",
+        "patterns",
+        "conventions"
+      ],
+      "localPath": "registry/skills/platform/ai41_app_patterns.md",
+      "fetch": {
+        "type": "file"
+      }
+    },
+    {
+      "id": "ai41_app_verify",
+      "name": "App Verify",
+      "provider": "AgenticLedger",
+      "description": "Build verification loop \u2014 runs builds, reads errors, auto-fixes code",
+      "category": "devtools",
+      "verified": true,
+      "source": "agenticledger/platform",
+      "tags": [
+        "app",
+        "verify",
+        "build"
+      ],
+      "localPath": "registry/skills/platform/ai41_app_verify.md",
+      "fetch": {
+        "type": "file"
+      }
+    },
+    {
+      "id": "ai41_app_deploy",
+      "name": "App Deploy",
+      "provider": "AgenticLedger",
+      "description": "Deploy full-stack apps to Railway via CLI with health verification",
+      "category": "devtools",
+      "verified": true,
+      "source": "agenticledger/platform",
+      "tags": [
+        "app",
+        "deploy",
+        "railway"
+      ],
+      "localPath": "registry/skills/platform/ai41_app_deploy.md",
+      "fetch": {
+        "type": "file"
+      }
+    },
+    {
+      "id": "ai41_app_register",
+      "name": "App Register",
+      "provider": "AgenticLedger",
+      "description": "Register deployed app in platform and create developer agent",
+      "category": "devtools",
+      "verified": true,
+      "source": "agenticledger/platform",
+      "tags": [
+        "app",
+        "register",
+        "agent"
+      ],
+      "localPath": "registry/skills/platform/ai41_app_register.md",
+      "fetch": {
+        "type": "file"
+      }
+    },
+    {
+      "id": "ext-tdd",
+      "name": "Test-Driven Development",
+      "provider": "affaan-m",
+      "description": "Write failing tests first, then implement.",
+      "category": "devtools",
+      "verified": false,
+      "source": "github:affaan-m/everything-claude-code/commands/tdd.md",
+      "tags": [
+        "devtools",
+        "external"
+      ],
+      "localPath": "registry/skills/external/tdd.md",
+      "fetch": {
+        "type": "file"
+      }
+    },
+    {
+      "id": "ext-code-review",
+      "name": "Code Review",
+      "provider": "affaan-m",
+      "description": "Systematic code review workflow.",
+      "category": "devtools",
+      "verified": false,
+      "source": "github:affaan-m/everything-claude-code/commands/code-review.md",
+      "tags": [
+        "devtools",
+        "external"
+      ],
+      "localPath": "registry/skills/external/code-review.md",
+      "fetch": {
+        "type": "file"
+      }
+    },
+    {
+      "id": "ext-systematic-debugging",
+      "name": "Systematic Debugging",
+      "provider": "affaan-m",
+      "description": "Structured debugging process.",
+      "category": "devtools",
+      "verified": false,
+      "source": "github:affaan-m/everything-claude-code/commands/systematic-debugging.md",
+      "tags": [
+        "devtools",
+        "external"
+      ],
+      "localPath": "registry/skills/external/systematic-debugging.md",
+      "fetch": {
+        "type": "file"
+      }
+    },
+    {
+      "id": "ext-writing-plans",
+      "name": "Write Plans",
+      "provider": "affaan-m",
+      "description": "Create detailed implementation plans.",
+      "category": "devtools",
+      "verified": false,
+      "source": "github:affaan-m/everything-claude-code/commands/writing-plans.md",
+      "tags": [
+        "devtools",
+        "external"
+      ],
+      "localPath": "registry/skills/external/writing-plans.md",
+      "fetch": {
+        "type": "file"
+      }
+    },
+    {
+      "id": "ext-verification-before-completion",
+      "name": "Verify Before Completing",
+      "provider": "affaan-m",
+      "description": "Run checks before marking work done.",
+      "category": "devtools",
+      "verified": false,
+      "source": "github:affaan-m/everything-claude-code/commands/verification-before-completion.md",
+      "tags": [
+        "devtools",
+        "external"
+      ],
+      "localPath": "registry/skills/external/verification-before-completion.md",
+      "fetch": {
+        "type": "file"
+      }
+    },
+    {
+      "id": "ext-brainstorming",
+      "name": "Brainstorming",
+      "provider": "affaan-m",
+      "description": "Design features through collaborative dialogue.",
+      "category": "devtools",
+      "verified": false,
+      "source": "github:affaan-m/everything-claude-code/commands/brainstorming.md",
+      "tags": [
+        "devtools",
+        "external"
+      ],
+      "localPath": "registry/skills/external/brainstorming.md",
+      "fetch": {
+        "type": "file"
+      }
+    },
+    {
+      "id": "ext-frontend-slides",
+      "name": "Frontend Slides",
+      "provider": "affaan-m",
+      "description": "Create stunning, animation-rich HTML presentations from scratch or by converting PowerPoint files.",
+      "category": "design",
+      "verified": false,
+      "source": "github:affaan-m/everything-claude-code/skills/frontend-slides/SKILL.md",
+      "tags": [
+        "design",
+        "external"
+      ],
+      "localPath": "registry/skills/external/frontend-slides.md",
+      "fetch": {
+        "type": "file"
+      }
+    },
+    {
+      "id": "ext-frontend-patterns",
+      "name": "Frontend Patterns",
+      "provider": "affaan-m",
+      "description": "Frontend development patterns for React, Next.js, state management, performance optimization, and UI best practices.",
+      "category": "devtools",
+      "verified": false,
+      "source": "github:affaan-m/everything-claude-code/skills/frontend-patterns/SKILL.md",
+      "tags": [
+        "devtools",
+        "external"
+      ],
+      "localPath": "registry/skills/external/frontend-patterns.md",
+      "fetch": {
+        "type": "file"
+      }
+    }
+  ]
+}

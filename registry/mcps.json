@@ -1,0 +1,1079 @@
+{
+  "mcps": [
+    {
+      "id": "finney",
+      "name": "Finney",
+      "provider": "AgenticLedger",
+      "description": "AI app platform — build, deploy, and manage AI applications, tools, marketplace listings, organizations, and API keys. 69 tools.",
+      "category": "devtools",
+      "verified": true,
+      "source": "agenticledger/platform",
+      "tags": [
+        "devtools"
+      ],
+      "requiredKeys": [
+        {
+          "env": "FINNEY_API_KEY",
+          "label": "Finney API Key",
+          "hint": "API key from Finney dashboard"
+        }
+      ],
+      "fetch": {
+        "type": "http",
+        "url": "https://finneymcp.agenticledger.ai/mcp"
+      }
+    },
+    {
+      "id": "lighthouse",
+      "name": "Lighthouse (Canton Network Explorer)",
+      "provider": "AgenticLedger",
+      "description": "Canton Network blockchain explorer — validators, transactions, contracts, token prices, governance, CNS domains. No API key required.",
+      "category": "crypto",
+      "verified": true,
+      "source": "agenticledger/platform",
+      "tags": [
+        "crypto"
+      ],
+      "requiredKeys": [],
+      "fetch": {
+        "type": "http",
+        "url": "https://lighthousemcp.agenticledger.ai/mcp"
+      }
+    },
+    {
+      "id": "stripe",
+      "name": "Stripe",
+      "provider": "AgenticLedger",
+      "description": "Payment processing — customers, invoices, subscriptions, charges, refunds",
+      "category": "payments",
+      "verified": true,
+      "source": "agenticledger/platform",
+      "tags": [
+        "payments"
+      ],
+      "requiredKeys": [
+        {
+          "env": "STRIPE_API_KEY",
+          "label": "Stripe Secret Key",
+          "hint": "sk_live_... or sk_test_..."
+        }
+      ],
+      "fetch": {
+        "type": "http",
+        "url": "https://stripemcp.agenticledger.ai/mcp"
+      }
+    },
+    {
+      "id": "quickbooks",
+      "name": "QuickBooks Online",
+      "provider": "AgenticLedger",
+      "description": "Accounting — invoices, expenses, customers, reports, chart of accounts",
+      "category": "accounting",
+      "verified": true,
+      "source": "agenticledger/platform",
+      "tags": [
+        "accounting"
+      ],
+      "requiredKeys": [
+        {
+          "env": "QBO_ACCESS_TOKEN",
+          "label": "QuickBooks Access Token",
+          "hint": "OAuth access token"
+        }
+      ],
+      "fetch": {
+        "type": "http",
+        "url": "https://qbomcp.agenticledger.ai/mcp"
+      }
+    },
+    {
+      "id": "xero",
+      "name": "Xero",
+      "provider": "AgenticLedger",
+      "description": "Accounting — invoices, contacts, bank transactions, reports",
+      "category": "accounting",
+      "verified": true,
+      "source": "agenticledger/platform",
+      "tags": [
+        "accounting"
+      ],
+      "requiredKeys": [
+        {
+          "env": "XERO_AUTH",
+          "label": "Xero Auth Token",
+          "hint": "OAuth access token"
+        }
+      ],
+      "fetch": {
+        "type": "http",
+        "url": "https://xeromcp.agenticledger.ai/mcp"
+      }
+    },
+    {
+      "id": "netsuite",
+      "name": "NetSuite",
+      "provider": "AgenticLedger",
+      "description": "ERP — financial records, transactions, customers, vendors, inventory",
+      "category": "accounting",
+      "verified": true,
+      "source": "agenticledger/platform",
+      "tags": [
+        "accounting"
+      ],
+      "requiredKeys": [
+        {
+          "env": "NETSUITE_AUTH",
+          "label": "NetSuite Auth",
+          "hint": "Token-based auth credentials"
+        }
+      ],
+      "fetch": {
+        "type": "http",
+        "url": "https://netsuitemcp.agenticledger.ai/mcp"
+      }
+    },
+    {
+      "id": "plaid",
+      "name": "Plaid",
+      "provider": "AgenticLedger",
+      "description": "Banking data — account balances, transactions, identity verification",
+      "category": "banking",
+      "verified": true,
+      "source": "agenticledger/platform",
+      "tags": [
+        "banking"
+      ],
+      "requiredKeys": [
+        {
+          "env": "PLAID_API_KEY",
+          "label": "Plaid API Key",
+          "hint": "Client ID + secret"
+        }
+      ],
+      "fetch": {
+        "type": "http",
+        "url": "https://plaidmcp.agenticledger.ai/mcp"
+      }
+    },
+    {
+      "id": "mercury",
+      "name": "Mercury",
+      "provider": "AgenticLedger",
+      "description": "Business banking — accounts, transactions, recipients, payments",
+      "category": "banking",
+      "verified": true,
+      "source": "agenticledger/platform",
+      "tags": [
+        "banking"
+      ],
+      "requiredKeys": [
+        {
+          "env": "MERCURY_API_TOKEN",
+          "label": "Mercury API Token",
+          "hint": "API key from Mercury dashboard"
+        }
+      ],
+      "fetch": {
+        "type": "http",
+        "url": "https://mercurymcp.agenticledger.ai/mcp"
+      }
+    },
+    {
+      "id": "brex",
+      "name": "Brex",
+      "provider": "AgenticLedger",
+      "description": "Corporate cards & spend management — transactions, budgets, users",
+      "category": "banking",
+      "verified": true,
+      "source": "agenticledger/platform",
+      "tags": [
+        "banking"
+      ],
+      "requiredKeys": [
+        {
+          "env": "BREX_API_TOKEN",
+          "label": "Brex API Token",
+          "hint": "User token from Brex developer settings"
+        }
+      ],
+      "fetch": {
+        "type": "http",
+        "url": "https://brexmcp.agenticledger.ai/mcp"
+      }
+    },
+    {
+      "id": "ramp",
+      "name": "Ramp",
+      "provider": "AgenticLedger",
+      "description": "Corporate cards & expense management — transactions, receipts, reimbursements",
+      "category": "expense",
+      "verified": true,
+      "source": "agenticledger/platform",
+      "tags": [
+        "expense"
+      ],
+      "requiredKeys": [
+        {
+          "env": "RAMP_AUTH",
+          "label": "Ramp Auth Token",
+          "hint": "API bearer token"
+        }
+      ],
+      "fetch": {
+        "type": "http",
+        "url": "https://rampmcp.agenticledger.ai/mcp"
+      }
+    },
+    {
+      "id": "expensify",
+      "name": "Expensify",
+      "provider": "AgenticLedger",
+      "description": "Expense reporting — reports, receipts, policies, reimbursements",
+      "category": "expense",
+      "verified": true,
+      "source": "agenticledger/platform",
+      "tags": [
+        "expense"
+      ],
+      "requiredKeys": [
+        {
+          "env": "EXPENSIFY_AUTH",
+          "label": "Expensify Auth",
+          "hint": "Partner credentials"
+        }
+      ],
+      "fetch": {
+        "type": "http",
+        "url": "https://expensifymcp.agenticledger.ai/mcp"
+      }
+    },
+    {
+      "id": "billcom",
+      "name": "Bill.com",
+      "provider": "AgenticLedger",
+      "description": "AP/AR automation — bills, invoices, payments, vendors",
+      "category": "payments",
+      "verified": true,
+      "source": "agenticledger/platform",
+      "tags": [
+        "payments"
+      ],
+      "requiredKeys": [
+        {
+          "env": "BILLCOM_AUTH",
+          "label": "Bill.com Auth",
+          "hint": "API credentials"
+        }
+      ],
+      "fetch": {
+        "type": "http",
+        "url": "https://billcommcp.agenticledger.ai/mcp"
+      }
+    },
+    {
+      "id": "paypal",
+      "name": "PayPal",
+      "provider": "AgenticLedger",
+      "description": "Payments — transactions, invoices, disputes, payouts",
+      "category": "payments",
+      "verified": true,
+      "source": "agenticledger/platform",
+      "tags": [
+        "payments"
+      ],
+      "requiredKeys": [
+        {
+          "env": "PAYPAL_AUTH",
+          "label": "PayPal Auth",
+          "hint": "Client ID + secret"
+        }
+      ],
+      "fetch": {
+        "type": "http",
+        "url": "https://paypalmcp.agenticledger.ai/mcp"
+      }
+    },
+    {
+      "id": "square",
+      "name": "Square",
+      "provider": "AgenticLedger",
+      "description": "Commerce — payments, orders, customers, inventory, catalog",
+      "category": "payments",
+      "verified": true,
+      "source": "agenticledger/platform",
+      "tags": [
+        "payments"
+      ],
+      "requiredKeys": [
+        {
+          "env": "SQUARE_ACCESS_TOKEN",
+          "label": "Square Access Token",
+          "hint": "Personal access token from Square dashboard"
+        }
+      ],
+      "fetch": {
+        "type": "http",
+        "url": "https://squaremcp.agenticledger.ai/mcp"
+      }
+    },
+    {
+      "id": "modern-treasury",
+      "name": "Modern Treasury",
+      "provider": "AgenticLedger",
+      "description": "Payment operations — ledgers, payment orders, counterparties, reconciliation",
+      "category": "payments",
+      "verified": true,
+      "source": "agenticledger/platform",
+      "tags": [
+        "payments"
+      ],
+      "requiredKeys": [
+        {
+          "env": "MODERN_TREASURY_API_KEY",
+          "label": "Modern Treasury API Key",
+          "hint": "API key from dashboard"
+        }
+      ],
+      "fetch": {
+        "type": "http",
+        "url": "https://moderntreasurymcp.agenticledger.ai/mcp"
+      }
+    },
+    {
+      "id": "avalara",
+      "name": "Avalara",
+      "provider": "AgenticLedger",
+      "description": "Tax compliance — tax calculations, exemptions, returns, address validation",
+      "category": "tax",
+      "verified": true,
+      "source": "agenticledger/platform",
+      "tags": [
+        "tax"
+      ],
+      "requiredKeys": [
+        {
+          "env": "AVALARA_AUTH",
+          "label": "Avalara Auth",
+          "hint": "Account ID + license key"
+        }
+      ],
+      "fetch": {
+        "type": "http",
+        "url": "https://avalaramcp.agenticledger.ai/mcp"
+      }
+    },
+    {
+      "id": "gusto",
+      "name": "Gusto",
+      "provider": "AgenticLedger",
+      "description": "Payroll & HR — employees, payroll runs, benefits, company info",
+      "category": "hr",
+      "verified": true,
+      "source": "agenticledger/platform",
+      "tags": [
+        "hr"
+      ],
+      "requiredKeys": [
+        {
+          "env": "GUSTO_ACCESS_TOKEN",
+          "label": "Gusto Access Token",
+          "hint": "OAuth access token"
+        }
+      ],
+      "fetch": {
+        "type": "http",
+        "url": "https://gustomcp.agenticledger.ai/mcp"
+      }
+    },
+    {
+      "id": "chargebee",
+      "name": "Chargebee",
+      "provider": "AgenticLedger",
+      "description": "Subscription billing — subscriptions, invoices, customers, plans",
+      "category": "billing",
+      "verified": true,
+      "source": "agenticledger/platform",
+      "tags": [
+        "billing"
+      ],
+      "requiredKeys": [
+        {
+          "env": "CHARGEBEE_AUTH",
+          "label": "Chargebee Auth",
+          "hint": "API key + site name"
+        }
+      ],
+      "fetch": {
+        "type": "http",
+        "url": "https://chargebeemcp.agenticledger.ai/mcp"
+      }
+    },
+    {
+      "id": "hubspot",
+      "name": "HubSpot",
+      "provider": "AgenticLedger",
+      "description": "CRM — contacts, deals, companies, tickets, pipelines",
+      "category": "crm",
+      "verified": true,
+      "source": "agenticledger/platform",
+      "tags": [
+        "crm"
+      ],
+      "requiredKeys": [
+        {
+          "env": "HUBSPOT_ACCESS_TOKEN",
+          "label": "HubSpot Access Token",
+          "hint": "Private app access token"
+        }
+      ],
+      "fetch": {
+        "type": "http",
+        "url": "https://hubspotmcp.agenticledger.ai/mcp"
+      }
+    },
+    {
+      "id": "karbon",
+      "name": "Karbon",
+      "provider": "AgenticLedger",
+      "description": "Practice management — work items, contacts, organizations, timelines",
+      "category": "crm",
+      "verified": true,
+      "source": "agenticledger/platform",
+      "tags": [
+        "crm"
+      ],
+      "requiredKeys": [
+        {
+          "env": "KARBON_BEARER_TOKEN",
+          "label": "Karbon Bearer Token",
+          "hint": "API key from Karbon settings"
+        }
+      ],
+      "fetch": {
+        "type": "http",
+        "url": "https://karbonmcp.agenticledger.ai/mcp"
+      }
+    },
+    {
+      "id": "smartsheets",
+      "name": "Smartsheet",
+      "provider": "AgenticLedger",
+      "description": "Work management — sheets, rows, columns, reports, dashboards",
+      "category": "productivity",
+      "verified": true,
+      "source": "agenticledger/platform",
+      "tags": [
+        "productivity"
+      ],
+      "requiredKeys": [
+        {
+          "env": "SMARTSHEET_API_KEY",
+          "label": "Smartsheet API Key",
+          "hint": "API access token from Account > API Access"
+        }
+      ],
+      "fetch": {
+        "type": "http",
+        "url": "https://smartsheetsmcp.agenticledger.ai/mcp"
+      }
+    },
+    {
+      "id": "notion-finance",
+      "name": "Notion (Finance)",
+      "provider": "AgenticLedger",
+      "description": "Notion workspace — databases, pages, blocks, search",
+      "category": "productivity",
+      "verified": true,
+      "source": "agenticledger/platform",
+      "tags": [
+        "productivity"
+      ],
+      "requiredKeys": [
+        {
+          "env": "NOTION_API_KEY",
+          "label": "Notion API Key",
+          "hint": "Internal integration token"
+        }
+      ],
+      "fetch": {
+        "type": "http",
+        "url": "https://notionfinancemcp.agenticledger.ai/mcp"
+      }
+    },
+    {
+      "id": "granola",
+      "name": "Granola",
+      "provider": "Granola",
+      "description": "Meeting notes — search transcripts, get summaries, pull action items from your Granola meetings. Requires Business or Enterprise plan. Uses OAuth on first connect.",
+      "category": "productivity",
+      "verified": true,
+      "source": "granola-ai/mcp",
+      "tags": [
+        "productivity",
+        "meetings"
+      ],
+      "requiredKeys": [],
+      "fetch": {
+        "type": "http",
+        "url": "https://mcp.granola.ai/mcp"
+      }
+    },
+    {
+      "id": "fireflies",
+      "name": "Fireflies.ai",
+      "provider": "AgenticLedger",
+      "description": "Meeting transcription — transcripts, summaries, action items, speaker analytics",
+      "category": "productivity",
+      "verified": true,
+      "source": "agenticledger/platform",
+      "tags": [
+        "productivity"
+      ],
+      "requiredKeys": [
+        {
+          "env": "FIREFLIES_API_KEY",
+          "label": "Fireflies API Key",
+          "hint": "API key from Fireflies integrations"
+        }
+      ],
+      "fetch": {
+        "type": "http",
+        "url": "https://firefliesmcp.agenticledger.ai/mcp"
+      }
+    },
+    {
+      "id": "floqast",
+      "name": "FloQast",
+      "provider": "AgenticLedger",
+      "description": "Accounting close management — reconciliations, tasks, workflows",
+      "category": "accounting",
+      "verified": true,
+      "source": "agenticledger/platform",
+      "tags": [
+        "accounting"
+      ],
+      "requiredKeys": [
+        {
+          "env": "FLOQAST_API_KEY",
+          "label": "FloQast API Key",
+          "hint": "API key from FloQast settings"
+        }
+      ],
+      "fetch": {
+        "type": "http",
+        "url": "https://floqastmcp.agenticledger.ai/mcp"
+      }
+    },
+    {
+      "id": "bitwave",
+      "name": "Bitwave",
+      "provider": "AgenticLedger",
+      "description": "Crypto accounting — digital asset tracking, tax, portfolio",
+      "category": "crypto",
+      "verified": true,
+      "source": "agenticledger/platform",
+      "tags": [
+        "crypto"
+      ],
+      "requiredKeys": [
+        {
+          "env": "BITWAVE_AUTH",
+          "label": "Bitwave Auth",
+          "hint": "API credentials"
+        }
+      ],
+      "fetch": {
+        "type": "http",
+        "url": "https://bitwavemcp.agenticledger.ai/mcp"
+      }
+    },
+    {
+      "id": "tres",
+      "name": "Tres Finance",
+      "provider": "AgenticLedger",
+      "description": "Crypto accounting — DeFi positions, wallets, transactions, portfolio",
+      "category": "crypto",
+      "verified": true,
+      "source": "agenticledger/platform",
+      "tags": [
+        "crypto"
+      ],
+      "requiredKeys": [
+        {
+          "env": "TRES_AUTH",
+          "label": "Tres Auth",
+          "hint": "API key from Tres dashboard"
+        }
+      ],
+      "fetch": {
+        "type": "http",
+        "url": "https://tresmcp.agenticledger.ai/mcp"
+      }
+    },
+    {
+      "id": "fireblocks",
+      "name": "Fireblocks",
+      "provider": "AgenticLedger",
+      "description": "Digital asset custody — vaults, transactions, wallets, signing",
+      "category": "crypto",
+      "verified": true,
+      "source": "agenticledger/platform",
+      "tags": [
+        "crypto"
+      ],
+      "requiredKeys": [
+        {
+          "env": "FIREBLOCKS_AUTH",
+          "label": "Fireblocks Auth",
+          "hint": "API key + secret"
+        }
+      ],
+      "fetch": {
+        "type": "http",
+        "url": "https://fireblocksmcp.agenticledger.ai/mcp"
+      }
+    },
+    {
+      "id": "catalyx-wallet",
+      "name": "Catalyx Wallet",
+      "provider": "AgenticLedger",
+      "description": "Crypto wallet — balances, transfers, transaction history",
+      "category": "crypto",
+      "verified": true,
+      "source": "agenticledger/platform",
+      "tags": [
+        "crypto"
+      ],
+      "requiredKeys": [
+        {
+          "env": "CATALYX_AUTH",
+          "label": "Catalyx Auth",
+          "hint": "API credentials"
+        }
+      ],
+      "fetch": {
+        "type": "http",
+        "url": "https://catalyxwalletmcp.agenticledger.ai/mcp"
+      }
+    },
+    {
+      "id": "enterprise-wallet",
+      "name": "Enterprise Wallet Manager",
+      "provider": "AgenticLedger",
+      "description": "Multi-chain wallet management — wallets, transactions, policies",
+      "category": "crypto",
+      "verified": true,
+      "source": "agenticledger/platform",
+      "tags": [
+        "crypto"
+      ],
+      "requiredKeys": [
+        {
+          "env": "EWM_API_KEY",
+          "label": "EWM API Key",
+          "hint": "API key"
+        }
+      ],
+      "fetch": {
+        "type": "http",
+        "url": "https://enterprisewalletmcp.agenticledger.ai/mcp"
+      }
+    },
+    {
+      "id": "lightspark-sdk",
+      "name": "Lightspark SDK",
+      "provider": "AgenticLedger",
+      "description": "Lightning Network — Bitcoin payments, invoices, channels, nodes",
+      "category": "crypto",
+      "verified": true,
+      "source": "agenticledger/platform",
+      "tags": [
+        "crypto"
+      ],
+      "requiredKeys": [
+        {
+          "env": "LIGHTSPARK_SDK_AUTH",
+          "label": "Lightspark Auth",
+          "hint": "API credentials"
+        }
+      ],
+      "fetch": {
+        "type": "http",
+        "url": "https://lightsparksdkmcp.agenticledger.ai/mcp"
+      }
+    },
+    {
+      "id": "lightspark-grid",
+      "name": "Lightspark Grid",
+      "provider": "AgenticLedger",
+      "description": "Lightning Network analytics — network graph, node stats, routing",
+      "category": "crypto",
+      "verified": true,
+      "source": "agenticledger/platform",
+      "tags": [
+        "crypto"
+      ],
+      "requiredKeys": [
+        {
+          "env": "LIGHTSPARK_GRID_AUTH",
+          "label": "Lightspark Grid Auth",
+          "hint": "API credentials"
+        }
+      ],
+      "fetch": {
+        "type": "http",
+        "url": "https://lightsparkgridmcp.agenticledger.ai/mcp"
+      }
+    },
+    {
+      "id": "ccview",
+      "name": "CCView",
+      "provider": "AgenticLedger",
+      "description": "Crypto compliance — transaction monitoring, risk scoring, AML",
+      "category": "crypto",
+      "verified": true,
+      "source": "agenticledger/platform",
+      "tags": [
+        "crypto"
+      ],
+      "requiredKeys": [
+        {
+          "env": "CCVIEW_API_KEY",
+          "label": "CCView API Key",
+          "hint": "API key from CCView dashboard"
+        }
+      ],
+      "fetch": {
+        "type": "http",
+        "url": "https://ccviewmcp.agenticledger.ai/mcp"
+      }
+    },
+    {
+      "id": "metabase",
+      "name": "Metabase",
+      "provider": "AgenticLedger",
+      "description": "Business intelligence — queries, dashboards, questions, databases",
+      "category": "analytics",
+      "verified": true,
+      "source": "agenticledger/platform",
+      "tags": [
+        "analytics"
+      ],
+      "requiredKeys": [
+        {
+          "env": "METABASE_API_KEY",
+          "label": "Metabase API Key",
+          "hint": "API key from admin settings"
+        }
+      ],
+      "fetch": {
+        "type": "http",
+        "url": "https://metabasemcp.agenticledger.ai/mcp"
+      }
+    },
+    {
+      "id": "cubedev",
+      "name": "Cube.dev",
+      "provider": "AgenticLedger",
+      "description": "Semantic layer — data models, queries, pre-aggregations",
+      "category": "analytics",
+      "verified": true,
+      "source": "agenticledger/platform",
+      "tags": [
+        "analytics"
+      ],
+      "requiredKeys": [
+        {
+          "env": "CUBE_API_TOKEN",
+          "label": "Cube API Token",
+          "hint": "JWT or API token"
+        }
+      ],
+      "fetch": {
+        "type": "http",
+        "url": "https://cubedevmcp.agenticledger.ai/mcp"
+      }
+    },
+    {
+      "id": "p2p-lambda",
+      "name": "P2P Lambda",
+      "provider": "AgenticLedger",
+      "description": "Peer-to-peer serverless functions — invoke, manage, monitor",
+      "category": "infrastructure",
+      "verified": true,
+      "source": "agenticledger/platform",
+      "tags": [
+        "infrastructure"
+      ],
+      "requiredKeys": [
+        {
+          "env": "P2P_LAMBDA_KEY",
+          "label": "P2P Lambda Key",
+          "hint": "API key"
+        }
+      ],
+      "fetch": {
+        "type": "http",
+        "url": "https://p2plambdamcp.agenticledger.ai/mcp"
+      }
+    },
+    {
+      "id": "github",
+      "name": "GitHub",
+      "provider": "AgenticLedger",
+      "description": "Source control — repos, issues, PRs, actions, code search",
+      "category": "devtools",
+      "verified": true,
+      "source": "agenticledger/platform",
+      "tags": [
+        "devtools"
+      ],
+      "requiredKeys": [
+        {
+          "env": "GITHUB_PERSONAL_ACCESS_TOKEN",
+          "label": "GitHub PAT",
+          "hint": "Personal access token with repo scope"
+        }
+      ],
+      "fetch": {
+        "type": "http",
+        "url": "https://api.githubcopilot.com/mcp/"
+      }
+    },
+    {
+      "id": "greptile",
+      "name": "Greptile",
+      "provider": "AgenticLedger",
+      "description": "Codebase search — semantic code search, explanations, cross-repo",
+      "category": "devtools",
+      "verified": true,
+      "source": "agenticledger/platform",
+      "tags": [
+        "devtools"
+      ],
+      "requiredKeys": [
+        {
+          "env": "GREPTILE_API_KEY",
+          "label": "Greptile API Key",
+          "hint": "API key from greptile.com"
+        }
+      ],
+      "fetch": {
+        "type": "http",
+        "url": "https://api.greptile.com/mcp"
+      }
+    },
+    {
+      "id": "gitlab",
+      "name": "GitLab",
+      "provider": "AgenticLedger",
+      "description": "Source control — repos, merge requests, pipelines, issues",
+      "category": "devtools",
+      "verified": true,
+      "source": "agenticledger/platform",
+      "tags": [
+        "devtools"
+      ],
+      "requiredKeys": [],
+      "fetch": {
+        "type": "http",
+        "url": "https://gitlab.com/api/v4/mcp"
+      }
+    },
+    {
+      "id": "linear",
+      "name": "Linear",
+      "provider": "AgenticLedger",
+      "description": "Project tracking — issues, projects, cycles, teams",
+      "category": "devtools",
+      "verified": true,
+      "source": "agenticledger/platform",
+      "tags": [
+        "devtools"
+      ],
+      "requiredKeys": [],
+      "fetch": {
+        "type": "http",
+        "url": "https://mcp.linear.app/mcp"
+      }
+    },
+    {
+      "id": "supabase",
+      "name": "Supabase",
+      "provider": "AgenticLedger",
+      "description": "Backend as a service — database, auth, storage, edge functions",
+      "category": "devtools",
+      "verified": true,
+      "source": "agenticledger/platform",
+      "tags": [
+        "devtools"
+      ],
+      "requiredKeys": [],
+      "fetch": {
+        "type": "http",
+        "url": "https://mcp.supabase.com/mcp"
+      }
+    },
+    {
+      "id": "gmail",
+      "name": "Gmail",
+      "provider": "AgenticLedger",
+      "description": "Read, search, send, and manage Gmail messages",
+      "category": "productivity",
+      "verified": true,
+      "source": "agenticledger/platform",
+      "tags": [
+        "productivity"
+      ],
+      "requiredKeys": [
+        {
+          "env": "GMAIL_REFRESH_TOKEN",
+          "label": "Google Refresh Token",
+          "hint": "Click Authorize to connect your Google account"
+        }
+      ],
+      "fetch": {
+        "type": "http",
+        "url": "https://gmailmcp.agenticledger.ai/mcp"
+      }
+    },
+    {
+      "id": "googlecalendar",
+      "name": "Google Calendar",
+      "provider": "AgenticLedger",
+      "description": "List, create, update, and manage calendar events and check availability",
+      "category": "productivity",
+      "verified": true,
+      "source": "agenticledger/platform",
+      "tags": [
+        "productivity"
+      ],
+      "requiredKeys": [
+        {
+          "env": "GCAL_REFRESH_TOKEN",
+          "label": "Google Refresh Token",
+          "hint": "Click Authorize to connect your Google account"
+        }
+      ],
+      "fetch": {
+        "type": "http",
+        "url": "https://googlecalendarmcp.agenticledger.ai/mcp"
+      }
+    },
+    {
+      "id": "googledrive",
+      "name": "Google Drive",
+      "provider": "AgenticLedger",
+      "description": "Search, read, create, and manage Google Drive files and folders",
+      "category": "productivity",
+      "verified": true,
+      "source": "agenticledger/platform",
+      "tags": [
+        "productivity"
+      ],
+      "requiredKeys": [
+        {
+          "env": "GDRIVE_REFRESH_TOKEN",
+          "label": "Google Refresh Token",
+          "hint": "Click Authorize to connect your Google account"
+        }
+      ],
+      "fetch": {
+        "type": "http",
+        "url": "https://googledrivemcp.agenticledger.ai/mcp"
+      }
+    },
+    {
+      "id": "googlesheets",
+      "name": "Google Sheets",
+      "provider": "AgenticLedger",
+      "description": "Read, write, and manage Google Sheets spreadsheets",
+      "category": "productivity",
+      "verified": true,
+      "source": "agenticledger/platform",
+      "tags": [
+        "productivity"
+      ],
+      "requiredKeys": [
+        {
+          "env": "GSHEETS_REFRESH_TOKEN",
+          "label": "Google Refresh Token",
+          "hint": "Click Authorize to connect your Google account"
+        }
+      ],
+      "fetch": {
+        "type": "http",
+        "url": "https://googlesheetsmcp.agenticledger.ai/mcp"
+      }
+    },
+    {
+      "id": "googledocs",
+      "name": "Google Docs",
+      "provider": "AgenticLedger",
+      "description": "Read, create, and edit Google Docs documents",
+      "category": "productivity",
+      "verified": true,
+      "source": "agenticledger/platform",
+      "tags": [
+        "productivity"
+      ],
+      "requiredKeys": [
+        {
+          "env": "GDOCS_REFRESH_TOKEN",
+          "label": "Google Refresh Token",
+          "hint": "Click Authorize to connect your Google account"
+        }
+      ],
+      "fetch": {
+        "type": "http",
+        "url": "https://googledocsmcp.agenticledger.ai/mcp"
+      }
+    },
+    {
+      "id": "youtube",
+      "name": "YouTube",
+      "provider": "AgenticLedger",
+      "description": "Search, browse, and analyze YouTube videos, channels, and playlists",
+      "category": "productivity",
+      "verified": true,
+      "source": "agenticledger/platform",
+      "tags": [
+        "productivity"
+      ],
+      "requiredKeys": [
+        {
+          "env": "YOUTUBE_REFRESH_TOKEN",
+          "label": "Google Refresh Token",
+          "hint": "Click Authorize to connect your Google account"
+        }
+      ],
+      "fetch": {
+        "type": "http",
+        "url": "https://youtubemcp.agenticledger.ai/mcp"
+      }
+    },
+    {
+      "id": "myaiforone",
+      "name": "MyAIforOne Gateway",
+      "provider": "AgenticLedger",
+      "description": "Control the MyAgent gateway programmatically — manage agents, send messages, check costs, reset sessions, assign tasks, configure channels, and more. 81 MCP tools wrapping all platform APIs.",
+      "category": "Platform",
+      "verified": true,
+      "source": "local",
+      "tags": [
+        "platform",
+        "agents",
+        "gateway",
+        "management"
+      ],
+      "requiredKeys": [],
+      "fetch": {
+        "type": "stdio",
+        "command": "node",
+        "args": [
+          "server/mcp-server/dist/index.js"
+        ]
+      }
+    }
+  ]
+}

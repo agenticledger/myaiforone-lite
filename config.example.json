@@ -1,0 +1,17 @@
+{
+  "service": {
+    "logLevel": "info",
+    "webUI": { "enabled": true, "port": 4888 },
+    "voiceModeEnabled": false,
+    "licenseKey": "",
+    "auth": { "enabled": false }
+  },
+  "channels": {},
+  "agents": {},
+  "mcps": {},
+  "defaultAgent": null,
+  "defaultSkills": [],
+  "defaultMcps": [],
+  "defaultPrompts": [],
+  "promptTrigger": "!"
+}

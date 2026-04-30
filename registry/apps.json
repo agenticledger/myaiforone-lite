@@ -1,0 +1,20 @@
+[
+  {
+    "id": "calculator",
+    "name": "Calculator",
+    "shortDescription": "A clean, full-featured calculator with keyboard support.",
+    "description": "A production-quality calculator built with React 19 + Vite + Express 5 + Tailwind + shadcn/ui. Features standard arithmetic, percentage, sign toggle, backspace, and full keyboard shortcuts. Dark-themed iOS-style UI.",
+    "url": null,
+    "status": "draft",
+    "category": "productivity",
+    "tags": ["calculator", "math", "tools"],
+    "agentDeveloper": "calculator-dev",
+    "githubRepo": null,
+    "githubBranch": "main",
+    "deployPlatform": "railway",
+    "otherDetails": "Workspace: /Users/oreph/Desktop/calculator",
+    "healthStatus": "unknown",
+    "lastHealthCheck": null,
+    "createdAt": "2026-04-03T00:00:00.000Z"
+  }
+]

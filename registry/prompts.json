@@ -1,0 +1,58 @@
+{
+  "prompts": [
+    {
+      "id": "code-review",
+      "name": "Code Review",
+      "provider": "AgenticLedger",
+      "description": "Thorough code review covering correctness, performance, security, and maintainability.",
+      "category": "engineering",
+      "verified": true,
+      "source": "agenticledger/platform",
+      "tags": [
+        "code",
+        "review",
+        "engineering"
+      ],
+      "localPath": "registry/prompts/platform/code-review.md",
+      "fetch": {
+        "type": "file"
+      }
+    },
+    {
+      "id": "brainstorm",
+      "name": "Brainstorm",
+      "provider": "AgenticLedger",
+      "description": "Structured brainstorming session — generates diverse ideas, clusters themes, and ranks by feasibility.",
+      "category": "strategy",
+      "verified": true,
+      "source": "agenticledger/platform",
+      "tags": [
+        "ideas",
+        "strategy",
+        "creativity"
+      ],
+      "localPath": "registry/prompts/platform/brainstorm.md",
+      "fetch": {
+        "type": "file"
+      }
+    },
+    {
+      "id": "explain",
+      "name": "Explain Like I'm 5",
+      "provider": "AgenticLedger",
+      "description": "Explains any concept in plain language — no jargon, rich analogies, builds up from first principles.",
+      "category": "learning",
+      "verified": true,
+      "source": "agenticledger/platform",
+      "tags": [
+        "explain",
+        "learning",
+        "simplify"
+      ],
+      "localPath": "registry/prompts/platform/explain.md",
+      "fetch": {
+        "type": "file"
+      }
+    }
+  ]
+}
