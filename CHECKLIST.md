@@ -111,7 +111,7 @@ When the app launches for the first time (no agents in config):
 
 ## ✅ Tauri Desktop App Scaffolded (Shell Ready — Binary Pending)
 
-Tauri shell files are in place. Binary compile requires Bun (not yet installed locally — CI handles it).
+Tauri shell files are in place. Using Node.js for the server binary (Claude CLI requires Node anyway).
 
 ### Tauri Shell
 - [x] `src-tauri/Cargo.toml` — package metadata + tauri v2 + tauri-plugin-shell
@@ -125,7 +125,7 @@ Tauri shell files are in place. Binary compile requires Bun (not yet installed l
 
 ### Node.js Sidecar (the backend)
 - [x] Binary location: `src-tauri/binaries/myaiforone-server-<target-triple>` (CI builds these)
-- [ ] Bun compile tested locally (Bun not installed — install `brew install bun` to test)
+- [-] Bun compile tested locally — Decided: using Node.js instead of Bun (Claude CLI requires Node anyway)
 - [ ] Sidecar port fallback (4888 → free port) — deferred to v1.1
 
 ### Packaging
@@ -134,7 +134,7 @@ Tauri shell files are in place. Binary compile requires Bun (not yet installed l
 - [ ] Linux `.AppImage` — optional, lower priority
 
 ### App Behavior
-- [ ] Single instance enforcement — deferred to v1.1
+- [x] Single instance enforcement — `tauri-plugin-single-instance` registered, focuses existing window
 - [ ] macOS tray / Windows tray — deferred to v1.1
 
 ---
@@ -143,7 +143,7 @@ Tauri shell files are in place. Binary compile requires Bun (not yet installed l
 
 - [x] `.github/workflows/build.yml` — triggers on push to main + version tags
 - [x] Build matrix: macOS arm64, macOS x64, Windows x64
-- [x] Bun compiles server binary per platform before Tauri build
+- [x] CI compiles server binary per platform before Tauri build
 - [x] `tauri-apps/tauri-action@v0` publishes a draft GitHub Release with `.dmg` + `.exe`
 - [ ] Code signing (macOS notarization, Windows Authenticode) — deferred, add secrets when ready
 

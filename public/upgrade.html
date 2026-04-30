@@ -1,0 +1,447 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Upgrade Guide — MyAIforOne</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&family=Syne:wght@600;700;800&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+
+/* ─── Theme Variables ─────────────────────────────────────────── */
+:root{
+  --bg-deep:#060a13;
+  --bg-surface:rgba(12,18,33,0.92);
+  --bg-card:rgba(16,22,40,0.85);
+  --bg-input:rgba(0,0,0,0.35);
+  --border-dim:rgba(56,189,248,0.08);
+  --border-glow:rgba(56,189,248,0.18);
+  --border-active:rgba(56,189,248,0.45);
+  --text-primary:rgba(255,255,255,0.92);
+  --text-secondary:rgba(255,255,255,0.68);
+  --text-muted:rgba(148,163,184,0.55);
+  --accent:#22d3ee;
+  --accent-soft:#38bdf8;
+  --accent-bg:rgba(6,182,212,0.15);
+  --accent-glow:rgba(34,211,238,0.12);
+  --purple:rgba(139,92,246,0.7);
+  --purple-bg:rgba(139,92,246,0.12);
+  --green:#4ade80;
+  --green-bg:rgba(74,222,128,0.1);
+  --amber:#fbbf24;
+  --amber-bg:rgba(251,191,36,0.1);
+  --shadow:0 2px 12px rgba(0,0,0,0.3);
+  --shadow-glow:0 0 20px rgba(34,211,238,0.08);
+  --radius:12px;
+  --font-sans:'DM Sans',system-ui,-apple-system,sans-serif;
+  --font-mono:'IBM Plex Mono',monospace;
+  --font-display:'Syne',sans-serif;
+}
+
+[data-theme="light"]{
+  --bg-deep:#f4f6f9;
+  --bg-surface:rgba(255,255,255,0.95);
+  --bg-card:rgba(255,255,255,0.9);
+  --bg-input:rgba(0,0,0,0.04);
+  --border-dim:rgba(0,0,0,0.08);
+  --border-glow:rgba(14,116,144,0.18);
+  --border-active:rgba(14,116,144,0.45);
+  --text-primary:rgba(15,23,42,0.92);
+  --text-secondary:rgba(51,65,85,0.8);
+  --text-muted:rgba(100,116,139,0.6);
+  --accent:#0891b2;
+  --accent-soft:#0e7490;
+  --accent-bg:rgba(14,116,144,0.08);
+  --accent-glow:rgba(14,116,144,0.06);
+  --purple:rgba(109,40,217,0.75);
+  --purple-bg:rgba(139,92,246,0.08);
+  --green:#16a34a;
+  --green-bg:rgba(22,163,74,0.08);
+  --amber:#d97706;
+  --amber-bg:rgba(217,119,6,0.08);
+  --shadow:0 1px 8px rgba(0,0,0,0.06);
+  --shadow-glow:none;
+}
+
+html,body{
+  width:100%;height:100%;
+  background:var(--bg-deep);
+  font-family:var(--font-sans);
+  color:var(--text-primary);
+  transition:background .3s,color .3s;
+}
+
+body{
+  overflow-y:auto;
+  -webkit-overflow-scrolling:touch;
+}
+
+/* ─── Header ─────────────────────────────────────────────────── */
+.page-header{
+  position:sticky;top:0;z-index:100;
+  display:flex;align-items:center;gap:14px;
+  padding:14px 24px;
+  background:var(--bg-surface);
+  border-bottom:1px solid var(--border-dim);
+  backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);
+}
+.back-btn{
+  display:inline-flex;align-items:center;gap:6px;
+  font-family:var(--font-sans);font-size:13px;font-weight:600;
+  color:var(--accent);background:none;border:none;
+  cursor:pointer;text-decoration:none;padding:6px 10px;
+  border-radius:8px;transition:background .2s;
+}
+.back-btn:hover{background:var(--accent-bg)}
+.back-btn svg{width:16px;height:16px}
+.page-title{
+  font-family:var(--font-display);font-size:20px;font-weight:700;
+  color:var(--text-primary);
+}
+
+/* ─── Content ────────────────────────────────────────────────── */
+.content{
+  max-width:780px;margin:0 auto;padding:32px 24px 80px;
+}
+
+h2{
+  font-family:var(--font-display);font-size:22px;font-weight:700;
+  color:var(--text-primary);margin:40px 0 16px;
+  padding-bottom:8px;border-bottom:1px solid var(--border-dim);
+}
+h2:first-child{margin-top:0}
+
+h3{
+  font-family:var(--font-sans);font-size:16px;font-weight:700;
+  color:var(--text-primary);margin:28px 0 10px;
+}
+
+p{
+  font-size:14px;line-height:1.7;color:var(--text-secondary);
+  margin:0 0 12px;
+}
+
+ol,ul{
+  padding-left:20px;margin:0 0 16px;
+}
+li{
+  font-size:14px;line-height:1.7;color:var(--text-secondary);
+  margin-bottom:6px;
+}
+
+strong{color:var(--text-primary)}
+
+/* ─── Code Blocks ────────────────────────────────────────────── */
+pre{
+  background:rgba(0,0,0,0.4);
+  border:1px solid var(--border-dim);
+  border-radius:var(--radius);
+  padding:14px 18px;margin:12px 0 16px;
+  overflow-x:auto;
+  font-family:var(--font-mono);font-size:13px;line-height:1.6;
+  color:var(--accent-soft);
+}
+[data-theme="light"] pre{
+  background:rgba(0,0,0,0.04);
+  color:var(--accent-soft);
+}
+
+code{
+  font-family:var(--font-mono);font-size:13px;
+  background:var(--accent-bg);
+  padding:2px 6px;border-radius:4px;
+  color:var(--accent);
+}
+pre code{background:none;padding:0;color:inherit}
+
+/* ─── OS Tabs ────────────────────────────────────────────────── */
+.os-tabs{
+  display:flex;gap:0;margin:16px 0 0;
+  border-bottom:1px solid var(--border-dim);
+}
+.os-tab{
+  font-family:var(--font-sans);font-size:13px;font-weight:600;
+  color:var(--text-muted);background:none;border:none;
+  padding:10px 18px;cursor:pointer;position:relative;
+  transition:color .2s;
+}
+.os-tab:hover{color:var(--text-secondary)}
+.os-tab.active{color:var(--accent)}
+.os-tab.active::after{
+  content:'';position:absolute;bottom:-1px;left:8px;right:8px;
+  height:2px;background:var(--accent);border-radius:1px;
+}
+.os-panel{display:none}
+.os-panel.active{display:block}
+
+/* ─── Table ──────────────────────────────────────────────────── */
+.data-table{
+  width:100%;border-collapse:collapse;
+  margin:12px 0 20px;
+  border:1px solid var(--border-dim);
+  border-radius:var(--radius);
+  overflow:hidden;
+}
+.data-table th{
+  font-size:12px;font-weight:700;
+  text-transform:uppercase;letter-spacing:0.04em;
+  color:var(--text-muted);
+  background:var(--bg-card);
+  padding:10px 14px;text-align:left;
+  border-bottom:1px solid var(--border-dim);
+}
+.data-table td{
+  font-size:13px;color:var(--text-secondary);
+  padding:10px 14px;
+  border-bottom:1px solid var(--border-dim);
+}
+.data-table tr:last-child td{border-bottom:none}
+.badge-yes{
+  display:inline-block;font-size:11px;font-weight:700;
+  color:var(--green);background:var(--green-bg);
+  padding:2px 8px;border-radius:6px;
+}
+.badge-manual{
+  display:inline-block;font-size:11px;font-weight:700;
+  color:var(--amber);background:var(--amber-bg);
+  padding:2px 8px;border-radius:6px;
+}
+
+/* ─── Info Box ───────────────────────────────────────────────── */
+.info-box{
+  background:var(--accent-bg);
+  border:1px solid var(--border-glow);
+  border-radius:var(--radius);
+  padding:14px 18px;margin:16px 0;
+}
+.info-box p{color:var(--text-secondary);margin:0}
+.info-box strong{color:var(--accent)}
+
+.warn-box{
+  background:var(--amber-bg);
+  border:1px solid rgba(251,191,36,0.2);
+  border-radius:var(--radius);
+  padding:14px 18px;margin:16px 0;
+}
+.warn-box p{color:var(--text-secondary);margin:0}
+.warn-box strong{color:var(--amber)}
+
+/* ─── Divider ────────────────────────────────────────────────── */
+hr{
+  border:none;height:1px;
+  background:var(--border-dim);
+  margin:32px 0;
+}
+
+/* ─── Responsive ─────────────────────────────────────────────── */
+@media(max-width:600px){
+  .content{padding:20px 16px 60px}
+  .page-header{padding:12px 16px}
+  .page-title{font-size:17px}
+  pre{font-size:12px;padding:12px 14px}
+}
+</style>
+</head>
+<body>
+
+<div class="page-header">
+  <a href="/" class="back-btn">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg>
+    Back
+  </a>
+  <div class="page-title">Upgrade Guide</div>
+</div>
+
+<div class="content">
+
+  <!-- ═══════════════════════════════════════════════════════════ -->
+  <h2>Automatic Upgrade</h2>
+
+  <p>The recommended way to upgrade MyAIforOne Lite:</p>
+  <pre><code>npx myaiforone@latest</code></pre>
+
+  <p>This will:</p>
+  <ol>
+    <li>Detect your existing installation (<code>~/.myaiforone</code> on Mac/Linux, <code>%APPDATA%\MyAIforOneGateway</code> on Windows)</li>
+    <li>Back up your <code>config.json</code> (saved as <code>config.backup-&lt;timestamp&gt;.json</code>)</li>
+    <li>Merge any new config fields (your existing settings are never overwritten)</li>
+    <li>Update agent templates (your agents are never touched)</li>
+    <li>Update the version marker</li>
+    <li>Restart the service if it was running</li>
+  </ol>
+
+  <div class="info-box">
+    <p><strong>Your data is always preserved:</strong> <code>config.json</code> is backed up then merged (additive only). Your <code>agents/</code> directory and <code>~/Desktop/MyAIforOne Drive Lite/</code> are never modified.</p>
+  </div>
+
+  <h3>Force Upgrade</h3>
+  <p>If auto-detection fails, force upgrade mode:</p>
+  <pre><code>npx myaiforone@latest --upgrade</code></pre>
+
+  <h3>Check Version</h3>
+  <pre><code>npx myaiforone@latest --version</code></pre>
+
+  <hr>
+
+  <!-- ═══════════════════════════════════════════════════════════ -->
+  <h2>Upgrading from Lite to Full</h2>
+
+  <p>When you are ready to move to the full multi-agent platform, your agents and data carry over.</p>
+
+  <h3>Step 1: Install Full MyAIforOne</h3>
+  <p>Follow the full MyAIforOne installation instructions (separate repo/installer).</p>
+
+  <h3>Step 2: Migrate Drive Data</h3>
+
+  <p>The Lite Drive lives at:</p>
+  <pre><code>~/Desktop/MyAIforOne Drive Lite/</code></pre>
+
+  <p>The full platform Drive lives at:</p>
+  <pre><code>~/Desktop/MyAIforOne Drive/</code></pre>
+
+  <p>Copy your agent data from Lite to Full:</p>
+
+  <!-- OS Tabs -->
+  <div class="os-tabs">
+    <button class="os-tab active" onclick="switchOS('mac')">macOS / Linux</button>
+    <button class="os-tab" onclick="switchOS('win')">Windows</button>
+  </div>
+
+  <div id="os-mac" class="os-panel active">
+    <pre><code># Copy PersonalAgents
+cp -R ~/Desktop/MyAIforOne\ Drive\ Lite/PersonalAgents/* \
+      ~/Desktop/MyAIforOne\ Drive/PersonalAgents/
+
+# Copy PersonalRegistry (if you have custom registry items)
+cp -R ~/Desktop/MyAIforOne\ Drive\ Lite/PersonalRegistry/* \
+      ~/Desktop/MyAIforOne\ Drive/PersonalRegistry/</code></pre>
+  </div>
+
+  <div id="os-win" class="os-panel">
+    <pre><code># Copy PersonalAgents
+Copy-Item -Recurse -Force "$env:USERPROFILE\Desktop\MyAIforOne Drive Lite\PersonalAgents\*" `
+  "$env:USERPROFILE\Desktop\MyAIforOne Drive\PersonalAgents\"
+
+# Copy PersonalRegistry
+Copy-Item -Recurse -Force "$env:USERPROFILE\Desktop\MyAIforOne Drive Lite\PersonalRegistry\*" `
+  "$env:USERPROFILE\Desktop\MyAIforOne Drive\PersonalRegistry\"</code></pre>
+  </div>
+
+  <h3>Step 3: Verify</h3>
+  <ol>
+    <li>Start the full MyAIforOne platform</li>
+    <li>Open the web UI — your agents should appear with their memory, skills, and conversation history intact</li>
+    <li>If everything looks good, you can optionally remove the Lite Drive folder:
+      <pre><code>rm -rf ~/Desktop/MyAIforOne\ Drive\ Lite/</code></pre>
+    </li>
+  </ol>
+
+  <hr>
+
+  <!-- ═══════════════════════════════════════════════════════════ -->
+  <h2>What Carries Over</h2>
+
+  <table class="data-table">
+    <thead>
+      <tr>
+        <th>Data</th>
+        <th>Location</th>
+        <th>Status</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>Agent config (name, tools, MCPs)</td>
+        <td><code>config.json</code></td>
+        <td><span class="badge-manual">Manual</span></td>
+      </tr>
+      <tr>
+        <td>Agent memory</td>
+        <td><code>Drive/PersonalAgents/&lt;agent&gt;/memory/</code></td>
+        <td><span class="badge-yes">Yes</span></td>
+      </tr>
+      <tr>
+        <td>Conversation logs</td>
+        <td><code>Drive/PersonalAgents/&lt;agent&gt;/conversation_log.jsonl</code></td>
+        <td><span class="badge-yes">Yes</span></td>
+      </tr>
+      <tr>
+        <td>Agent CLAUDE.md</td>
+        <td><code>Drive/PersonalAgents/&lt;agent&gt;/CLAUDE.md</code></td>
+        <td><span class="badge-yes">Yes</span></td>
+      </tr>
+      <tr>
+        <td>Agent skills</td>
+        <td><code>Drive/PersonalAgents/&lt;agent&gt;/skills/</code></td>
+        <td><span class="badge-yes">Yes</span></td>
+      </tr>
+      <tr>
+        <td>MCP key files</td>
+        <td><code>Drive/PersonalAgents/&lt;agent&gt;/keys/</code></td>
+        <td><span class="badge-yes">Yes</span></td>
+      </tr>
+      <tr>
+        <td>Custom registry</td>
+        <td><code>Drive/PersonalRegistry/</code></td>
+        <td><span class="badge-yes">Yes</span></td>
+      </tr>
+    </tbody>
+  </table>
+
+  <!-- ═══════════════════════════════════════════════════════════ -->
+  <h2>What Does NOT Carry Over</h2>
+
+  <div class="warn-box">
+    <p><strong>config.json</strong> — The full platform has a different config structure with channels, org charts, boards, etc. You will need to recreate your agent entries in the full platform config (or use the web UI "Create Agent" flow).</p>
+  </div>
+  <div class="warn-box">
+    <p><strong>Lite-specific settings</strong> — Service config fields that only apply to Lite are ignored by the full platform.</p>
+  </div>
+
+  <h3>Migrating config.json Agent Entries</h3>
+  <p>If you want to manually port agent definitions:</p>
+  <ol>
+    <li>Open your Lite <code>config.json</code> (backed up at <code>~/.myaiforone/config.json</code>)</li>
+    <li>Open the full platform <code>config.json</code></li>
+    <li>Copy each agent entry from <code>"agents": { ... }</code> into the full platform config</li>
+    <li>Update the <code>agentHome</code>, <code>claudeMd</code>, and <code>memoryDir</code> paths to point to the full Drive location:
+      <br>Change <code>MyAIforOne Drive Lite</code> to <code>MyAIforOne Drive</code> in all paths
+    </li>
+    <li>Restart the full platform</li>
+  </ol>
+
+  <div class="info-box">
+    <p>This is a one-time manual step. Once migrated, the full platform manages everything.</p>
+  </div>
+
+</div>
+
+<script>
+// ─── Theme Detection ──────────────────────────────────────────
+(function() {
+  const saved = localStorage.getItem('theme');
+  if (saved) {
+    document.documentElement.setAttribute('data-theme', saved);
+  } else {
+    // Check system preference
+    const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+    document.documentElement.setAttribute('data-theme', prefersDark ? 'dark' : 'light');
+  }
+})();
+
+// ─── OS Tab Switching ─────────────────────────────────────────
+function switchOS(os) {
+  document.querySelectorAll('.os-tab').forEach(t => t.classList.remove('active'));
+  document.querySelectorAll('.os-panel').forEach(p => p.classList.remove('active'));
+  if (os === 'mac') {
+    document.querySelectorAll('.os-tab')[0].classList.add('active');
+    document.getElementById('os-mac').classList.add('active');
+  } else {
+    document.querySelectorAll('.os-tab')[1].classList.add('active');
+    document.getElementById('os-win').classList.add('active');
+  }
+}
+</script>
+
+</body>
+</html>
