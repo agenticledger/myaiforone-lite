@@ -129,8 +129,8 @@ Tauri shell files are in place. Using Node.js for the server binary (Claude CLI 
 - [x] Lite uses port 4889 (separate from Full on 4888) — no fallback needed
 
 ### Packaging
-- [ ] macOS `.dmg` — produced by `tauri-action` in CI
-- [ ] Windows `.exe` NSIS — produced by `tauri-action` in CI
+- [x] macOS `.dmg` — produced by `tauri-action` in CI (v0.1.0 released)
+- [x] Windows `.exe` NSIS — produced by `tauri-action` in CI (v0.1.0 released)
 - [-] Linux `.AppImage` — not doing for now
 
 ### App Behavior
@@ -164,6 +164,36 @@ Tauri shell files are in place. Using Node.js for the server binary (Claude CLI 
 - [x] `docs/upgrade-guide.md` — manual Drive migration steps (Lite → Full) + automatic upgrade docs
 - [x] "Upgrade to Full MyAIforOne" link in sidebar footer — opens https://myaiforone.com/download
 - [x] Verify the copy-Drive-over upgrade works end to end (agents carry over untouched)
+
+---
+
+---
+
+## ✅ Lite MCP Server (Done)
+
+A lean 18-tool MCP server for the Lite edition — separate from the full 100+ tool server.
+
+- [x] `server/mcp-server-lite/index.ts` — 18 tools: health, agents, chat, browse/install from registry, MCP keys, upgrade, templates
+- [x] `server/mcp-server-lite/lib/api-client.ts` — HTTP client wrapping local gateway + remote registry
+- [x] `server/mcp-server-lite/tsconfig.json` — compile config
+- [x] `config.example.json` — `myaiforone-lite` MCP (stdio, port 4889) + `myaiforone-registry` HTTP MCP wired
+- [x] `service.edition: "lite"` field added to config.example.json
+
+---
+
+## ✅ Hub-Lite Agent (Done)
+
+Built-in "app store" agent — browses and installs agents from myaiforone.com registry.
+
+- [x] `agents/hub-lite/agent.json` — agent metadata
+- [x] `agents/hub-lite/CLAUDE.md` — system prompt: browse, install, upgrade, manage agents
+- [x] `agents/hub-lite/memory/` — memory directory
+
+---
+
+## ✅ Upgrade Endpoint (Done)
+
+- [x] `POST /api/upgrade` in `src/web-ui.ts` — changes edition to "pro", removes agent cap, swaps lite MCP → full MCP in config.json
 
 ---
 

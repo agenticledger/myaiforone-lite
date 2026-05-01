@@ -1,6 +1,7 @@
 {
   "service": {
     "logLevel": "info",
+    "edition": "lite",
     "webUI": { "enabled": true, "port": 4889 },
     "voiceModeEnabled": false,
     "licenseKey": "",
@@ -8,7 +9,23 @@
   },
   "channels": {},
   "agents": {},
-  "mcps": {},
+  "mcps": {
+    "myaiforone-lite": {
+      "type": "stdio",
+      "command": "node",
+      "args": [
+        "./server/mcp-server-lite/dist/index.js"
+      ],
+      "env": {
+        "MYAGENT_API_URL": "http://localhost:4889",
+        "MYAGENT_REGISTRY_URL": "https://myaiforone.com"
+      }
+    },
+    "myaiforone-registry": {
+      "type": "http",
+      "url": "https://myaiforone.com/mcp/registry"
+    }
+  },
   "defaultAgent": null,
   "defaultSkills": [],
   "defaultMcps": [],

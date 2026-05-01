@@ -381,6 +381,48 @@ export function startWebUI(opts: WebUIOptions): void {
     }
   });
 
+  // ─── API: Upgrade Lite → Pro ──────────────────────────────────────
+  // Called by the hub-lite agent or the "Upgrade to Full" sidebar link.
+  // Changes service.edition to "pro", removes the agent cap, and swaps
+  // the lite MCP server path for the full one in config.json.
+  app.post("/api/upgrade", (req, res) => {
+    try {
+      const configPath = configFilePath();
+      const rawConfig = JSON.parse(readFileSync(configPath, "utf-8"));
+
+      const currentEdition = rawConfig.service?.edition || "lite";
+      if (currentEdition === "pro") {
+        return res.status(400).json({ success: false, error: "Already on Pro edition" });
+      }
+
+      const { licenseKey } = req.body as { licenseKey?: string };
+
+      if (!rawConfig.service) rawConfig.service = {};
+      rawConfig.service.edition = "pro";
+      rawConfig.service.maxAgents = 0; // unlimited
+
+      // Swap lite MCP → full MCP if present
+      if (rawConfig.mcps && rawConfig.mcps["myaiforone-lite"]) {
+        const liteMcp = rawConfig.mcps["myaiforone-lite"];
+        if (liteMcp.args && Array.isArray(liteMcp.args)) {
+          liteMcp.args = liteMcp.args.map((arg: string) =>
+            arg.replace(/server\/mcp-server-lite\/dist\/index\.js/, "server/mcp-server/dist/index.js")
+          );
+        }
+        rawConfig.mcps["myaiforone-local"] = liteMcp;
+        delete rawConfig.mcps["myaiforone-lite"];
+      }
+
+      if (licenseKey) rawConfig.service.licenseKey = licenseKey;
+
+      writeFileSync(configPath, JSON.stringify(rawConfig, null, 2));
+      log.info("[Upgrade] Edition upgraded to Pro");
+      return res.json({ success: true, edition: "pro", message: "Upgraded to Pro. Restart the app to apply all changes." });
+    } catch (e: any) {
+      return res.status(500).json({ success: false, error: e.message });
+    }
+  });
+
   // Proxy for Ollama API (avoids CORS when browser fetches model list)
   // ─── API: Voice Mode (TTS + STT) ─────────────────────────────────────
   // See docs/voice-mode-plan.md
