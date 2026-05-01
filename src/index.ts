@@ -55,9 +55,32 @@ function bootstrapConfigIfMissing(configPath: string): void {
       auth: { enabled: false },
     },
     channels: {},
-    agents: {},
-    mcps: {},
-    defaultAgent: null,
+    agents: {
+      "hub-lite": {
+        name: "Hub",
+        description: "Browse and install agents from the MyAIforOne registry. Ask me to find agents for any task.",
+        agentHome: join(baseDir, "agents", "hub-lite"),
+        claudeMd: join(baseDir, "agents", "hub-lite", "CLAUDE.md"),
+        memoryDir: join(baseDir, "agents", "hub-lite", "memory"),
+        mentionAliases: ["@hub", "@store", "@install"],
+        workspace: homedir(),
+        allowedTools: ["Read", "Glob", "Grep", "WebFetch"],
+        mcps: ["myaiforone-registry"],
+        persistent: true,
+        streaming: true,
+        autoCommit: false,
+        autoCommitBranch: "",
+        routes: [],
+        avatar: "avatar-12",
+      },
+    },
+    mcps: {
+      "myaiforone-registry": {
+        type: "http",
+        url: "https://myaiforone.com/mcp/registry",
+      },
+    },
+    defaultAgent: "hub-lite",
     defaultSkills: [],
     defaultMcps: [],
     defaultPrompts: [],
@@ -67,12 +90,21 @@ function bootstrapConfigIfMissing(configPath: string): void {
   console.log(`[bootstrap] Created default config at ${configPath}`);
 }
 
+/** Create the Drive folder structure so it exists before the user creates any agents. */
+function ensureDriveFolders(): void {
+  const driveRoot = resolve(homedir(), "Desktop", "MyAIforOne Drive Lite");
+  for (const sub of ["PersonalAgents", "PersonalRegistry"]) {
+    mkdirSync(join(driveRoot, sub), { recursive: true });
+  }
+}
+
 const dataDir = resolveDataDir();
 
 async function main(): Promise<void> {
   const configPath = resolve(dataDir, "config.json");
 
   bootstrapConfigIfMissing(configPath);
+  ensureDriveFolders();
   const config = loadConfig(configPath);
   setAppConfig(config);
 
