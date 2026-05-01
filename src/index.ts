@@ -1,5 +1,5 @@
 import { resolve, dirname, join } from "node:path";
-import { existsSync } from "node:fs";
+import { existsSync, mkdirSync, writeFileSync } from "node:fs";
 import { homedir } from "node:os";
 import { fileURLToPath } from "node:url";
 import { loadConfig } from "./config.js";
@@ -33,13 +33,43 @@ function resolveDataDir(): string {
   // Legacy Desktop location — kept for backward compat
   const legacy = join(home, "Desktop", "MyAIforOne Platform");
   if (existsSync(join(legacy, "config.json"))) return legacy;
-  return baseDir;
+  // First-run: no config found anywhere — use primary dir (will be bootstrapped)
+  return primary;
 }
+
+/** Write a minimal default config on first run so the server can start and the UI shows setup. */
+function bootstrapConfigIfMissing(configPath: string): void {
+  if (existsSync(configPath)) return;
+  const dir = resolve(configPath, "..");
+  mkdirSync(dir, { recursive: true });
+  const defaultConfig = {
+    service: {
+      logLevel: "info",
+      edition: "lite",
+      webUI: { enabled: true, port: 4889 },
+      voiceModeEnabled: false,
+      licenseKey: "",
+      auth: { enabled: false },
+    },
+    channels: {},
+    agents: {},
+    mcps: {},
+    defaultAgent: null,
+    defaultSkills: [],
+    defaultMcps: [],
+    defaultPrompts: [],
+    promptTrigger: "!",
+  };
+  writeFileSync(configPath, JSON.stringify(defaultConfig, null, 2), "utf-8");
+  console.log(`[bootstrap] Created default config at ${configPath}`);
+}
+
 const dataDir = resolveDataDir();
 
 async function main(): Promise<void> {
   const configPath = resolve(dataDir, "config.json");
 
+  bootstrapConfigIfMissing(configPath);
   const config = loadConfig(configPath);
   setAppConfig(config);
 
