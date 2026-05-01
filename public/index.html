@@ -933,8 +933,8 @@ text-decoration:none;}
 
       <div class="form-group">
         <label class="form-label">Workspace</label>
-        <input class="form-input" id="f-workspace" placeholder="~" value="~">
-        <div class="form-hint">Directory Claude can access. ~ = home directory.</div>
+        <input class="form-input" id="f-workspace" placeholder="~" value="~" oninput="this.dataset.userEdited='1'">
+        <div class="form-hint">Directory Claude can access. Auto-filled from agent ID.</div>
       </div>
 
       <div class="form-section">Session</div>
@@ -2539,14 +2539,20 @@ function autoResize(el) {
 // ─── Modal: New Agent ──────────────────────────────────────────
 let availableMcps = [];
 let routeCount = 0;
+let _personalAgentsDir = '';
 
 async function openNewAgentModal() {
-  // Fetch available MCPs
+  // Fetch available MCPs and personalAgentsDir
   try {
     const res = await fetch('/api/mcps');
     const data = await res.json();
     availableMcps = data.mcps || [];
   } catch { availableMcps = []; }
+  try {
+    const res = await fetch('/api/config/service');
+    const data = await res.json();
+    _personalAgentsDir = (data.personalAgentsDir || '').replace(/^~/, '').replace(/\\/g, '/');
+  } catch { _personalAgentsDir = ''; }
 
   // Render MCP checkboxes
   const mcpGroup = document.getElementById('f-mcps');
@@ -2566,7 +2572,9 @@ async function openNewAgentModal() {
   document.getElementById('f-alias').value = '';
   document.getElementById('f-name').value = '';
   document.getElementById('f-desc').value = '';
-  document.getElementById('f-workspace').value = '~';
+  const wsEl = document.getElementById('f-workspace');
+  wsEl.value = '~';
+  delete wsEl.dataset.userEdited;
   document.getElementById('f-persistent').classList.add('checked');
 
   // Reset routes
@@ -2595,6 +2603,13 @@ function autoAlias() {
     const clean = id.replace(/-/g, '');
     aliasEl.value = clean ? '@' + clean : '';
     aliasEl.dataset.auto = clean;
+  }
+  const wsEl = document.getElementById('f-workspace');
+  if (id && _personalAgentsDir) {
+    const suggested = '~' + _personalAgentsDir + '/' + id;
+    if (!wsEl.dataset.userEdited) wsEl.value = suggested;
+  } else if (!wsEl.dataset.userEdited) {
+    wsEl.value = '~';
   }
 }
 

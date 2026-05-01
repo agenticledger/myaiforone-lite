@@ -321,8 +321,8 @@ export function startWebUI(opts: WebUIOptions): void {
       : (s as any).sharedAgentsEnabled ?? false;
     res.json({
       deploymentMode,
-      personalAgentsDir: (s as any).personalAgentsDir || "~/Desktop/MyAIforOne Drive/PersonalAgents",
-      personalRegistryDir: (s as any).personalRegistryDir || "~/Desktop/MyAIforOne Drive/PersonalRegistry",
+      personalAgentsDir: (s as any).personalAgentsDir || "~/Desktop/MyAIforOne Drive Lite/PersonalAgents",
+      personalRegistryDir: (s as any).personalRegistryDir || "~/Desktop/MyAIforOne Drive Lite/PersonalRegistry",
       webUIPort: (s as any).webUI?.port || 4889,
       webUIEnabled: (s as any).webUI?.enabled ?? true,
       webhookSecret: (s as any).webUI?.webhookSecret ? "(set)" : null,
