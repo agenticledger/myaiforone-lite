@@ -1700,6 +1700,7 @@ async function fetchDashboard() {
     const data = await res.json();
     agents = data.agents;
     availableAccounts = data.claudeAccounts || [];
+    window._dashboardDefaultAgent = data.defaultGroupAgent || null;
     renderStatus(data);
 
     // Merge remote agents from team gateways (non-blocking)
@@ -2142,9 +2143,10 @@ function renderAgentList() {
     html += '</div></div>';
   }
 
-  // All agents section (collapsed)
+  // All agents section — expanded by default when there are no recent/active agents (e.g. fresh install)
   if (restAgents.length) {
-    html += '<div class="sidebar-section" id="allAgentsSection"><div class="sidebar-section-header collapsible" onclick="this.parentElement.classList.toggle(\'open\')"><span class="section-arrow">▶</span> All Agents<span class="section-count">'+restAgents.length+'</span></div><div class="section-body">';
+    const openByDefault = (activeAgents.length === 0 && recentAgents.length === 0) ? ' open' : '';
+    html += '<div class="sidebar-section'+openByDefault+'" id="allAgentsSection"><div class="sidebar-section-header collapsible" onclick="this.parentElement.classList.toggle(\'open\')"><span class="section-arrow">▶</span> All Agents<span class="section-count">'+restAgents.length+'</span></div><div class="section-body">';
     html += restAgents.map(a => compactCard(a, false)).join('');
     html += '</div></div>';
   }
@@ -3203,6 +3205,11 @@ fetchDashboard().then(() => {
       }
     });
     window.location.hash = ''; // clean up URL
+  } else if (!selectedAgent && agents.length > 0) {
+    // Auto-select the default agent on fresh load (e.g. hub-lite on a new install)
+    const defaultId = (window._dashboardDefaultAgent) || agents[0].id;
+    const target = agents.find(a => a.id === defaultId) || agents[0];
+    if (target) selectAgent(target.id);
   }
 });
 setInterval(fetchDashboard, 30000);

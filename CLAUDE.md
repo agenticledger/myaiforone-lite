@@ -1,49 +1,65 @@
-# MyAIforOne Lite
+# MyAIforOne Lite — Builder Agent
 
-Lightweight version of MyAIforOne — one agent, one chat, full power.
+## My Role
 
-## What Is Lite?
+I am the **engineer building and expanding myaiforone-lite**. My job is to implement features, fix bugs, extend the codebase, and ship the product. I work directly in this repo.
 
-Lite gives users a single chat UI (`/ui`) with full agent capabilities:
-- Claude CLI execution (tools: Read, Write, Bash, etc.)
-- MCP server connections
-- Skills
-- Cron jobs (goals & schedules)
-- Memory (basic + advanced vector search)
-- Wiki learning
+## Project
 
-What Lite does NOT include:
-- Channel drivers (Telegram, Slack, Discord, WhatsApp, iMessage)
-- Boards, Gym, Projects, Library, Lab, Admin pages
-- Templates, team gateways, shared agents
-- Multi-page navigation
+**myaiforone-lite** — a lightweight desktop AI chat app. One agent, one chat, full power.
 
-## Drive
+- **Delivery target:** Tauri desktop app (`.dmg` / `.exe`) — no terminal, no setup, just download and run
+- **Runtime:** Node.js + TypeScript + Express
+- **Port:** 4889 (separate from full MyAIforOne on 4888)
+- **Repo:** `/Users/oreph/Desktop/APPs/myaiforone-lite`
 
-Agent data lives in `~/Desktop/MyAIforOne Drive Lite/PersonalAgents/`.
-Same folder structure as full MyAIforOne — upgrade is just copying files over.
+## Key Source Files
 
-## Running
+| File | Purpose |
+|---|---|
+| `src/index.ts` | App entrypoint — starts Express + all services |
+| `src/web-ui.ts` | All API routes for the chat UI |
+| `src/executor.ts` | Spawns `claude -p` with tools, MCPs, session |
+| `src/config.ts` | Config loader (`config.json`) |
+| `src/cron.ts` | Scheduled tasks |
+| `src/goals.ts` | Autonomous goals |
+| `src/memory/` | Basic + vector memory |
+| `src/wiki-sync.ts` | Wiki learning |
+| `public/index.html` | Chat UI (single page) |
+| `src-tauri/` | Tauri desktop shell |
+| `CHECKLIST.md` | Full build status — check this before starting work |
+
+## Dev Commands
 
 ```bash
-npm install
+# Dev (hot reload)
+npm run dev
+
+# Build
 npm run build
+
+# Run built server
 npm start
+
+# Tauri desktop (requires binary in src-tauri/binaries/)
+npm run tauri dev
+npm run tauri build
 ```
 
-Open http://localhost:4889 — serves the chat UI directly.
+## Build Status
 
-## Tech Stack
+All core items in `CHECKLIST.md` are complete. Outstanding items:
+- [ ] macOS `.dmg` and Windows `.exe` packaging (CI via `tauri-action`)
+- [ ] Code signing (deferred)
 
-- **Runtime:** Node.js + TypeScript
-- **Web:** Express (single page: index.html)
-- **Executor:** Spawns `claude -p` with system prompt, workspace, tools, MCPs
-- **Config:** `config.json` (same schema as full MyAIforOne, fewer fields used)
+## Architecture Notes
 
-## Relationship to Full MyAIforOne
+- The server is a Node.js sidecar inside the Tauri app — spawned by `src-tauri/src/main.rs`
+- Claude CLI (`claude -p`) is the executor — it requires Node.js to be installed
+- Drive folder: `~/Desktop/MyAIforOne Drive Lite/PersonalAgents/` — same schema as full MyAIforOne
+- Upgrading to full MyAIforOne = just copying the Drive folder over
+- Config lives in `config.json` (same schema as full MyAIforOne, fewer fields used)
 
-This repo is a subset of `channelToAgentToClaude`. The agent engine, executor, config schema, and Drive structure are identical. Upgrading:
+## What Lite Does NOT Include
 
-1. Install full MyAIforOne
-2. Copy `~/Desktop/MyAIforOne Drive Lite/PersonalAgents/*` → `~/Desktop/MyAIforOne Drive/PersonalAgents/`
-3. Agents, memory, skills, MCPs carry over untouched
+No channel drivers (Telegram, Slack, etc.), no Boards/Gym/Projects/Library/Lab/Admin pages, no templates, no team gateways, no multi-agent routing.
