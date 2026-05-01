@@ -21,7 +21,7 @@ fn main() {
       let (_rx, _child) = sidecar_command.spawn().unwrap();
 
       // Give server time to start
-      std::thread::sleep(std::time::Duration::from_secs(2));
+      std::thread::sleep(std::time::Duration::from_secs(3));
 
       // Build tray menu
       let open_item = MenuItemBuilder::with_id("open", "Open MyAIforOne Lite").build(app)?;

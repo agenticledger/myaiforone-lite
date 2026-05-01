@@ -20,6 +20,12 @@
     "tsx": "^4.0",
     "typescript": "^5.7"
   },
+  "pkg": {
+    "assets": [
+      "public/**/*",
+      "agents/**/*"
+    ]
+  },
   "dependencies": {
     "@modelcontextprotocol/sdk": "^1.28.0",
     "express": "^5.2.1",

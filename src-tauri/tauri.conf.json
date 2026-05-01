@@ -1,6 +1,6 @@
 {
   "productName": "MyAIforOne Lite",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "identifier": "ai.myaiforone.lite",
   "build": {
     "beforeDevCommand": "",
@@ -13,6 +13,7 @@
     "windows": [
       {
         "title": "MyAIforOne Lite",
+        "url": "http://localhost:4889",
         "width": 1200,
         "height": 800,
         "resizable": true,
