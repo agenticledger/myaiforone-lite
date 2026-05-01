@@ -23,6 +23,7 @@ const baseDir = resolve(__dirname, "..");
 // 2. %APPDATA%\MyAIforOneGateway on Windows, ~/.myaiforone on Mac/Linux
 // 3. Legacy: Desktop/MyAIforOne Platform (previous location, kept for migration)
 // 4. baseDir/package root (dev/cloned-repo fallback)
+// 5. Primary dir bootstrapped with defaults (first-run / fresh install)
 function resolveDataDir(): string {
   if (process.env.MYAGENT_DATA_DIR) return process.env.MYAGENT_DATA_DIR;
   const home = homedir();
@@ -33,6 +34,8 @@ function resolveDataDir(): string {
   // Legacy Desktop location — kept for backward compat
   const legacy = join(home, "Desktop", "MyAIforOne Platform");
   if (existsSync(join(legacy, "config.json"))) return legacy;
+  // Dev/repo fallback — config.json at package root (cloned repo)
+  if (existsSync(join(baseDir, "config.json"))) return baseDir;
   // First-run: no config found anywhere — use primary dir (will be bootstrapped)
   return primary;
 }
