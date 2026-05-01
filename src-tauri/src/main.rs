@@ -24,7 +24,7 @@ fn main() {
       std::thread::sleep(std::time::Duration::from_secs(2));
 
       // Build tray menu
-      let open_item = MenuItemBuilder::with_id("open", "Open MyAIforOne").build(app)?;
+      let open_item = MenuItemBuilder::with_id("open", "Open MyAIforOne Lite").build(app)?;
       let separator = PredefinedMenuItem::separator(app)?;
       let quit_item = MenuItemBuilder::with_id("quit", "Quit").build(app)?;
 
@@ -37,7 +37,7 @@ fn main() {
       // Build tray icon
       let _tray = TrayIconBuilder::new()
         .menu(&menu)
-        .tooltip("MyAIforOne")
+        .tooltip("MyAIforOne Lite")
         .on_menu_event(|app, event| {
           match event.id().as_ref() {
             "open" => {
