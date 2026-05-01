@@ -8,7 +8,25 @@
     "auth": { "enabled": false }
   },
   "channels": {},
-  "agents": {},
+  "agents": {
+    "hub-lite": {
+      "name": "Hub",
+      "description": "Browse and install agents from the MyAIforOne registry. Ask me to find agents for any task.",
+      "agentHome": "./agents/hub-lite",
+      "claudeMd": "./agents/hub-lite/CLAUDE.md",
+      "memoryDir": "./agents/hub-lite/memory",
+      "mentionAliases": ["@hub", "@store", "@install"],
+      "workspace": "~",
+      "allowedTools": ["Read", "Glob", "Grep"],
+      "mcps": ["myaiforone-lite"],
+      "persistent": true,
+      "streaming": true,
+      "autoCommit": false,
+      "autoCommitBranch": "",
+      "routes": [],
+      "avatar": "avatar-12"
+    }
+  },
   "mcps": {
     "myaiforone-lite": {
       "type": "stdio",
