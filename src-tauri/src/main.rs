@@ -43,10 +43,20 @@ fn main() {
         .truncate(true)
         .open(&log_path);
 
+      // Lite uses its own data dir so it never collides with full MyAIforOne.
+      // On Windows: %LOCALAPPDATA%/ai.myaiforone.lite/data
+      // On macOS:   ~/Library/Application Support/ai.myaiforone.lite/data
+      let data_dir = app.path().app_local_data_dir()
+        .map(|p| p.join("data"))
+        .unwrap_or_default();
+      let _ = std::fs::create_dir_all(&data_dir);
+
       // Start the Node.js sidecar
       let sidecar_command = app.shell().sidecar("myaiforone-server")
         .expect("Failed to create sidecar command")
-        .env("TAURI_RESOURCE_DIR", &resource_dir);
+        .env("TAURI_RESOURCE_DIR", &resource_dir)
+        .env("MYAGENT_DATA_DIR", data_dir.to_string_lossy().to_string())
+        .env("PORT", "4889");
       let (mut rx, child) = sidecar_command.spawn()
         .expect("Failed to spawn sidecar");
 
