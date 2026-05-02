@@ -1,6 +1,6 @@
 {
   "productName": "MyAIforOne Lite",
-  "version": "0.1.3",
+  "version": "0.1.4",
   "identifier": "ai.myaiforone.lite",
   "build": {
     "beforeDevCommand": "",
@@ -35,9 +35,9 @@
       "icons/icon.ico"
     ],
     "externalBin": ["binaries/myaiforone-server"],
-    "resources": [
-      { "src": "../public/**/*", "target": "public" },
-      { "src": "../agents/**/*", "target": "agents" }
-    ]
+    "resources": {
+      "../public": "public",
+      "../agents": "agents"
+    }
   }
 }
