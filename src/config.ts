@@ -260,6 +260,36 @@ export function loadConfig(configPath: string): AppConfig {
     }
   }
 
+  // ─── Auto-inject bundled MCPs (ships with the repo) ──────────────────
+  // Runs BEFORE agent validation so agents can reference bundled MCPs.
+  // In Tauri builds, TAURI_RESOURCE_DIR points to the bundled resources;
+  // in dev mode, we use the tsc-compiled output from the repo.
+  const mcpScript = process.env.TAURI_RESOURCE_DIR
+    ? join(process.env.TAURI_RESOURCE_DIR, "mcp-lite.cjs")
+    : `${packageRoot}/server/mcp-server-lite/dist/index.js`;
+  const bundledMcps: Record<string, McpServerStdio> = {
+    "myaiforone-lite": {
+      type: "stdio",
+      command: "node",
+      args: [mcpScript],
+    },
+  };
+  if (!config.mcps) config.mcps = {};
+  for (const [id, def] of Object.entries(bundledMcps)) {
+    if (!config.mcps[id]) {
+      config.mcps[id] = def;
+      console.log(`[config] Auto-registered bundled MCP: ${id}`);
+    }
+  }
+  // Ensure bundled MCPs are in defaultMcps so every agent gets them
+  if (!config.defaultMcps) config.defaultMcps = [];
+  for (const id of Object.keys(bundledMcps)) {
+    if (!config.defaultMcps.includes(id)) {
+      config.defaultMcps.push(id);
+      console.log(`[config] Auto-added bundled MCP to defaultMcps: ${id}`);
+    }
+  }
+
   // Normalize each agent's paths and ensure routes is always an array
   const agentIds = Object.keys(config.agents);
   for (const id of agentIds) {
@@ -365,33 +395,8 @@ export function loadConfig(configPath: string): AppConfig {
     }
   }
 
-  // ─── Auto-inject bundled MCPs (ships with the repo under mcps/) ──────
-  // Ensures existing users who update via git pull get new bundled MCPs
-  // without manually editing config.json.  Only injects if not already present.
-  const bundledMcps: Record<string, McpServerStdio> = {
-    aiforone_computeruse: {
-      type: "stdio",
-      command: "node",
-      args: [`${packageRoot}/mcps/aiforone_computeruse/server.js`],
-    },
-  };
-  if (!config.mcps) config.mcps = {};
-  for (const [id, def] of Object.entries(bundledMcps)) {
-    if (!config.mcps[id]) {
-      config.mcps[id] = def;
-      console.log(`[config] Auto-registered bundled MCP: ${id}`);
-    }
-  }
-  // Ensure bundled MCPs are in defaultMcps so every agent gets them
-  if (!config.defaultMcps) config.defaultMcps = [];
-  for (const id of Object.keys(bundledMcps)) {
-    if (!config.defaultMcps.includes(id)) {
-      config.defaultMcps.push(id);
-      console.log(`[config] Auto-added bundled MCP to defaultMcps: ${id}`);
-    }
-  }
   // Validate defaultMcps — strip entries that don't exist in the registry
-  config.defaultMcps = config.defaultMcps.filter(id => {
+  config.defaultMcps = (config.defaultMcps || []).filter(id => {
     if (!config.mcps![id]) {
       console.warn(`[config] defaultMcps references "${id}" which is not in mcps registry — skipping`);
       return false;

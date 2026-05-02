@@ -858,6 +858,7 @@ text-decoration:none;}
     <span class="logo-text">MyAIforOne Lite</span>
   </a>
   <div class="topbar-right">
+    <a href="/settings" class="gear-btn" title="Settings" style="font-size:11px;font-weight:700;letter-spacing:.03em;padding:0 10px;width:auto">Settings</a>
     <button class="theme-toggle" onclick="toggleTheme()" title="Toggle theme">☀</button>
   </div>
 </div>
@@ -874,9 +875,6 @@ text-decoration:none;}
       <input type="text" id="sidebarSearch" placeholder="Search..." oninput="renderAgentList()" style="flex:1;min-width:0;font-family:var(--font-sans);font-size:11px;padding:5px 8px;border-radius:6px;border:1px solid var(--border-dim);background:var(--bg-input);color:var(--text-primary);outline:none">
     </div>
     <div class="agent-list" id="agentList"></div>
-    <div style="padding:8px 12px;border-top:1px solid var(--border-dim)">
-      <button class="add-agent-btn" onclick="openNewAgentModal()">+ New Agent</button>
-    </div>
     <div style="padding:8px 12px;border-top:1px solid var(--border-dim)">
       <a href="https://myaiforone.com/download" target="_blank" rel="noopener" style="display:flex;align-items:center;gap:6px;font-size:10px;color:var(--text-muted);text-decoration:none;padding:4px 0;transition:color .2s" onmouseover="this.style.color='var(--text-secondary)'" onmouseout="this.style.color='var(--text-muted)'">
         <span style="font-size:12px">&#x2B06;</span> Upgrade to Full MyAIforOne
@@ -3270,7 +3268,6 @@ loadVoiceServerConfig();
     </div>
   </div>
 </div>
-<script src="/license-check.js"></script>
 
 <!-- ─── First-Run Onboarding Wizard ──────────────────────────────── -->
 <style>

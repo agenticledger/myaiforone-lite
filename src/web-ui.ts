@@ -108,6 +108,7 @@ export function startWebUI(opts: WebUIOptions): void {
   const serveHome = (_req: any, res: any) => servePage(res, "home2.html", "/org");
   app.get("/", (_req: any, res: any) => servePage(res, "index.html"));
   app.get("/ui", (_req, res) => servePage(res, "index.html"));
+  app.get("/settings", (_req, res) => servePage(res, "settings.html"));
 
   // ─── Auth System — API Keys ──────────────────────────────────────────
   // Auth is only active when service.auth.enabled is true (default: false).
@@ -359,6 +360,26 @@ export function startWebUI(opts: WebUIOptions): void {
     });
   });
 
+  // PUT /api/config/service — update service settings
+  app.put("/api/config/service", (req, res) => {
+    try {
+      const { defaultClaudeAccount } = req.body as { defaultClaudeAccount?: string };
+      const raw = JSON.parse(readFileSync(configFilePath(), "utf-8"));
+      if (!raw.service) raw.service = {};
+      if (defaultClaudeAccount !== undefined) {
+        raw.service.defaultClaudeAccount = defaultClaudeAccount || undefined;
+        (opts.config.service as any).defaultClaudeAccount = defaultClaudeAccount || undefined;
+        if (opts.config.service.claudeAccounts) {
+          (opts.config.service.claudeAccounts as any)._defaultAccount = defaultClaudeAccount || undefined;
+        }
+      }
+      writeFileSync(configFilePath(), JSON.stringify(raw, null, 2));
+      res.json({ ok: true, note: "Saved. Some changes may require a restart." });
+    } catch (e: any) {
+      res.status(500).json({ error: e.message });
+    }
+  });
+
   // ─── API: First-run onboarding — save Anthropic API key ─────────────
   // Called by the onboarding wizard on first launch.
   // Stores the key as service.anthropicApiKey in config.json and sets it
@@ -382,6 +403,154 @@ export function startWebUI(opts: WebUIOptions): void {
       return res.json({ ok: true });
     } catch (e: any) {
       return res.status(500).json({ error: e.message });
+    }
+  });
+
+  // ─── API: Claude Account management ─────────────────────────────────
+  // Ported from the full MyAIforOne admin settings.
+
+  // GET /api/config/accounts — list all configured Claude accounts
+  app.get("/api/config/accounts", (_req, res) => {
+    const accounts = opts.config.service.claudeAccounts || {};
+    res.json(accounts);
+  });
+
+  // POST /api/config/accounts — save/add an account
+  app.post("/api/config/accounts", (req, res) => {
+    const { name, path: cfgPath } = req.body as { name?: string; path?: string };
+    if (!name?.trim() || !cfgPath?.trim()) return res.status(400).json({ error: "name and path required" });
+    try {
+      const raw = JSON.parse(readFileSync(configFilePath(), "utf-8"));
+      if (!raw.service) raw.service = {};
+      if (!raw.service.claudeAccounts) raw.service.claudeAccounts = {};
+      raw.service.claudeAccounts[name.trim()] = cfgPath.trim();
+      writeFileSync(configFilePath(), JSON.stringify(raw, null, 2));
+      if (!opts.config.service.claudeAccounts) (opts.config.service as any).claudeAccounts = {};
+      opts.config.service.claudeAccounts![name.trim()] = cfgPath.trim();
+      res.json({ ok: true });
+    } catch (e: any) {
+      res.status(500).json({ error: e.message });
+    }
+  });
+
+  // DELETE /api/config/accounts/:name — remove an account
+  app.delete("/api/config/accounts/:name", (req, res) => {
+    const { name } = req.params;
+    try {
+      const raw = JSON.parse(readFileSync(configFilePath(), "utf-8"));
+      if (raw.service?.claudeAccounts) delete raw.service.claudeAccounts[name];
+      writeFileSync(configFilePath(), JSON.stringify(raw, null, 2));
+      if (opts.config.service.claudeAccounts) delete opts.config.service.claudeAccounts[name];
+      res.json({ ok: true });
+    } catch (e: any) {
+      res.status(500).json({ error: e.message });
+    }
+  });
+
+  // In-memory store of running `claude auth login` processes keyed by session id.
+  const loginSessions = new Map<string, { proc: any; output: string; name: string; path: string }>();
+
+  // POST /api/config/accounts/login — start login flow
+  // Spawns `claude auth login` with CLAUDE_CONFIG_DIR set, streams output until a
+  // URL appears, then returns { sessionId, url }.  Process keeps running.
+  app.post("/api/config/accounts/login", (req, res) => {
+    const { name, path: cfgPath } = req.body as { name?: string; path?: string };
+    if (!name?.trim() || !cfgPath?.trim()) return res.status(400).json({ error: "name and path required" });
+
+    const home = homedir();
+    const resolvedPath = cfgPath.trim().replace(/^~/, home);
+
+    // First check if already logged in
+    try {
+      const env: Record<string, string> = {};
+      for (const [k, v] of Object.entries(process.env)) { if (v !== undefined && k !== "CLAUDECODE" && k !== "CLAUDE_CODE_ENTRYPOINT") env[k] = v; }
+      env.CLAUDE_CONFIG_DIR = resolvedPath;
+      let status = "";
+      try { status = execSync("claude auth status 2>&1", { env, timeout: 8_000 }).toString().trim(); } catch { /* ignore */ }
+      if (status.toLowerCase().includes("logged in") || status.toLowerCase().includes("authenticated")) {
+        return res.json({ alreadyLoggedIn: true });
+      }
+    } catch { /* ignore */ }
+
+    // Spawn `claude auth login` — it will print an auth URL and keep running
+    const env: Record<string, string> = {};
+    for (const [k, v] of Object.entries(process.env)) { if (v !== undefined && k !== "CLAUDECODE" && k !== "CLAUDE_CODE_ENTRYPOINT") env[k] = v; }
+    env.CLAUDE_CONFIG_DIR = resolvedPath;
+
+    const proc = cpSpawn("claude", ["auth", "login"], { env, stdio: ["pipe", "pipe", "pipe"] });
+    const sessionId = `login-${Date.now()}-${Math.random().toString(36).slice(2, 7)}`;
+    let output = "";
+    loginSessions.set(sessionId, { proc, output, name: name.trim(), path: cfgPath.trim() });
+
+    let resolved = false;
+    const loginTimeout = setTimeout(() => {
+      if (!resolved) {
+        resolved = true;
+        res.status(408).json({ error: "Timed out waiting for login URL. Try again." });
+      }
+    }, 20_000);
+
+    const onData = (chunk: Buffer) => {
+      output += chunk.toString();
+      const session = loginSessions.get(sessionId);
+      if (session) session.output = output;
+
+      const urlMatch = output.match(/https?:\/\/[^\s\n]+/);
+      if (urlMatch && !resolved) {
+        resolved = true;
+        clearTimeout(loginTimeout);
+        res.json({ sessionId, url: urlMatch[0].trim() });
+      }
+    };
+
+    proc.stdout.on("data", onData);
+    proc.stderr.on("data", onData);
+
+    proc.on("close", (code: number) => {
+      log.info(`[Auth] login process for "${name}" exited with code ${code}`);
+      loginSessions.delete(sessionId);
+    });
+  });
+
+  // POST /api/config/accounts/login/code — submit verification code
+  app.post("/api/config/accounts/login/code", (req, res) => {
+    const { sessionId, code } = req.body as { sessionId?: string; code?: string };
+    if (!sessionId || !code?.trim()) return res.status(400).json({ error: "sessionId and code required" });
+    const session = loginSessions.get(sessionId);
+    if (!session) return res.status(404).json({ error: "Login session not found or already completed" });
+    try {
+      session.proc.stdin.write(code.trim() + "\n");
+      res.json({ ok: true });
+    } catch (e: any) {
+      res.status(500).json({ error: e.message });
+    }
+  });
+
+  // GET /api/config/accounts/:name/status — check if account is authenticated
+  app.get("/api/config/accounts/:name/status", (req, res) => {
+    const { name } = req.params;
+    const home = homedir();
+    const cfgPath = opts.config.service.claudeAccounts?.[name];
+    if (!cfgPath) return res.status(404).json({ error: "Account not found" });
+    const resolvedPath = cfgPath.replace(/^~/, home);
+    try {
+      const env: Record<string, string> = {};
+      for (const [k, v] of Object.entries(process.env)) { if (v !== undefined && k !== "CLAUDECODE" && k !== "CLAUDE_CODE_ENTRYPOINT" && k !== "CLAUDE_CONFIG_DIR") env[k] = v; }
+      // Only set CLAUDE_CONFIG_DIR for non-default accounts — setting it to ~/.claude breaks auth status
+      const defaultClaudeDir = join(home, ".claude");
+      if (resolvedPath !== defaultClaudeDir) env.CLAUDE_CONFIG_DIR = resolvedPath;
+      let status = "";
+      try { status = execSync("claude auth status 2>&1", { env, timeout: 10_000 }).toString().trim(); } catch { /* not logged in */ }
+      const loggedIn = status.toLowerCase().includes("logged in") || status.toLowerCase().includes("authenticated") || status.includes('"loggedIn": true') || status.includes('"loggedIn":true');
+      // Try to extract email from JSON or text output
+      let email: string | null = null;
+      try { const parsed = JSON.parse(status); email = parsed.email || null; } catch {
+        const match = status.match(/email[:\s]+"?([^\s",]+@[^\s",]+)/i);
+        if (match) email = match[1];
+      }
+      res.json({ loggedIn, status, email });
+    } catch (e: any) {
+      res.status(500).json({ error: e.message });
     }
   });
 
@@ -1396,26 +1565,91 @@ export function startWebUI(opts: WebUIOptions): void {
         }
 
       } else if (type === "agent") {
+        // Install agent into Drive/PersonalAgents and register in config.json
+        const personalAgentsDir = getPersonalAgentsDir(opts.config);
+        const agentHome = join(personalAgentsDir, id);
+        const memoryDir = join(agentHome, "memory");
+        mkdirSync(memoryDir, { recursive: true });
+        mkdirSync(join(agentHome, "skills"), { recursive: true });
+
+        // Copy agent files from registry source (if available)
         const srcDir = join(opts.baseDir, entry.localPath);
-        const destDir = join(opts.baseDir, "agents", id);
         if (existsSync(srcDir)) {
-          mkdirSync(destDir, { recursive: true });
-          for (const file of readdirSync(srcDir)) {
-            copyFileSync(join(srcDir, file), join(destDir, file));
-          }
+          const copyRecursive = (src: string, dest: string) => {
+            mkdirSync(dest, { recursive: true });
+            for (const item of readdirSync(src)) {
+              const srcItem = join(src, item);
+              const destItem = join(dest, item);
+              if (statSync(srcItem).isDirectory()) {
+                copyRecursive(srcItem, destItem);
+              } else {
+                copyFileSync(srcItem, destItem);
+              }
+            }
+          };
+          copyRecursive(srcDir, agentHome);
         } else {
-          mkdirSync(join(destDir, "memory"), { recursive: true });
-          writeFileSync(join(destDir, "CLAUDE.md"), `# ${entry.name}\n\n${entry.description}\n`);
-          writeFileSync(join(destDir, "agent.json"), JSON.stringify({ id, name: entry.name, draft: true, version: "1.0.0", created: new Date().toISOString() }, null, 2));
+          // No source files — create a minimal agent
+          writeFileSync(join(agentHome, "CLAUDE.md"), `# ${entry.name}\n\n${entry.description}\n`);
+          writeFileSync(join(agentHome, "agent.json"), JSON.stringify({ id, name: entry.name, version: "1.0.0", created: new Date().toISOString() }, null, 2));
         }
-        const draftsPath = join(opts.baseDir, "registry", "installed-drafts.json");
-        let draftsData: { drafts: any[] } = { drafts: [] };
-        try { draftsData = JSON.parse(readFileSync(draftsPath, "utf-8")); } catch { /* fresh */ }
-        if (!draftsData.drafts.find((d: any) => d.id === id)) {
-          draftsData.drafts.push({ id, name: entry.name, installedAt: new Date().toISOString() });
-          writeFileSync(draftsPath, JSON.stringify(draftsData, null, 2));
+
+        // Ensure memory/context.md exists
+        if (!existsSync(join(memoryDir, "context.md"))) {
+          writeFileSync(join(memoryDir, "context.md"), `# ${entry.name} Context\n\nInstalled ${new Date().toISOString().split("T")[0]}.\n`);
         }
-        log.info(`[Marketplace] Installed agent template ${id} → draft`);
+
+        // Build config entry with portable ~ paths
+        const home = homedir();
+        const cfgBaseDirTilde = personalAgentsDir.startsWith(home) ? personalAgentsDir.replace(home, "~") : personalAgentsDir;
+        const cfgAgentPath = `${cfgBaseDirTilde}/${id}`;
+        const normalAlias = `@${id}`;
+
+        const agentConfig: any = {
+          name: entry.name,
+          description: entry.description || `Agent ${entry.name}`,
+          agentHome: cfgAgentPath,
+          workspace: "~",
+          claudeMd: `${cfgAgentPath}/CLAUDE.md`,
+          memoryDir: `${cfgAgentPath}/memory`,
+          persistent: true,
+          streaming: true,
+          mentionAliases: [normalAlias],
+          allowedTools: entry.allowedTools || ["Read", "Edit", "Write", "Glob", "Grep", "Bash", "WebFetch", "WebSearch"],
+          mcps: entry.mcps || [],
+          routes: [{
+            channel: "web",
+            match: { type: "channel_id", value: "web-ui" },
+            permissions: { allowFrom: ["*"], requireMention: false },
+          }],
+          autoCommit: false,
+          autoCommitBranch: "",
+        };
+
+        // Auto-assign avatar
+        const usedAvatars = new Set(Object.values(opts.config.agents).map((a: any) => a.avatar).filter(Boolean));
+        const allAvatarIds = Array.from({ length: 80 }, (_, i) => `avatar-${String(i + 1).padStart(2, "0")}`);
+        const unused = allAvatarIds.filter(av => !usedAvatars.has(av));
+        if (unused.length > 0) {
+          agentConfig.avatar = unused[Math.floor(Math.random() * unused.length)];
+        }
+
+        // Write to config.json
+        const configPath = configFilePath();
+        const rawConfig = JSON.parse(readFileSync(configPath, "utf-8"));
+        rawConfig.agents[id] = agentConfig;
+        writeFileSync(configPath, JSON.stringify(rawConfig, null, 2));
+
+        // Update in-memory config (resolve ~ for runtime)
+        const resolveTildeHere = (p: string) => p.startsWith("~") ? p.replace("~", home) : p;
+        const runtimeConfig = { ...agentConfig };
+        runtimeConfig.workspace = resolveTildeHere(runtimeConfig.workspace);
+        runtimeConfig.claudeMd = resolveTildeHere(runtimeConfig.claudeMd);
+        runtimeConfig.memoryDir = resolveTildeHere(runtimeConfig.memoryDir);
+        runtimeConfig.agentHome = resolveTildeHere(runtimeConfig.agentHome);
+        opts.config.agents[id] = runtimeConfig;
+
+        log.info(`[Marketplace] Installed agent ${id} → ${agentHome} (registered in config)`);
       }
 
       const requiresKeys = type === "mcp" && (entry.requiredKeys?.length > 0);

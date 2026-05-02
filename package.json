@@ -7,7 +7,10 @@
     "myaiforone": "./bin/cli.js"
   },
   "scripts": {
-    "build": "tsc",
+    "build": "tsc && tsc -p server/mcp-server-lite/tsconfig.json && node scripts/bundle.mjs",
+    "build:mcp": "tsc -p server/mcp-server-lite/tsconfig.json",
+    "build:bundle": "node scripts/bundle.mjs",
+    "postinstall": "tsc -p server/mcp-server-lite/tsconfig.json",
     "start": "node dist/index.js",
     "dev": "tsx watch src/index.ts",
     "tauri": "tauri"
@@ -17,6 +20,8 @@
     "@types/express": "^5.0.6",
     "@types/node": "^22",
     "@types/node-cron": "^3.0.11",
+    "@yao-pkg/pkg": "^6.19.0",
+    "esbuild": "^0.28.0",
     "tsx": "^4.0",
     "typescript": "^5.7"
   },

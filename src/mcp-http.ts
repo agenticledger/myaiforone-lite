@@ -67,7 +67,9 @@ class StdioProxy {
   }
 
   private async init(): Promise<void> {
-    const scriptPath = join(this.opts.baseDir, "server", "mcp-server", "dist", "index.js");
+    const scriptPath = process.env.TAURI_RESOURCE_DIR
+      ? join(process.env.TAURI_RESOURCE_DIR, "mcp-lite.cjs")
+      : join(this.opts.baseDir, "server", "mcp-server-lite", "dist", "index.js");
 
     // Pick an apiKey the stdio child can use to call back into /api/* when
     // auth.enabled is true. When auth is disabled the child just omits the

@@ -48,23 +48,21 @@ jobs:
       - name: Install Node dependencies
         run: npm ci
 
-      - name: Compile TypeScript
+      - name: Compile TypeScript + esbuild bundle
         run: npm run build
 
-      - name: Install pkg
-        run: npm install -g @yao-pkg/pkg
-
+      # pkg compiles the CJS bundle (not raw ESM) into a standalone binary
       - name: Compile server binary (macOS arm64)
         if: matrix.platform == 'macos-latest' && contains(matrix.args, 'aarch64')
-        run: pkg dist/index.js --targets node20-macos-arm64 --output src-tauri/binaries/myaiforone-server-aarch64-apple-darwin
+        run: npx pkg dist/server-bundle.cjs --targets node20-macos-arm64 --output src-tauri/binaries/myaiforone-server-aarch64-apple-darwin
 
       - name: Compile server binary (macOS x64)
         if: matrix.platform == 'macos-latest' && contains(matrix.args, 'x86_64')
-        run: pkg dist/index.js --targets node20-macos-x64 --output src-tauri/binaries/myaiforone-server-x86_64-apple-darwin
+        run: npx pkg dist/server-bundle.cjs --targets node20-macos-x64 --output src-tauri/binaries/myaiforone-server-x86_64-apple-darwin
 
       - name: Compile server binary (Windows)
         if: matrix.platform == 'windows-latest'
-        run: pkg dist/index.js --targets node20-win-x64 --output src-tauri/binaries/myaiforone-server-x86_64-pc-windows-msvc.exe
+        run: npx pkg dist/server-bundle.cjs --targets node20-win-x64 --output src-tauri/binaries/myaiforone-server-x86_64-pc-windows-msvc.exe
 
       - name: Build Tauri app
         uses: tauri-apps/tauri-action@v0

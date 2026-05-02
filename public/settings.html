@@ -1,0 +1,461 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MyAIforOne Lite — Settings</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&family=Syne:wght@600;700;800&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg-deep:#060a13;--bg-surface:rgba(12,18,33,0.92);--bg-card:rgba(16,22,40,0.85);
+  --bg-input:rgba(0,0,0,0.35);--border-dim:rgba(56,189,248,0.08);
+  --border-glow:rgba(56,189,248,0.18);--border-active:rgba(56,189,248,0.45);
+  --text-primary:rgba(255,255,255,0.92);--text-secondary:rgba(255,255,255,0.68);
+  --text-muted:rgba(148,163,184,0.55);--accent:#22d3ee;--accent-bg:rgba(6,182,212,0.15);
+  --purple:rgba(139,92,246,0.7);--purple-bg:rgba(139,92,246,0.12);
+  --green:#4ade80;--green-bg:rgba(74,222,128,0.1);
+  --red:#f87171;--red-bg:rgba(248,113,113,0.1);--amber:#fbbf24;--amber-bg:rgba(251,191,36,0.1);
+  --shadow:0 2px 12px rgba(0,0,0,0.3);--shadow-glow:0 0 20px rgba(34,211,238,0.08);--radius:12px;
+  --font-sans:'DM Sans',system-ui,sans-serif;--font-mono:'IBM Plex Mono',monospace;
+  --font-display:'Syne',sans-serif;
+  --bg-primary:#0c1321;--bg-secondary:rgba(16,22,40,0.85);--border:rgba(56,189,248,0.18);
+  --bg-tertiary:#333;
+}
+[data-theme="light"]{
+  --bg-deep:#f4f6f9;--bg-surface:rgba(255,255,255,0.95);--bg-card:rgba(255,255,255,0.9);
+  --bg-input:rgba(0,0,0,0.04);--border-dim:rgba(0,0,0,0.08);
+  --border-glow:rgba(14,116,144,0.18);--border-active:rgba(14,116,144,0.45);
+  --text-primary:rgba(15,23,42,0.92);--text-secondary:rgba(51,65,85,0.8);
+  --text-muted:rgba(100,116,139,0.6);--accent:#0891b2;--accent-bg:rgba(14,116,144,0.08);
+  --purple:rgba(109,40,217,0.75);--purple-bg:rgba(139,92,246,0.08);
+  --green:#16a34a;--green-bg:rgba(22,163,74,0.08);--red:#dc2626;--red-bg:rgba(220,38,38,0.08);
+  --amber:#d97706;--amber-bg:rgba(217,119,6,0.08);--shadow:0 1px 8px rgba(0,0,0,0.06);--shadow-glow:none;
+  --bg-primary:#ffffff;--bg-secondary:rgba(255,255,255,0.9);--border:rgba(14,116,144,0.18);
+  --bg-tertiary:#e5e7eb;
+}
+html,body{width:100%;height:100%;background:var(--bg-deep);font-family:var(--font-sans);color:var(--text-primary);transition:background .3s,color .3s}
+
+/* ── Topbar ── */
+.topbar{height:56px;display:flex;align-items:center;padding:0 24px;background:var(--bg-surface);border-bottom:1px solid var(--border-dim);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);position:fixed;top:0;left:0;right:0;z-index:100}
+.logo-mark{width:28px;height:28px;border-radius:8px;object-fit:contain}
+.logo-text{font-family:var(--font-display);font-size:15px;font-weight:700;color:var(--accent)}
+.topbar-right{margin-left:auto;display:flex;align-items:center;gap:8px}
+.theme-toggle{width:34px;height:34px;border-radius:8px;border:1px solid var(--border-dim);background:transparent;color:var(--text-muted);cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:16px;transition:all .2s}
+.theme-toggle:hover{border-color:var(--border-glow);color:var(--text-secondary)}
+.back-btn{height:34px;border-radius:8px;border:1px solid var(--border-dim);background:transparent;color:var(--text-muted);cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;letter-spacing:.03em;padding:0 12px;transition:all .2s;text-decoration:none;white-space:nowrap}
+.back-btn:hover{border-color:var(--border-glow);color:var(--text-secondary)}
+
+/* ── Settings page ── */
+.settings-page{padding:28px 40px 60px;max-width:820px;margin:80px auto 0}
+.page-title{font-family:var(--font-display);font-size:22px;font-weight:800;margin-bottom:4px}
+.page-subtitle{font-size:13px;color:var(--text-muted);margin-bottom:36px}
+.section{background:var(--bg-card);border:1px solid var(--border-glow);border-radius:var(--radius);margin-bottom:24px;overflow:hidden}
+.section-header{padding:16px 20px;border-bottom:1px solid var(--border-dim);display:flex;align-items:center;gap:10px}
+.section-icon{width:28px;height:28px;border-radius:7px;background:var(--accent-bg);border:1px solid var(--accent);display:flex;align-items:center;justify-content:center;font-size:13px;color:var(--accent);flex-shrink:0}
+.section-title{font-family:var(--font-display);font-size:14px;font-weight:700;color:var(--accent)}
+.section-body{padding:16px 20px}
+.divider{border:none;border-top:1px solid var(--border-dim);margin:14px 0}
+.form-label{font-family:var(--font-mono);font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:.1em;color:var(--text-muted);margin-bottom:8px}
+.field-row{display:flex;gap:12px;align-items:flex-end;flex-wrap:wrap}
+.field{display:flex;flex-direction:column;gap:4px}
+.field label{font-family:var(--font-mono);font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:.06em;color:var(--text-muted)}
+.field input,.field select{padding:8px 10px;border-radius:8px;border:1px solid var(--border-dim);background:var(--bg-input);color:var(--text-primary);font-family:var(--font-mono);font-size:12px;outline:none;transition:border-color .2s}
+.field input:focus,.field select:focus{border-color:var(--border-active)}
+.hint{font-size:11px;color:var(--text-muted);margin-top:10px}
+.hint code{font-family:var(--font-mono);font-size:10px;background:var(--bg-input);padding:1px 5px;border-radius:4px}
+.empty{font-size:12px;color:var(--text-muted);padding:8px 0}
+.btn-primary{font-family:var(--font-sans);font-size:12px;font-weight:600;padding:8px 16px;border-radius:8px;border:none;background:var(--accent);color:#000;cursor:pointer;transition:all .2s;white-space:nowrap}
+.btn-primary:hover{filter:brightness(1.1)}
+.btn-primary:disabled{opacity:.5;cursor:not-allowed}
+.btn-save{font-family:var(--font-sans);font-size:12px;font-weight:600;padding:8px 20px;border-radius:8px;border:none;background:var(--accent);color:#000;cursor:pointer;transition:all .2s;margin-top:12px}
+.btn-save:hover{filter:brightness(1.1)}
+
+/* ── Account rows ── */
+.account-row{display:flex;align-items:center;gap:10px;padding:11px 0;border-bottom:1px solid var(--border-dim)}
+.account-row:last-of-type{border-bottom:none}
+.account-name{font-family:var(--font-mono);font-size:12px;font-weight:600;color:var(--accent);min-width:90px}
+.account-path{font-family:var(--font-mono);font-size:11px;color:var(--text-secondary);flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.status-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0}
+.status-dot.ok{background:var(--green);box-shadow:0 0 6px rgba(74,222,128,0.5)}
+.status-dot.unknown{background:var(--text-muted)}
+.status-dot.err{background:var(--red)}
+.btn-icon{width:26px;height:26px;border-radius:6px;border:1px solid var(--border-dim);background:transparent;color:var(--text-muted);cursor:pointer;font-size:13px;display:flex;align-items:center;justify-content:center;transition:all .2s;flex-shrink:0}
+.btn-icon:hover{border-color:var(--red);color:var(--red);background:var(--red-bg)}
+.btn-icon.relogin:hover{border-color:var(--accent);color:var(--accent);background:var(--accent-bg)}
+
+/* ── Login panel ── */
+.login-panel{margin-top:14px;padding:16px;border-radius:10px;border:1px solid var(--border-dim);background:var(--bg-input);display:none}
+.login-panel.visible{display:block}
+.login-panel-title{font-size:10px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--text-muted);margin-bottom:8px}
+.login-url-row{display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin-bottom:4px}
+.login-url{font-family:var(--font-mono);font-size:11px;color:var(--accent);word-break:break-all;flex:1;min-width:0;user-select:all}
+.btn-copy{padding:5px 12px;border-radius:7px;border:1px solid var(--border-glow);background:transparent;color:var(--text-muted);font-size:11px;font-weight:600;cursor:pointer;white-space:nowrap;transition:all .2s;flex-shrink:0}
+.btn-copy:hover{border-color:var(--accent);color:var(--accent);background:var(--accent-bg)}
+.btn-open{padding:5px 12px;border-radius:7px;border:1px solid var(--accent);background:var(--accent-bg);color:var(--accent);font-size:11px;font-weight:600;cursor:pointer;text-decoration:none;white-space:nowrap;transition:all .2s;flex-shrink:0}
+.btn-open:hover{background:var(--accent);color:#000}
+.code-input-row{display:flex;gap:8px;align-items:center;margin-bottom:8px;flex-wrap:wrap}
+.code-input-row input{flex:1;min-width:160px;padding:8px 10px;border-radius:8px;border:1px solid var(--border-dim);background:var(--bg-deep);color:var(--text-primary);font-family:var(--font-mono);font-size:12px;outline:none;transition:border-color .2s}
+.code-input-row input:focus{border-color:var(--border-active)}
+.code-input-row input::placeholder{color:var(--text-muted)}
+.login-status-msg{font-size:12px;color:var(--text-muted);min-height:16px}
+.btn-verify{padding:7px 16px;border-radius:7px;border:1px solid var(--green);background:var(--green-bg);color:var(--green);font-size:12px;font-weight:600;cursor:pointer;transition:all .2s;white-space:nowrap}
+.btn-verify:hover{background:var(--green);color:#000}
+.btn-verify:disabled{opacity:.45;cursor:not-allowed}
+
+/* ── Service section ── */
+.service-grid{display:flex;flex-direction:column;gap:14px}
+
+/* ── Toast ── */
+.toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(80px);background:var(--bg-surface);border:1px solid var(--border-glow);border-radius:10px;padding:10px 20px;font-size:13px;font-weight:500;color:var(--text-primary);box-shadow:0 8px 32px rgba(0,0,0,0.4);z-index:9999;transition:transform .3s,opacity .3s;opacity:0;pointer-events:none;white-space:nowrap}
+.toast.show{transform:translateX(-50%) translateY(0);opacity:1;pointer-events:auto}
+.toast.err{border-color:var(--red);color:var(--red)}
+.toast.info{border-color:var(--accent);color:var(--accent)}
+</style>
+</head>
+<body>
+
+<!-- ── Topbar ── -->
+<div class="topbar">
+  <a href="/" style="display:flex;align-items:center;gap:10px;margin-right:28px;text-decoration:none">
+    <img class="logo-mark" src="/MyAIforOne-logomark-transparent.svg" alt="MyAIforOne Lite">
+    <span class="logo-text">MyAIforOne Lite</span>
+  </a>
+  <div class="topbar-right">
+    <a href="/" class="back-btn">&#x2190; Back to Chat</a>
+    <button class="theme-toggle" onclick="toggleTheme()" title="Toggle theme">&#x2600;</button>
+  </div>
+</div>
+
+<!-- ── Settings content ── -->
+<div class="settings-page">
+  <div class="page-title">Settings</div>
+  <div class="page-subtitle">Manage Claude accounts and service options.</div>
+
+  <!-- ── Claude Accounts ── -->
+  <div class="section" id="sectionClaudeAccounts">
+    <div class="section-header">
+      <div class="section-icon">&#9881;</div>
+      <div><div class="section-title">Claude Accounts</div></div>
+    </div>
+    <div class="section-body">
+      <div id="accountsList"><div class="empty">Loading...</div></div>
+      <hr class="divider">
+      <div class="form-label">Add Account</div>
+      <div class="field-row">
+        <div class="field" style="max-width:200px">
+          <label>Account Name</label>
+          <input id="newAccName" placeholder="main, work, personal..." />
+        </div>
+        <button class="btn-primary" id="startLoginBtn" onclick="startLogin()">&#x2192; Login &amp; Add</button>
+      </div>
+      <div class="login-panel" id="loginPanel">
+        <div class="login-panel-title">Authorize Claude Account</div>
+        <div id="loginPanelBody"></div>
+      </div>
+      <div class="hint">
+        The config directory is derived automatically from the account name &mdash; <code>main</code> uses <code>~/.claude</code>, any other name uses <code>~/.claude-{name}</code>.
+      </div>
+    </div>
+  </div>
+
+  <!-- ── Service ── -->
+  <div class="section">
+    <div class="section-header">
+      <div class="section-icon" style="background:var(--purple-bg);border-color:var(--purple);color:var(--purple)">&#9670;</div>
+      <div><div class="section-title" style="color:var(--purple)">Service</div></div>
+    </div>
+    <div class="section-body">
+      <div class="service-grid">
+        <div class="field">
+          <label>Default Claude Account</label>
+          <select id="svcDefaultAccount" style="padding:6px 10px;border-radius:6px;border:1px solid var(--border);background:var(--bg-secondary);color:var(--text-primary);font-size:13px">
+            <option value="">System default (~/.claude)</option>
+          </select>
+          <div style="font-size:11px;color:var(--text-muted);margin-top:2px">Used for agents without a per-agent account override. Switch when credits run out.</div>
+        </div>
+      </div>
+      <button class="btn-save" onclick="saveService()">Save</button>
+    </div>
+  </div>
+
+</div>
+
+<!-- Toast -->
+<div class="toast" id="toast"></div>
+
+<script>
+// ── Theme ──
+function toggleTheme() {
+  const current = document.documentElement.getAttribute('data-theme');
+  const next = current === 'light' ? 'dark' : 'light';
+  document.documentElement.setAttribute('data-theme', next);
+  localStorage.setItem('theme', next);
+  document.querySelector('.theme-toggle').textContent = next === 'light' ? '\u263E' : '\u2600';
+}
+(function initTheme() {
+  const saved = localStorage.getItem('theme') || 'dark';
+  document.documentElement.setAttribute('data-theme', saved);
+  document.querySelector('.theme-toggle').textContent = saved === 'light' ? '\u263E' : '\u2600';
+})();
+
+// ── Toast ──
+let toastTimer;
+function showToast(msg, type='ok', html=false) {
+  const t = document.getElementById('toast');
+  if (html) { t.innerHTML = msg; } else { t.textContent = msg; }
+  t.className = `toast ${type} show`;
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => t.classList.remove('show'), html ? 10000 : 3500);
+}
+
+// ── Helpers ──
+function escHtml(s){ return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;') }
+function escId(s){ return String(s||'').replace(/[^a-z0-9]/gi,'_') }
+
+// ── Accounts ──
+let accounts = {};
+
+async function loadAccounts() {
+  const el = document.getElementById('accountsList');
+  try {
+    const res = await fetch('/api/config/accounts');
+    accounts = await res.json();
+    renderAccounts();
+    for (const name of Object.keys(accounts)) checkStatus(name);
+  } catch(e) {
+    if (el) el.innerHTML = `<div class="empty" style="color:var(--red)">Failed to load accounts: ${escHtml(e.message)}</div>`;
+  }
+}
+
+function renderAccounts() {
+  const el = document.getElementById('accountsList');
+  const keys = Object.keys(accounts);
+  if (!keys.length) { el.innerHTML = '<div class="empty">No accounts yet. Add one below.</div>'; return; }
+  el.innerHTML = keys.map(name => `
+    <div class="account-row" id="acc-${escId(name)}">
+      <span class="status-dot unknown" id="dot-${escId(name)}" title="Checking..."></span>
+      <span class="account-name">${escHtml(name)}</span>
+      <span id="email-${escId(name)}" style="font-size:12px;color:var(--text-muted);flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap"></span>
+      <span class="account-path" title="${escHtml(accounts[name])}">${escHtml(accounts[name])}</span>
+      <button class="btn-icon relogin" onclick="reloginAccount('${escHtml(name)}')" title="Re-authorize">&#x21BA;</button>
+      <button class="btn-icon" onclick="deleteAccount('${escHtml(name)}')" title="Remove">&#x2715;</button>
+    </div>
+  `).join('');
+}
+
+async function checkStatus(name) {
+  const dot = document.getElementById(`dot-${escId(name)}`);
+  if (!dot) return;
+  try {
+    const res = await fetch(`/api/config/accounts/${encodeURIComponent(name)}/status`);
+    const d = await res.json();
+    dot.className = `status-dot ${d.loggedIn ? 'ok' : 'err'}`;
+    dot.title = d.loggedIn ? 'Logged in' : 'Not logged in';
+    const emailEl = document.getElementById(`email-${escId(name)}`);
+    if (emailEl && d.email) emailEl.textContent = d.email;
+  } catch { dot.className = 'status-dot unknown'; }
+}
+
+async function deleteAccount(name) {
+  if (!confirm(`Remove account "${name}"?`)) return;
+  const res = await fetch(`/api/config/accounts/${encodeURIComponent(name)}`, { method: 'DELETE' });
+  if (!res.ok) { const e = await res.json(); showToast(e.error, 'err'); return; }
+  delete accounts[name];
+  renderAccounts();
+  showToast(`Account "${name}" removed`);
+}
+
+let pendingLogin = null;
+
+async function startLogin() {
+  const name = document.getElementById('newAccName').value.trim();
+  if (!name) { showToast('Account name required', 'err'); return; }
+  const path = (name === 'main' || name === 'default') ? '~/.claude' : `~/.claude-${name}`;
+  const btn = document.getElementById('startLoginBtn');
+  btn.disabled = true; btn.textContent = 'Connecting\u2026';
+  const panel = document.getElementById('loginPanel');
+  const body = document.getElementById('loginPanelBody');
+  panel.classList.remove('visible');
+  body.innerHTML = `<div style="color:var(--text-muted);font-size:12px">Starting login process\u2026</div>`;
+  panel.classList.add('visible');
+  try {
+    const res = await fetch('/api/config/accounts/login', {
+      method: 'POST', headers: {'Content-Type':'application/json'},
+      body: JSON.stringify({ name, path })
+    });
+    const data = await res.json();
+    if (data.alreadyLoggedIn) {
+      await saveAccount(name, path);
+      panel.classList.remove('visible');
+      showToast(`Account "${name}" added (already logged in)`);
+      clearAddForm();
+    } else if (data.url) {
+      pendingLogin = { name, path, sessionId: data.sessionId };
+      showLoginPanel(data.url, data.sessionId);
+      showToast('Authorization URL ready', 'info');
+    } else {
+      body.innerHTML = `<div style="color:var(--red);font-size:12px">${escHtml(data.error || 'Could not start login')}</div>`;
+    }
+  } catch(e) {
+    body.innerHTML = `<div style="color:var(--red);font-size:12px">${escHtml(e.message)}</div>`;
+  } finally {
+    btn.disabled = false; btn.textContent = '\u2192 Login & Add';
+  }
+}
+
+function showLoginPanel(url) {
+  const body = document.getElementById('loginPanelBody');
+  body.innerHTML = `
+    <div class="login-panel-title">Step 1 \u2014 Open this URL in your browser</div>
+    <div class="login-url-row">
+      <span class="login-url" id="loginUrlText">${escHtml(url)}</span>
+      <button class="btn-copy" onclick="copyUrl('${escHtml(url)}')" title="Copy URL">&#x2398; Copy</button>
+      <a class="btn-open" href="${escHtml(url)}" target="_blank">Open &#x2197;</a>
+    </div>
+    <div class="login-panel-title" style="margin-top:14px">Step 2 \u2014 Paste the code Anthropic gives you</div>
+    <div class="code-input-row">
+      <input id="authCodeInput" placeholder="Paste code here\u2026" autocomplete="off" spellcheck="false" />
+      <button class="btn-verify" id="submitCodeBtn" onclick="submitCode()">Submit Code</button>
+    </div>
+    <div id="codeStatus" class="login-status-msg"></div>
+    <div style="margin-top:12px;font-size:11px;color:var(--text-muted)">
+      If the browser flow completes automatically (no code shown), just click
+      <button class="btn-verify" style="padding:4px 12px;font-size:11px" onclick="verifyLogin()">Verify &amp; Save</button>
+    </div>
+  `;
+}
+
+async function copyUrl(url) {
+  try {
+    await navigator.clipboard.writeText(url);
+    showToast('URL copied to clipboard', 'info');
+  } catch {
+    const el = document.getElementById('loginUrlText');
+    if (el) { const r = document.createRange(); r.selectNode(el); window.getSelection().removeAllRanges(); window.getSelection().addRange(r); }
+    showToast('Select + copy the URL above', 'info');
+  }
+}
+
+async function submitCode() {
+  if (!pendingLogin?.sessionId) return;
+  const code = document.getElementById('authCodeInput')?.value.trim();
+  if (!code) { showToast('Paste the code first', 'err'); return; }
+  const btn = document.getElementById('submitCodeBtn');
+  if (btn) btn.disabled = true;
+  document.getElementById('codeStatus').textContent = 'Submitting code\u2026';
+  try {
+    const res = await fetch('/api/config/accounts/login/code', {
+      method: 'POST', headers: {'Content-Type':'application/json'},
+      body: JSON.stringify({ sessionId: pendingLogin.sessionId, code })
+    });
+    const d = await res.json();
+    if (!res.ok) throw new Error(d.error);
+    document.getElementById('codeStatus').textContent = 'Code submitted \u2014 verifying\u2026';
+    setTimeout(() => verifyLogin(), 2000);
+  } catch(e) {
+    document.getElementById('codeStatus').textContent = `Error: ${e.message}`;
+    if (btn) btn.disabled = false;
+  }
+}
+
+async function verifyLogin() {
+  if (!pendingLogin) return;
+  const { name, path } = pendingLogin;
+  try {
+    await saveAccount(name, path);
+    const res = await fetch(`/api/config/accounts/${encodeURIComponent(name)}/status`);
+    const d = await res.json();
+    if (d.loggedIn) {
+      showToast(`Account "${name}" added and verified`);
+      pendingLogin = null;
+      document.getElementById('loginPanel').classList.remove('visible');
+      clearAddForm();
+    } else {
+      const status = document.getElementById('codeStatus');
+      if (status) status.textContent = 'Not authorized yet \u2014 finish the browser flow then try again.';
+      showToast('Not authorized yet', 'info');
+    }
+  } catch(e) { showToast(e.message, 'err'); }
+}
+
+function clearAddForm() { document.getElementById('newAccName').value = ''; }
+
+async function reloginAccount(name) {
+  const path = accounts[name];
+  if (!path) return;
+  const btn = event.target;
+  btn.disabled = true;
+  try {
+    const res = await fetch('/api/config/accounts/login', {
+      method: 'POST', headers: {'Content-Type':'application/json'},
+      body: JSON.stringify({ name, path })
+    });
+    const data = await res.json();
+    if (data.alreadyLoggedIn) {
+      showToast(`"${name}" is already logged in`);
+      checkStatus(name);
+    } else if (data.url) {
+      const w = window.open(data.url, '_blank');
+      if (!w || w.closed) {
+        showToast(`<a href="${data.url}" target="_blank" style="color:var(--accent);text-decoration:underline">Click here to authorize</a> (popup was blocked)`, 'info', true);
+      } else {
+        showToast('Opened auth URL \u2014 authorize then refresh status', 'info');
+      }
+      setTimeout(() => checkStatus(name), 8000);
+    } else { showToast(data.error || 'Could not get login URL', 'err'); }
+  } finally { btn.disabled = false; }
+}
+
+async function saveAccount(name, path) {
+  const res = await fetch('/api/config/accounts', {
+    method: 'POST', headers: {'Content-Type':'application/json'},
+    body: JSON.stringify({ name, path })
+  });
+  if (!res.ok) { const e = await res.json(); throw new Error(e.error); }
+  accounts[name] = path;
+  renderAccounts();
+  checkStatus(name);
+}
+
+// ── Service settings ──
+async function loadService() {
+  try {
+    const res = await fetch('/api/config/service');
+    const s = await res.json();
+    // Populate default account dropdown
+    const acctSelect = document.getElementById('svcDefaultAccount');
+    acctSelect.innerHTML = '<option value="">System default (~/.claude)</option>';
+    try {
+      const acctRes = await fetch('/api/config/accounts');
+      const accountsMap = await acctRes.json();
+      for (const name of Object.keys(accountsMap)) {
+        const opt = document.createElement('option');
+        opt.value = name;
+        opt.textContent = name;
+        if (name === s.defaultClaudeAccount) opt.selected = true;
+        acctSelect.appendChild(opt);
+      }
+    } catch { /* accounts may not exist yet */ }
+  } catch(e) {
+    console.error('Failed to load service settings:', e);
+  }
+}
+
+async function saveService() {
+  const defaultClaudeAccount = document.getElementById('svcDefaultAccount').value;
+  const res = await fetch('/api/config/service', {
+    method: 'PUT', headers: {'Content-Type':'application/json'},
+    body: JSON.stringify({ defaultClaudeAccount })
+  });
+  const data = await res.json();
+  if (!res.ok) { showToast(data.error || 'Save failed', 'err'); return; }
+  showToast(data.note || 'Saved');
+}
+
+// ── Init ──
+loadAccounts();
+loadService();
+</script>
+</body>
+</html>
