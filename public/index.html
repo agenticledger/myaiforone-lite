@@ -906,7 +906,6 @@ text-decoration:none;}
     <div class="empty-state" id="emptyState">
       <div class="empty-icon">◇</div>
       <div class="empty-text">Select an agent to start chatting</div>
-      <div class="empty-sub">Or click "+ New Agent" to create one</div>
     </div>
   </div>
 </div>
@@ -2234,11 +2233,11 @@ function renderChat() {
             <span>Drop files here or click to browse</span>
           </div>
         </div>
-        <div class="quick-actions" id="quickActions" style="${(chatHistory[tk] && chatHistory[tk].length > 0) ? 'display:none' : ''}">
-          <button class="quick-action-btn" onclick="insertPreset('Show me what\\'s in the agent registry. List all available agents I can install.')">Browse Registry</button>
+        <div class="quick-actions" id="quickActions" style="${(chatHistory[activeTabKey(selectedAgent)] && chatHistory[activeTabKey(selectedAgent)].length > 0) ? 'display:none' : ''}">
+          <button class="quick-action-btn" onclick="insertPreset('Show me what is in the agent registry. List all available agents I can install.')">Browse Registry</button>
           <button class="quick-action-btn" onclick="insertPreset('I need an agent that can help me with [describe your task here]. Search the registry and install it for me.')">Find Me an Agent</button>
-          <button class="quick-action-btn" onclick="insertPreset('Install the agent called &quot;[agent name]&quot; from the registry.')">Install an Agent</button>
-          <button class="quick-action-btn" onclick="insertPreset('I\\'m new here. What is MyAIforOne Lite, what can you do, and how do I get started?')">What is This?</button>
+          <button class="quick-action-btn" onclick="insertPreset('Install the agent called [agent name] from the registry.')">Install an Agent</button>
+          <button class="quick-action-btn" onclick="insertPreset('I am new here. What is MyAIforOne Lite, what can you do, and how do I get started?')">What is This?</button>
         </div>
         <div class="chat-input-box">
           <button class="clip-btn" id="clipBtn" onclick="toggleFileZone()" title="Attach files">📎</button>
