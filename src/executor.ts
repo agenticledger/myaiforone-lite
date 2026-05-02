@@ -814,6 +814,26 @@ function loadMcpKeys(baseDir: string, mcpName: string, agentMemoryDir?: string):
 
 // ─── MCP config builder ─────────────────────────────────────────────
 
+// Cache resolved node binary path (full absolute path avoids PATH issues
+// when Claude CLI spawns MCP servers as child processes)
+let _resolvedNodeBin: string | null = null;
+function resolveNodeBin(): string {
+  if (_resolvedNodeBin) return _resolvedNodeBin;
+  // In pkg binaries, process.execPath is the pkg binary — not useful.
+  // Look for the real system node.exe instead.
+  try {
+    const cmd = process.platform === "win32" ? "where.exe node" : "which node";
+    const result = execSync(cmd, { encoding: "utf8" }).trim().split("\n")[0].trim();
+    if (result && existsSync(result)) {
+      _resolvedNodeBin = result;
+      log.info(`[MCP] Resolved node binary: ${result}`);
+      return result;
+    }
+  } catch { /* fall through */ }
+  _resolvedNodeBin = "node"; // fallback
+  return "node";
+}
+
 function buildMcpConfigFile(
   agentId: string,
   mcpNames: string[],
@@ -869,8 +889,10 @@ function buildMcpConfigFile(
         mergedEnv["MYAGENT_API_URL"] = `http://localhost:${process.env.PORT || 4889}`;
       }
 
+      // Resolve "node" to full path so Claude CLI can find it regardless of PATH
+      const command = def.command === "node" ? resolveNodeBin() : def.command;
       const entry: Record<string, any> = {
-        command: def.command,
+        command,
         args,
       };
       // Only include env when there are actual values — an empty env: {}
@@ -925,7 +947,9 @@ function buildMcpConfigFile(
   mkdirSync(tmpDir, { recursive: true });
 
   const filePath = join(tmpDir, `${agentId}-${Date.now()}.json`);
-  writeFileSync(filePath, JSON.stringify({ mcpServers }, null, 2));
+  const mcpConfig = { mcpServers };
+  writeFileSync(filePath, JSON.stringify(mcpConfig, null, 2));
+  log.info(`[MCP] Config for ${agentId}: ${JSON.stringify(mcpConfig)}`);
 
   return filePath;
 }

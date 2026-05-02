@@ -902,6 +902,40 @@ export function startWebUI(opts: WebUIOptions): void {
     res.json(result);
   });
 
+  // ─── MCP Diagnostic endpoint ─────────────────────────────────────
+  app.get("/api/debug/mcp", (_req, res) => {
+    try {
+      const mcps = opts.config.mcps || {};
+      const defaultMcps = (opts.config as any).defaultMcps || [];
+      // Check node binary
+      let nodeBin = "unknown";
+      try {
+        const cmd = process.platform === "win32" ? "where.exe node" : "which node";
+        nodeBin = execSync(cmd, { encoding: "utf8" }).trim().split("\n")[0].trim();
+      } catch { nodeBin = "NOT FOUND"; }
+      // Check each MCP
+      const mcpStatus: Record<string, any> = {};
+      for (const [name, def] of Object.entries(mcps)) {
+        const d = def as any;
+        const status: any = { type: d.type, command: d.command, args: d.args };
+        if (d.type === "stdio" && d.args?.[0]) {
+          status.scriptExists = existsSync(d.args[0]);
+        }
+        mcpStatus[name] = status;
+      }
+      res.json({
+        nodeBin,
+        processExecPath: process.execPath,
+        tauriResourceDir: process.env.TAURI_RESOURCE_DIR || null,
+        myagentDataDir: process.env.MYAGENT_DATA_DIR || null,
+        defaultMcps,
+        mcps: mcpStatus,
+      });
+    } catch (e: any) {
+      res.status(500).json({ error: e.message });
+    }
+  });
+
   // ─── Legacy dashboard redirect ────────────────────────────────────
   app.get("/dashboard-legacy", (_req, res) => {
     res.redirect("/ui");
