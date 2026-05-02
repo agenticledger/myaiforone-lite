@@ -471,7 +471,9 @@ let _personalRegistryDir: string | null = null;
 
 /** Resolve the PersonalAgents directory from config, falling back to ~/Desktop/MyAIforOne Drive/PersonalAgents */
 function _driveRoot(): string {
-  return process.env.MYAGENT_DATA_DIR
+  // MYAGENT_DATA_DIR override is for server/container deployments only.
+  // In Tauri desktop builds (TAURI_RESOURCE_DIR is set), Drive always lives on Desktop.
+  return (process.env.MYAGENT_DATA_DIR && !process.env.TAURI_RESOURCE_DIR)
     ? resolve(process.env.MYAGENT_DATA_DIR)
     : resolve(homedir(), "Desktop", "MyAIforOne Drive Lite");
 }

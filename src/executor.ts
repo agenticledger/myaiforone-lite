@@ -869,11 +869,16 @@ function buildMcpConfigFile(
         mergedEnv["MYAGENT_API_URL"] = `http://localhost:${process.env.PORT || 4889}`;
       }
 
-      mcpServers[name] = {
+      const entry: Record<string, any> = {
         command: def.command,
         args,
-        env: mergedEnv,
       };
+      // Only include env when there are actual values — an empty env: {}
+      // can cause Claude CLI to strip inherited environment (PATH, etc.)
+      if (Object.keys(mergedEnv).length > 0) {
+        entry.env = mergedEnv;
+      }
+      mcpServers[name] = entry;
     } else {
       const httpDef = def as McpServerHttp;
 

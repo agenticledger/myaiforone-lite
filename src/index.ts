@@ -85,10 +85,18 @@ function bootstrapConfigIfMissing(configPath: string): void {
         avatar: "avatar-12",
       },
     },
-    mcps: {},
+    mcps: {
+      "myaiforone-lite": {
+        type: "stdio",
+        command: "node",
+        args: [process.env.TAURI_RESOURCE_DIR
+          ? join(process.env.TAURI_RESOURCE_DIR, "mcp-lite.cjs")
+          : join(baseDir, "server", "mcp-server-lite", "dist", "index.js")],
+      },
+    },
     defaultAgent: "hub-lite",
     defaultSkills: [],
-    defaultMcps: [],
+    defaultMcps: ["myaiforone-lite"],
     defaultPrompts: [],
     promptTrigger: "!",
   };
@@ -99,8 +107,11 @@ function bootstrapConfigIfMissing(configPath: string): void {
 /** Create the Drive folder structure so it exists before the user creates any agents. */
 function ensureDriveFolders(): void {
   const driveRoot = resolve(homedir(), "Desktop", "MyAIforOne Drive Lite");
+  console.log(`[drive] Creating Drive at: ${driveRoot}`);
   for (const sub of ["PersonalAgents", "PersonalRegistry"]) {
-    mkdirSync(join(driveRoot, sub), { recursive: true });
+    const p = join(driveRoot, sub);
+    mkdirSync(p, { recursive: true });
+    console.log(`[drive] Ensured: ${p}`);
   }
 }
 
@@ -123,6 +134,29 @@ async function main(): Promise<void> {
       writeFileSync(configPath, JSON.stringify(raw, null, 2), "utf-8");
       console.log(`[migrate] Moved hub-lite memoryDir to writable data dir: ${newMemDir}`);
     }
+  } catch { /* ignore migration errors */ }
+
+  // Migrate: ensure myaiforone-lite MCP is registered in config.json
+  // Older bootstraps wrote mcps:{} — the MCP must be in the file for visibility.
+  try {
+    const raw = JSON.parse(readFileSync(configPath, "utf-8"));
+    let changed = false;
+    if (!raw.mcps) raw.mcps = {};
+    if (!raw.mcps["myaiforone-lite"]) {
+      const mcpScript = process.env.TAURI_RESOURCE_DIR
+        ? join(process.env.TAURI_RESOURCE_DIR, "mcp-lite.cjs")
+        : join(baseDir, "server", "mcp-server-lite", "dist", "index.js");
+      raw.mcps["myaiforone-lite"] = { type: "stdio", command: "node", args: [mcpScript] };
+      changed = true;
+      console.log(`[migrate] Added myaiforone-lite MCP to config`);
+    }
+    if (!raw.defaultMcps) raw.defaultMcps = [];
+    if (!raw.defaultMcps.includes("myaiforone-lite")) {
+      raw.defaultMcps.push("myaiforone-lite");
+      changed = true;
+      console.log(`[migrate] Added myaiforone-lite to defaultMcps`);
+    }
+    if (changed) writeFileSync(configPath, JSON.stringify(raw, null, 2), "utf-8");
   } catch { /* ignore migration errors */ }
 
   ensureDriveFolders();
