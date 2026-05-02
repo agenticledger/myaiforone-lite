@@ -1,5 +1,5 @@
 import { resolve, dirname, join } from "node:path";
-import { existsSync, mkdirSync, writeFileSync } from "node:fs";
+import { existsSync, mkdirSync, readFileSync, writeFileSync } from "node:fs";
 import { homedir } from "node:os";
 import { fileURLToPath } from "node:url";
 import { loadConfig } from "./config.js";
@@ -47,11 +47,14 @@ function bootstrapConfigIfMissing(configPath: string): void {
   if (existsSync(configPath)) return;
   const dir = resolve(configPath, "..");
   mkdirSync(dir, { recursive: true });
-  // In Tauri builds, agents/ is a resource bundled alongside the app.
-  // In dev, it lives at baseDir/agents.
-  const agentBase = process.env.TAURI_RESOURCE_DIR
+  // In Tauri builds, agents/ is a bundled resource (read-only on macOS).
+  // CLAUDE.md and skills live there. But memoryDir must be writable (sessions,
+  // logs, etc.) — so it goes in the data dir alongside config.json.
+  const agentRes = process.env.TAURI_RESOURCE_DIR
     ? join(process.env.TAURI_RESOURCE_DIR, "agents")
     : join(baseDir, "agents");
+  const agentData = join(dir, "agents", "hub-lite");
+  mkdirSync(agentData, { recursive: true });
   const defaultConfig = {
     service: {
       logLevel: "info",
@@ -66,9 +69,9 @@ function bootstrapConfigIfMissing(configPath: string): void {
       "hub-lite": {
         name: "Hub",
         description: "Browse and install agents from the MyAIforOne registry. Ask me to find agents for any task.",
-        agentHome: join(agentBase, "hub-lite"),
-        claudeMd: join(agentBase, "hub-lite", "CLAUDE.md"),
-        memoryDir: join(agentBase, "hub-lite", "memory"),
+        agentHome: join(agentRes, "hub-lite"),
+        claudeMd: join(agentRes, "hub-lite", "CLAUDE.md"),
+        memoryDir: agentData,
         mentionAliases: ["@hub", "@store", "@install"],
         workspace: homedir(),
         allowedTools: ["Read", "Glob", "Grep", "Bash", "WebFetch"],
@@ -107,6 +110,21 @@ async function main(): Promise<void> {
   const configPath = resolve(dataDir, "config.json");
 
   bootstrapConfigIfMissing(configPath);
+
+  // Migrate: if hub-lite memoryDir is in the resource dir (read-only on macOS),
+  // move it to the writable data dir. This fixes configs from v0.2.2 and earlier.
+  try {
+    const raw = JSON.parse(readFileSync(configPath, "utf-8"));
+    const hub = raw.agents?.["hub-lite"];
+    if (hub?.memoryDir && process.env.TAURI_RESOURCE_DIR && hub.memoryDir.includes(process.env.TAURI_RESOURCE_DIR)) {
+      const newMemDir = join(dataDir, "agents", "hub-lite");
+      mkdirSync(newMemDir, { recursive: true });
+      hub.memoryDir = newMemDir;
+      writeFileSync(configPath, JSON.stringify(raw, null, 2), "utf-8");
+      console.log(`[migrate] Moved hub-lite memoryDir to writable data dir: ${newMemDir}`);
+    }
+  } catch { /* ignore migration errors */ }
+
   ensureDriveFolders();
   const config = loadConfig(configPath);
   setAppConfig(config);

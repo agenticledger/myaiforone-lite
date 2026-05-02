@@ -497,6 +497,19 @@ text-decoration:none;}
   background:var(--bg-surface);
   backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);
 }
+.quick-actions{
+  display:flex;gap:8px;flex-wrap:wrap;margin-bottom:10px;
+}
+.quick-action-btn{
+  padding:6px 14px;border-radius:16px;
+  border:1px solid var(--border-dim);background:transparent;
+  color:var(--text-secondary);cursor:pointer;
+  font-family:var(--font-sans);font-size:12.5px;font-weight:500;
+  transition:all .2s;white-space:nowrap;
+}
+.quick-action-btn:hover{
+  border-color:var(--border-glow);background:var(--accent-bg);color:var(--accent);
+}
 .chat-input-box{
   display:flex;gap:10px;align-items:flex-end;
 }
@@ -1818,6 +1831,9 @@ async function sendMessage(agentId, text, _tabKeyOverride) {
   chatHistory[tk].push({ role: 'user', text, time: new Date().toISOString() });
   renderChat();
   scrollChat();
+  // Hide quick-actions after first message
+  const qa = document.getElementById('quickActions');
+  if (qa) qa.style.display = 'none';
 
   const agent = agents.find(a => a.id === agentId);
   const useStreaming = agent?.streaming || agent?._remote; // remote always streams via proxy
@@ -2218,6 +2234,12 @@ function renderChat() {
             <span>Drop files here or click to browse</span>
           </div>
         </div>
+        <div class="quick-actions" id="quickActions" style="${(chatHistory[tk] && chatHistory[tk].length > 0) ? 'display:none' : ''}">
+          <button class="quick-action-btn" onclick="insertPreset('Show me what\\'s in the agent registry. List all available agents I can install.')">Browse Registry</button>
+          <button class="quick-action-btn" onclick="insertPreset('I need an agent that can help me with [describe your task here]. Search the registry and install it for me.')">Find Me an Agent</button>
+          <button class="quick-action-btn" onclick="insertPreset('Install the agent called &quot;[agent name]&quot; from the registry.')">Install an Agent</button>
+          <button class="quick-action-btn" onclick="insertPreset('I\\'m new here. What is MyAIforOne Lite, what can you do, and how do I get started?')">What is This?</button>
+        </div>
         <div class="chat-input-box">
           <button class="clip-btn" id="clipBtn" onclick="toggleFileZone()" title="Attach files">📎</button>
           <button class="mic-btn" id="micBtn" onclick="toggleVoice()" title="Click to speak">🎤</button>
@@ -2534,6 +2556,20 @@ function handleKey(e) {
 function autoResize(el) {
   el.style.height = 'auto';
   el.style.height = Math.min(el.scrollHeight, 140) + 'px';
+}
+
+function insertPreset(text) {
+  const input = document.getElementById('chatInput');
+  if (!input) return;
+  input.value = text;
+  autoResize(input);
+  input.focus();
+  // Auto-select [placeholder] text so user can type over it
+  const m = text.match(/\[([^\]]+)\]/);
+  if (m) {
+    const start = text.indexOf(m[0]);
+    input.setSelectionRange(start, start + m[0].length);
+  }
 }
 
 // ─── Modal: New Agent ──────────────────────────────────────────
