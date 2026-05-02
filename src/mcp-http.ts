@@ -88,8 +88,12 @@ class StdioProxy {
       env.MYAGENT_API_TOKEN = callbackToken;
     }
 
+    // In pkg binaries, process.execPath is the binary itself, not node.
+    // Use "node" from PATH (required for Claude CLI anyway).
+    const nodeCommand = (process as any).pkg ? "node" : process.execPath;
+
     const transport = new StdioClientTransport({
-      command: process.execPath, // current node binary
+      command: nodeCommand,
       args: [scriptPath],
       env,
       stderr: "inherit",

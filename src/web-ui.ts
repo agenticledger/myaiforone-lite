@@ -62,12 +62,12 @@ export function startWebUI(opts: WebUIOptions): void {
 
   const configFilePath = () => join(opts.dataDir || opts.baseDir, "config.json");
 
+  // In Tauri/pkg builds, baseDir is a virtual snapshot path. Use TAURI_RESOURCE_DIR
+  // for bundled resources, falling back to baseDir for dev mode.
+  const resourceDir = process.env.TAURI_RESOURCE_DIR || opts.baseDir;
+
   // ─── Serve static assets (SVGs, images, etc.) from public/ ─────
-  // In Tauri builds, public/ is bundled as a resource and path passed via env.
-  // In dev, it lives at baseDir/public.
-  const publicDir = process.env.TAURI_RESOURCE_DIR
-    ? join(process.env.TAURI_RESOURCE_DIR, "public")
-    : join(opts.baseDir, "public");
+  const publicDir = join(resourceDir, "public");
   app.use(express.static(publicDir, {
     maxAge: "1h",
     index: false,
@@ -1331,7 +1331,7 @@ export function startWebUI(opts: WebUIOptions): void {
       return res.status(404).json({ error: `Directory not found: ${scanDir}` });
     }
 
-    const registryPath = join(opts.baseDir, "registry", "skills.json");
+    const registryPath = join(resourceDir, "registry", "skills.json");
     const existingIds = new Set<string>();
     try {
       const data = JSON.parse(readFileSync(registryPath, "utf-8"));
@@ -1374,7 +1374,7 @@ export function startWebUI(opts: WebUIOptions): void {
     // Apps: PersonalRegistry/apps.json (user's own) + registry/platform-apps.json (committed platform apps)
     if (type === "apps") {
       const personalAppsPath = join(getPersonalRegistryDir(opts.config), "apps.json");
-      const platformAppsPath = join(opts.baseDir, "registry", "platform-apps.json");
+      const platformAppsPath = join(resourceDir, "registry", "platform-apps.json");
       try {
         const personalApps: any[] = existsSync(personalAppsPath)
           ? JSON.parse(readFileSync(personalAppsPath, "utf-8")) as any[]
@@ -1403,7 +1403,7 @@ export function startWebUI(opts: WebUIOptions): void {
     }
 
     // Platform items from registry/{type}.json (committed), personal from PersonalRegistry/{type}.json (outside repo)
-    const registryPath = join(opts.baseDir, "registry", `${type}.json`);
+    const registryPath = join(resourceDir, "registry", `${type}.json`);
     const personalRegistryPath = join(getPersonalRegistryDir(opts.config), `${type}.json`);
     const source = (req.query.source as string) || "";
 
@@ -1454,7 +1454,7 @@ export function startWebUI(opts: WebUIOptions): void {
       if (type === "skills") {
         const id = entry.id;
         const isPlatformSkill = entry.source === "agenticledger/platform";
-        const localPathExists = entry.localPath && existsSync(join(opts.baseDir, entry.localPath));
+        const localPathExists = entry.localPath && existsSync(join(resourceDir, entry.localPath));
         installed = isPlatformSkill
           ? localPathExists
           : existsSync(join(personalSkillsDir, `${id}.md`))
@@ -1466,7 +1466,7 @@ export function startWebUI(opts: WebUIOptions): void {
       } else if (type === "prompts") {
         const id = entry.id;
         const isPlatformPrompt = entry.source === "agenticledger/platform";
-        const localPathExists = entry.localPath && existsSync(join(opts.baseDir, entry.localPath));
+        const localPathExists = entry.localPath && existsSync(join(resourceDir, entry.localPath));
         installed = isPlatformPrompt
           ? localPathExists
           : existsSync(join(personalPromptsDir, `${id}.md`)) || !!localPathExists;
@@ -1479,12 +1479,12 @@ export function startWebUI(opts: WebUIOptions): void {
           if ((agent as any).mcps?.includes(entry.id)) assignedTo.push(agentId);
         }
       } else if (type === "agents") {
-        const draftsPath = join(opts.baseDir, "registry", "installed-drafts.json");
+        const draftsPath = join(resourceDir, "registry", "installed-drafts.json");
         let drafts: string[] = [];
         try {
           drafts = JSON.parse(readFileSync(draftsPath, "utf-8")).drafts.map((d: any) => d.id);
         } catch { /* ignore */ }
-        installed = existsSync(join(opts.baseDir, "agents", entry.id))
+        installed = existsSync(join(resourceDir, "agents", entry.id))
           || drafts.includes(entry.id)
           || !!opts.config.agents[entry.id];
       }
@@ -1508,7 +1508,7 @@ export function startWebUI(opts: WebUIOptions): void {
     const { type, id } = req.body as { type?: string; id?: string };
     if (!type || !id) return res.status(400).json({ error: "Missing type or id" });
 
-    const registryPath = join(opts.baseDir, "registry", `${type}s.json`);
+    const registryPath = join(resourceDir, "registry", `${type}s.json`);
     if (!existsSync(registryPath)) return res.status(404).json({ error: "Registry not found" });
 
     let entry: any;
@@ -1528,7 +1528,7 @@ export function startWebUI(opts: WebUIOptions): void {
       if (type === "skill") {
         const destDir = join(resolveTilde(getPersonalAgentsDir(opts.config)), "skills");
         mkdirSync(destDir, { recursive: true });
-        const srcPath = isAbsolute(entry.localPath) ? entry.localPath : join(opts.baseDir, entry.localPath);
+        const srcPath = isAbsolute(entry.localPath) ? entry.localPath : join(resourceDir, entry.localPath);
         const destPath = join(destDir, `${id}.md`);
         if (!existsSync(srcPath)) return res.status(500).json({ error: `Source file not found: ${entry.localPath}` });
         copyFileSync(srcPath, destPath);
@@ -1537,7 +1537,7 @@ export function startWebUI(opts: WebUIOptions): void {
       } else if (type === "prompt") {
         const destDir = join(resolveTilde(getPersonalAgentsDir(opts.config)), "prompts");
         mkdirSync(destDir, { recursive: true });
-        const srcPath = isAbsolute(entry.localPath) ? entry.localPath : join(opts.baseDir, entry.localPath);
+        const srcPath = isAbsolute(entry.localPath) ? entry.localPath : join(resourceDir, entry.localPath);
         const destPath = join(destDir, `${id}.md`);
         if (!existsSync(srcPath)) return res.status(500).json({ error: `Source file not found: ${entry.localPath}` });
         copyFileSync(srcPath, destPath);
@@ -1573,7 +1573,7 @@ export function startWebUI(opts: WebUIOptions): void {
         mkdirSync(join(agentHome, "skills"), { recursive: true });
 
         // Copy agent files from registry source (if available)
-        const srcDir = join(opts.baseDir, entry.localPath);
+        const srcDir = join(resourceDir, entry.localPath);
         if (existsSync(srcDir)) {
           const copyRecursive = (src: string, dest: string) => {
             mkdirSync(dest, { recursive: true });
@@ -2497,7 +2497,7 @@ export function startWebUI(opts: WebUIOptions): void {
 
   // ─── API: MCP catalog (for connect UI) ─────────────────────────────
   app.get("/api/mcp-catalog", (_req, res) => {
-    const catalogPath = join(opts.baseDir, "mcp-catalog.json");
+    const catalogPath = join(resourceDir, "mcp-catalog.json");
     if (!existsSync(catalogPath)) return res.json({ mcps: {} });
     try {
       const catalog = JSON.parse(readFileSync(catalogPath, "utf-8"));
@@ -3890,7 +3890,7 @@ export function startWebUI(opts: WebUIOptions): void {
     try { skillRegistry = JSON.parse(readFileSync(skillRegistryPath, "utf-8")); } catch { /* fresh */ }
     if (!Array.isArray(skillRegistry.skills)) skillRegistry.skills = [];
     // Also include ids already in the platform registry so we don't re-add platform skills as personal
-    const platformRegistryPath = join(opts.baseDir, "registry", "skills.json");
+    const platformRegistryPath = join(resourceDir, "registry", "skills.json");
     const platformIds = new Set<string>();
     try {
       const pd = JSON.parse(readFileSync(platformRegistryPath, "utf-8"));
