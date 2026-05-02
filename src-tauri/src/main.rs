@@ -4,8 +4,20 @@ use tauri::Manager;
 use tauri::tray::{MouseButton, MouseButtonState, TrayIconBuilder, TrayIconEvent};
 use tauri::menu::{MenuBuilder, MenuItemBuilder, PredefinedMenuItem};
 use tauri_plugin_shell::ShellExt;
-use tauri_plugin_shell::process::CommandEvent;
+use tauri_plugin_shell::process::{CommandChild, CommandEvent};
 use std::net::TcpStream;
+use std::sync::Mutex;
+
+/// Global handle to the sidecar child process so we can kill it on exit.
+static SIDECAR_CHILD: Mutex<Option<CommandChild>> = Mutex::new(None);
+
+fn kill_sidecar() {
+  if let Ok(mut guard) = SIDECAR_CHILD.lock() {
+    if let Some(child) = guard.take() {
+      let _ = child.kill();
+    }
+  }
+}
 
 fn main() {
   tauri::Builder::default()
@@ -35,8 +47,13 @@ fn main() {
       let sidecar_command = app.shell().sidecar("myaiforone-server")
         .expect("Failed to create sidecar command")
         .env("TAURI_RESOURCE_DIR", &resource_dir);
-      let (mut rx, _child) = sidecar_command.spawn()
+      let (mut rx, child) = sidecar_command.spawn()
         .expect("Failed to spawn sidecar");
+
+      // Store the child handle so we can kill it on app exit
+      if let Ok(mut guard) = SIDECAR_CHILD.lock() {
+        *guard = Some(child);
+      }
 
       // Capture sidecar stdout/stderr → log file in background
       if let Ok(mut file) = log_file {
@@ -94,6 +111,7 @@ fn main() {
               }
             }
             "quit" => {
+              kill_sidecar();
               app.exit(0);
             }
             _ => {}
@@ -123,6 +141,12 @@ fn main() {
         api.prevent_close();
       }
     })
-    .run(tauri::generate_context!())
-    .expect("error while running tauri application");
+    .build(tauri::generate_context!())
+    .expect("error while building tauri application")
+    .run(|_app, event| {
+      // Kill the sidecar when the app is exiting (covers all exit paths)
+      if let tauri::RunEvent::Exit = event {
+        kill_sidecar();
+      }
+    });
 }
