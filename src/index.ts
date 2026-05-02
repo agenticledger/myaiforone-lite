@@ -45,6 +45,11 @@ function bootstrapConfigIfMissing(configPath: string): void {
   if (existsSync(configPath)) return;
   const dir = resolve(configPath, "..");
   mkdirSync(dir, { recursive: true });
+  // In Tauri builds, agents/ is a resource bundled alongside the app.
+  // In dev, it lives at baseDir/agents.
+  const agentBase = process.env.TAURI_RESOURCE_DIR
+    ? join(process.env.TAURI_RESOURCE_DIR, "agents")
+    : join(baseDir, "agents");
   const defaultConfig = {
     service: {
       logLevel: "info",
@@ -59,9 +64,9 @@ function bootstrapConfigIfMissing(configPath: string): void {
       "hub-lite": {
         name: "Hub",
         description: "Browse and install agents from the MyAIforOne registry. Ask me to find agents for any task.",
-        agentHome: join(baseDir, "agents", "hub-lite"),
-        claudeMd: join(baseDir, "agents", "hub-lite", "CLAUDE.md"),
-        memoryDir: join(baseDir, "agents", "hub-lite", "memory"),
+        agentHome: join(agentBase, "hub-lite"),
+        claudeMd: join(agentBase, "hub-lite", "CLAUDE.md"),
+        memoryDir: join(agentBase, "hub-lite", "memory"),
         mentionAliases: ["@hub", "@store", "@install"],
         workspace: homedir(),
         allowedTools: ["Read", "Glob", "Grep", "WebFetch"],

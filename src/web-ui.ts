@@ -63,7 +63,11 @@ export function startWebUI(opts: WebUIOptions): void {
   const configFilePath = () => join(opts.dataDir || opts.baseDir, "config.json");
 
   // ─── Serve static assets (SVGs, images, etc.) from public/ ─────
-  const publicDir = join(opts.baseDir, "public");
+  // In Tauri builds, public/ is bundled as a resource and path passed via env.
+  // In dev, it lives at baseDir/public.
+  const publicDir = process.env.TAURI_RESOURCE_DIR
+    ? join(process.env.TAURI_RESOURCE_DIR, "public")
+    : join(opts.baseDir, "public");
   app.use(express.static(publicDir, {
     maxAge: "1h",
     index: false,

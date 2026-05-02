@@ -16,8 +16,14 @@ fn main() {
     }))
     .plugin(tauri_plugin_shell::init())
     .setup(|app| {
+      // Resolve resource directory (contains bundled public/ and agents/)
+      let resource_dir = app.path().resource_dir()
+        .map(|p| p.to_string_lossy().to_string())
+        .unwrap_or_default();
+
       // Start the Node.js sidecar
-      let sidecar_command = app.shell().sidecar("myaiforone-server").unwrap();
+      let sidecar_command = app.shell().sidecar("myaiforone-server").unwrap()
+        .env("TAURI_RESOURCE_DIR", &resource_dir);
       let (_rx, _child) = sidecar_command.spawn().unwrap();
 
       // Give server time to start

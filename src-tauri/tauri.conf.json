@@ -34,6 +34,10 @@
       "icons/icon.icns",
       "icons/icon.ico"
     ],
-    "externalBin": ["binaries/myaiforone-server"]
+    "externalBin": ["binaries/myaiforone-server"],
+    "resources": [
+      { "src": "../public/**/*", "target": "public" },
+      { "src": "../agents/**/*", "target": "agents" }
+    ]
   }
 }
