@@ -16,7 +16,9 @@ import { verifyLicense } from "./license.js";
 import type { ChannelDriver, InboundMessage } from "./channels/types.js";
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
-const baseDir = resolve(__dirname, "..");
+// In Tauri/pkg builds, __dirname points to a read-only snapshot path.
+// Use TAURI_RESOURCE_DIR instead so reads find bundled resources (agents, registry, etc.)
+const baseDir = process.env.TAURI_RESOURCE_DIR || resolve(__dirname, "..");
 
 // dataDir: where config.json lives. Resolved in priority order:
 // 1. MYAGENT_DATA_DIR env var (set by CLI spawn or user override)

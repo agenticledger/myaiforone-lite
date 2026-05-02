@@ -806,7 +806,9 @@ export function initEncryptionSecret(): void {
 }
 
 function loadMcpKeys(baseDir: string, mcpName: string, agentMemoryDir?: string): Record<string, string> {
-  const sharedDir = join(baseDir, "data", "mcp-keys");
+  // MCP keys are user data, not bundled resources — use dataDir (MYAGENT_DATA_DIR) when available
+  const dataRoot = process.env.MYAGENT_DATA_DIR || baseDir;
+  const sharedDir = join(dataRoot, "data", "mcp-keys");
   return loadMcpKeysWithDecryption(sharedDir, agentMemoryDir || null, mcpName, _encryptionSecret);
 }
 
@@ -913,7 +915,8 @@ function buildMcpConfigFile(
     }
   }
 
-  const tmpDir = resolve(baseDir, "tmp", "mcp-configs");
+  // Use OS temp dir — baseDir may be a read-only pkg snapshot in Tauri builds
+  const tmpDir = join(tmpdir(), "myaiforone-mcp-configs");
   mkdirSync(tmpDir, { recursive: true });
 
   const filePath = join(tmpDir, `${agentId}-${Date.now()}.json`);

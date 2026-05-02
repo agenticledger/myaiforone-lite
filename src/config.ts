@@ -434,8 +434,9 @@ export function loadConfig(configPath: string): AppConfig {
   }
 
   const home = homedir();
-  // Drive root — MYAGENT_DATA_DIR override takes priority (Railway/Linux containers)
-  const driveRoot = process.env.MYAGENT_DATA_DIR
+  // Drive root — MYAGENT_DATA_DIR override is for server/container deployments only.
+  // In Tauri desktop builds, the Drive always lives on the Desktop.
+  const driveRoot = (process.env.MYAGENT_DATA_DIR && !process.env.TAURI_RESOURCE_DIR)
     ? resolve(process.env.MYAGENT_DATA_DIR)
     : resolve(home, "Desktop", "MyAIforOne Drive Lite");
 
