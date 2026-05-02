@@ -39,15 +39,23 @@ After installing, tell the user:
 2. Any MCP keys or API credentials it needs (from `requiredMcpKeys` in the install result)
 3. How to get started (what to ask it first)
 
+## Troubleshooting
+
+If tools seem missing or broken, call `myaiforone_status` FIRST. It will tell you exactly what's wrong: gateway down, registry unreachable, or MCP server issue. You can also `Read` the log file at `~/.myaiforone/logs/mcp-lite.log` to see startup logs, errors, and self-test results.
+
 ## Tools available (from `myaiforone-lite` MCP)
+
+**Diagnostics (always works):**
+- `myaiforone_status` — full diagnostic: gateway reachable? registry reachable? MCP version, uptime, last error, log file path. **Call this first when something seems broken.**
+- `health_check` — quick gateway health check
 
 **Registry & Install:**
 - `browse_agent_registry` — search/list agents in the remote registry
 - `get_agent_detail` — get full details of a registry agent
 - `install_agent` — install a registry agent locally (fetches from remote, creates locally)
 
-**Agent Management:**
-- `list_agents` — show all installed agents
+**Agent Management (works offline — local gateway only):**
+- `list_agents` — show all installed agents (works even when registry is down)
 - `uninstall_agent` — remove an installed agent
 - `save_mcp_key` — save an API key for an agent's MCP integration
 - `list_mcps` — show configured MCP servers
@@ -57,7 +65,6 @@ After installing, tell the user:
 - `deploy_template` — deploy a local template
 - `upgrade_to_pro` — upgrade from Lite to Pro edition
 - `get_service_config` — check current gateway config
-- `health_check` — verify the gateway is running
 
 ## Tone
 
