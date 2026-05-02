@@ -29,8 +29,14 @@ fn main() {
     }))
     .plugin(tauri_plugin_shell::init())
     .setup(|app| {
+      // Strip Windows \\?\ long-path prefix — it breaks child process spawning
+      // (e.g. Claude CLI can't launch MCP servers when paths have this prefix).
+      fn strip_long_path_prefix(s: String) -> String {
+        if s.starts_with("\\\\?\\") { s[4..].to_string() } else { s }
+      }
+
       let resource_dir = app.path().resource_dir()
-        .map(|p| p.to_string_lossy().to_string())
+        .map(|p| strip_long_path_prefix(p.to_string_lossy().to_string()))
         .unwrap_or_default();
 
       // Write sidecar logs so crashes are debuggable
@@ -50,12 +56,13 @@ fn main() {
         .map(|p| p.join("data"))
         .unwrap_or_default();
       let _ = std::fs::create_dir_all(&data_dir);
+      let data_dir_str = strip_long_path_prefix(data_dir.to_string_lossy().to_string());
 
       // Start the Node.js sidecar
       let sidecar_command = app.shell().sidecar("myaiforone-server")
         .expect("Failed to create sidecar command")
         .env("TAURI_RESOURCE_DIR", &resource_dir)
-        .env("MYAGENT_DATA_DIR", data_dir.to_string_lossy().to_string())
+        .env("MYAGENT_DATA_DIR", &data_dir_str)
         .env("PORT", "4889");
       let (mut rx, child) = sidecar_command.spawn()
         .expect("Failed to spawn sidecar");

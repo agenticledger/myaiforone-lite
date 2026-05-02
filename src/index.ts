@@ -16,6 +16,19 @@ import { verifyLicense } from "./license.js";
 import type { ChannelDriver, InboundMessage } from "./channels/types.js";
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
+
+// Strip Windows \\?\ long-path prefix — it breaks child process spawning
+// (Claude CLI can't launch MCP servers when paths carry this prefix).
+function stripLongPathPrefix(s: string): string {
+  return s.startsWith("\\\\?\\") ? s.slice(4) : s;
+}
+if (process.env.TAURI_RESOURCE_DIR) {
+  process.env.TAURI_RESOURCE_DIR = stripLongPathPrefix(process.env.TAURI_RESOURCE_DIR);
+}
+if (process.env.MYAGENT_DATA_DIR) {
+  process.env.MYAGENT_DATA_DIR = stripLongPathPrefix(process.env.MYAGENT_DATA_DIR);
+}
+
 // In Tauri/pkg builds, __dirname points to a read-only snapshot path.
 // Use TAURI_RESOURCE_DIR instead so reads find bundled resources (agents, registry, etc.)
 const baseDir = process.env.TAURI_RESOURCE_DIR || resolve(__dirname, "..");
