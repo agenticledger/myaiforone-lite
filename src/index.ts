@@ -106,10 +106,18 @@ function bootstrapConfigIfMissing(configPath: string): void {
           ? join(process.env.TAURI_RESOURCE_DIR, "mcp-lite.cjs")
           : join(baseDir, "server", "mcp-server-lite", "dist", "index.js")],
       },
+      "aigym-finance": {
+        type: "http",
+        url: "https://finance.aigym.studio/mcp",
+      },
+      "myaiforone-registry": {
+        type: "http",
+        url: "https://myaiforone.com/mcp/registry",
+      },
     },
     defaultAgent: "hub-lite",
     defaultSkills: [],
-    defaultMcps: ["myaiforone-lite"],
+    defaultMcps: ["myaiforone-lite", "aigym-finance", "myaiforone-registry"],
     defaultPrompts: [],
     promptTrigger: "!",
   };
@@ -168,6 +176,26 @@ async function main(): Promise<void> {
       raw.defaultMcps.push("myaiforone-lite");
       changed = true;
       console.log(`[migrate] Added myaiforone-lite to defaultMcps`);
+    }
+    if (!raw.mcps["aigym-finance"]) {
+      raw.mcps["aigym-finance"] = { type: "http", url: "https://finance.aigym.studio/mcp" };
+      changed = true;
+      console.log(`[migrate] Added aigym-finance MCP to config`);
+    }
+    if (!raw.defaultMcps.includes("aigym-finance")) {
+      raw.defaultMcps.push("aigym-finance");
+      changed = true;
+      console.log(`[migrate] Added aigym-finance to defaultMcps`);
+    }
+    if (!raw.mcps["myaiforone-registry"]) {
+      raw.mcps["myaiforone-registry"] = { type: "http", url: "https://myaiforone.com/mcp/registry" };
+      changed = true;
+      console.log(`[migrate] Added myaiforone-registry MCP to config`);
+    }
+    if (!raw.defaultMcps.includes("myaiforone-registry")) {
+      raw.defaultMcps.push("myaiforone-registry");
+      changed = true;
+      console.log(`[migrate] Added myaiforone-registry to defaultMcps`);
     }
     if (changed) writeFileSync(configPath, JSON.stringify(raw, null, 2), "utf-8");
   } catch { /* ignore migration errors */ }

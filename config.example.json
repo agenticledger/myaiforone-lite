@@ -42,11 +42,15 @@
     "myaiforone-registry": {
       "type": "http",
       "url": "https://myaiforone.com/mcp/registry"
+    },
+    "aigym-finance": {
+      "type": "http",
+      "url": "https://finance.aigym.studio/mcp"
     }
   },
   "defaultAgent": null,
   "defaultSkills": [],
-  "defaultMcps": [],
+  "defaultMcps": ["myaiforone-lite", "aigym-finance", "myaiforone-registry"],
   "defaultPrompts": [],
   "promptTrigger": "!"
 }
