@@ -1,0 +1,1819 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MyAIforOne Lite — Agents</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&family=Syne:wght@600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/mobile.css?v=7">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+
+:root{
+  --bg-deep:#060a13;
+  --bg-surface:rgba(12,18,33,0.92);
+  --bg-card:rgba(16,22,40,0.85);
+  --bg-input:rgba(0,0,0,0.35);
+  --border-dim:rgba(56,189,248,0.08);
+  --border-glow:rgba(56,189,248,0.18);
+  --border-active:rgba(56,189,248,0.45);
+  --text-primary:rgba(255,255,255,0.92);
+  --text-secondary:rgba(255,255,255,0.68);
+  --text-muted:rgba(148,163,184,0.55);
+  --accent:#22d3ee;
+  --accent-soft:#38bdf8;
+  --accent-bg:rgba(6,182,212,0.15);
+  --accent-glow:rgba(34,211,238,0.12);
+  --purple:rgba(139,92,246,0.7);
+  --purple-bg:rgba(139,92,246,0.12);
+  --green:#4ade80;
+  --green-bg:rgba(74,222,128,0.1);
+  --amber:#fbbf24;
+  --amber-bg:rgba(251,191,36,0.1);
+  --shadow:0 2px 12px rgba(0,0,0,0.3);
+  --shadow-glow:0 0 20px rgba(34,211,238,0.08);
+  --radius:12px;
+  --font-sans:'DM Sans',system-ui,sans-serif;
+  --font-mono:'IBM Plex Mono',monospace;
+  --font-display:'Syne',sans-serif;
+  --line-color:rgba(56,189,248,0.12);
+  --line-glow:rgba(34,211,238,0.25);
+}
+[data-theme="light"]{
+  --bg-deep:#f4f6f9;
+  --bg-surface:rgba(255,255,255,0.95);
+  --bg-card:rgba(255,255,255,0.9);
+  --bg-input:rgba(0,0,0,0.04);
+  --border-dim:rgba(0,0,0,0.08);
+  --border-glow:rgba(14,116,144,0.18);
+  --border-active:rgba(14,116,144,0.45);
+  --text-primary:rgba(15,23,42,0.92);
+  --text-secondary:rgba(51,65,85,0.8);
+  --text-muted:rgba(100,116,139,0.6);
+  --accent:#0891b2;
+  --accent-soft:#0e7490;
+  --accent-bg:rgba(14,116,144,0.08);
+  --accent-glow:rgba(14,116,144,0.06);
+  --purple:rgba(109,40,217,0.75);
+  --purple-bg:rgba(139,92,246,0.08);
+  --green:#16a34a;
+  --green-bg:rgba(22,163,74,0.08);
+  --amber:#d97706;
+  --amber-bg:rgba(217,119,6,0.08);
+  --shadow:0 1px 8px rgba(0,0,0,0.06);
+  --shadow-glow:none;
+  --line-color:rgba(14,116,144,0.12);
+  --line-glow:rgba(14,116,144,0.2);
+}
+
+html,body{
+  width:100%;height:100%;overflow:hidden;
+  background:var(--bg-deep);font-family:var(--font-sans);color:var(--text-primary);
+  transition:background .3s,color .3s;
+}
+
+.topbar{
+  height:48px;display:flex;align-items:center;padding:0 24px;
+  background:var(--bg-surface);border-bottom:1px solid var(--border-dim);
+  backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);
+  position:fixed;top:0;left:0;right:0;z-index:100;
+  overflow:hidden;max-width:100vw;
+}
+.topbar-logo{display:flex;align-items:center;gap:10px;margin-right:32px}
+.logo-mark{width:28px;height:28px;border-radius:8px;object-fit:contain}
+.logo-text{font-family:var(--font-display);font-size:15px;font-weight:700;color:var(--accent)}
+
+.tab-group{display:flex;gap:0;flex-shrink:1;min-width:0;overflow-x:auto}
+.tab-btn{
+  font-family:var(--font-sans);font-size:13px;font-weight:600;
+  color:var(--text-muted);background:none;border:none;
+  padding:14px 14px;cursor:pointer;position:relative;transition:color .2s;
+  text-decoration:none;white-space:nowrap;flex-shrink:0;
+}
+.tab-btn:hover{color:var(--text-secondary)}
+.tab-btn.active{color:var(--accent)}
+.tab-btn.active::after{
+  content:'';position:absolute;bottom:0;left:12px;right:12px;
+  height:2px;background:var(--accent);border-radius:1px;
+}
+.sub-nav{position:fixed;top:48px;left:0;right:0;z-index:99;height:36px;display:flex;align-items:center;gap:6px;padding:0 24px;background:var(--bg-surface);border-bottom:1px solid var(--border-dim);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px)}
+
+.topbar-right{margin-left:auto;display:flex;align-items:center;gap:8px;flex-shrink:0}
+.topbar-control{
+  font-family:var(--font-sans);font-size:11px;font-weight:500;
+  padding:6px 12px;border-radius:8px;
+  border:1px solid var(--border-dim);background:var(--bg-input);
+  color:var(--text-primary);outline:none;cursor:pointer;
+  transition:border-color .2s;height:32px;box-sizing:border-box;
+}
+.topbar-control:hover,.topbar-control:focus{border-color:var(--border-glow)}
+.org-select{
+  font-family:var(--font-sans);font-size:11px;font-weight:500;
+  padding:6px 12px;border-radius:8px;
+  border:1px solid var(--border-dim);background:var(--bg-input);
+  color:var(--text-primary);outline:none;cursor:pointer;
+  height:32px;box-sizing:border-box;transition:border-color .2s;
+}
+.org-select:hover,.org-select:focus{border-color:var(--border-glow)}
+.add-agent-btn-top{
+  font-family:var(--font-sans);font-size:12px;font-weight:600;
+  padding:7px 16px;border-radius:8px;cursor:pointer;
+  border:1px dashed var(--border-glow);background:transparent;
+  color:var(--text-muted);transition:all .2s;
+  display:flex;align-items:center;gap:6px;
+}
+.add-agent-btn-top:hover{border-color:var(--accent);color:var(--accent);background:var(--accent-bg)}
+.theme-toggle{
+  width:34px;height:34px;border-radius:8px;border:1px solid var(--border-dim);
+  background:transparent;color:var(--text-muted);cursor:pointer;
+  display:flex;align-items:center;justify-content:center;font-size:16px;
+  transition:all .2s;text-decoration:none;
+}
+.theme-toggle:hover{border-color:var(--border-glow);color:var(--text-secondary)}
+
+.hidden{display:none!important}
+
+.sub-nav .agent-controls{display:flex;align-items:center;gap:6px;margin-left:auto}
+.sub-nav .agent-controls .topbar-control{height:26px;font-size:10px;padding:4px 8px}
+.sub-nav .agent-controls .org-select{height:26px;font-size:10px;padding:2px 8px}
+.sub-nav .agent-controls .add-agent-btn-top{font-size:10px;padding:4px 10px}
+
+.canvas{
+  position:fixed;top:84px;left:0;right:0;bottom:0;
+  overflow:auto;padding:40px;
+}
+
+.org-grid{
+  display:flex;flex-wrap:wrap;justify-content:center;gap:32px;padding:20px;
+}
+.function-box{
+  background:var(--bg-card);border:1px solid var(--border-glow);
+  border-radius:16px;padding:0;min-width:320px;max-width:360px;
+  flex:1 1 340px;
+  backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);
+  box-shadow:var(--shadow);overflow:hidden;transition:all .3s;
+}
+.function-box:hover{box-shadow:var(--shadow),var(--shadow-glow)}
+.function-header{
+  padding:14px 20px;border-bottom:1px solid var(--border-dim);
+  display:flex;align-items:center;gap:10px;
+}
+.function-header-icon{
+  width:28px;height:28px;border-radius:7px;
+  background:var(--purple-bg);border:1px solid var(--purple);
+  display:flex;align-items:center;justify-content:center;
+  font-family:var(--font-mono);font-size:11px;font-weight:600;color:var(--purple);
+}
+.function-header-name{
+  font-family:var(--font-display);font-size:13px;font-weight:700;
+  text-transform:uppercase;letter-spacing:.06em;color:var(--purple);
+}
+.function-header-count{margin-left:auto;font-family:var(--font-mono);font-size:10px;color:var(--text-muted)}
+.function-body{padding:16px}
+.function-body .agent-node{margin-bottom:12px;width:100% !important}
+.function-body .agent-node:last-child{margin-bottom:0}
+.function-body .agent-node.is-lead{border-color:var(--accent)}
+.function-body .agent-node.is-lead .node-title::after{content:' ★';color:var(--amber)}
+
+.dept-zone{
+  display:flex;gap:20px;flex-wrap:wrap;justify-content:center;
+  position:relative;padding:14px 18px 10px;border-radius:14px;
+  background:rgba(255,255,255,0.015);border:1px solid rgba(255,255,255,0.03);
+}
+[data-theme="light"] .dept-zone{background:rgba(0,0,0,0.015);border-color:rgba(0,0,0,0.04)}
+.dept-zone-label{
+  width:100%;text-align:center;
+  font-family:var(--font-mono);font-size:9px;font-weight:700;
+  letter-spacing:.1em;text-transform:uppercase;color:var(--accent);opacity:0.8;margin-bottom:6px;
+}
+
+.level-connector{
+  width:2px;height:40px;margin:0 auto;position:relative;
+  background:var(--line-color);overflow:hidden;
+}
+.level-connector::after{
+  content:'';position:absolute;top:-100%;left:0;width:100%;height:100%;
+  background:linear-gradient(to bottom,transparent,var(--line-glow),transparent);
+  animation:flowDown 2s ease-in-out infinite;
+}
+@keyframes flowDown{0%{top:-100%}100%{top:100%}}
+
+.agent-node{
+  padding:16px;position:relative;
+  background:var(--bg-surface);border:1px solid var(--border-dim);
+  border-radius:12px;box-shadow:var(--shadow);cursor:pointer;
+  transition:all .3s;display:flex;align-items:center;gap:14px;
+}
+.agent-node:hover{
+  border-color:var(--border-active);
+  box-shadow:0 4px 24px rgba(0,0,0,0.4),0 0 24px rgba(34,211,238,0.08);
+  transform:translateY(-1px);
+}
+
+.node-avatar{
+  width:42px;height:42px;border-radius:12px;flex-shrink:0;
+  background:var(--accent-bg);border:2px solid var(--accent);
+  display:flex;align-items:center;justify-content:center;
+  font-family:var(--font-mono);font-size:14px;font-weight:600;color:var(--accent);
+  position:relative;overflow:hidden;
+}
+.node-avatar img{width:100%;height:100%;object-fit:cover;border-radius:inherit}
+
+.node-avatar.active::before{
+  content:'❤';position:absolute;top:-8px;right:-8px;
+  font-size:14px;line-height:1;color:var(--green);opacity:0;
+  filter:drop-shadow(0 0 4px rgba(74,222,128,0.5));
+  animation:heartbeat 1.5s ease-in-out infinite;
+}
+@keyframes heartbeat{
+  0%{transform:scale(1);opacity:.3}
+  15%{transform:scale(1.3);opacity:1}
+  30%{transform:scale(1);opacity:.3}
+  45%{transform:scale(1.2);opacity:.8}
+  60%{transform:scale(1);opacity:.3}
+  100%{opacity:.3}
+}
+
+.node-avatar.automated::after{
+  content:'';position:absolute;top:-10px;right:6px;
+  width:12px;height:12px;border:2px solid transparent;
+  border-top:2px solid var(--green);border-right:2px solid var(--green);
+  border-radius:50%;animation:automationSpin 1.2s linear infinite;
+  filter:drop-shadow(0 0 4px rgba(74,222,128,0.6));
+}
+@keyframes automationSpin{0%{transform:rotate(0deg)}100%{transform:rotate(360deg)}}
+
+.node-info{flex:1;min-width:0}
+.node-title{
+  font-family:var(--font-display);font-size:10px;font-weight:700;
+  text-transform:uppercase;letter-spacing:.1em;color:var(--accent);margin-bottom:1px;
+}
+.node-name{font-family:var(--font-display);font-size:14px;font-weight:700;margin-bottom:1px}
+.node-alias{font-family:var(--font-mono);font-size:10px;color:var(--text-muted);margin-bottom:4px}
+.org-title-banner{
+  font-family:var(--font-display);font-size:15px;font-weight:700;
+  text-align:left;padding:20px 20px 8px;color:var(--accent);letter-spacing:.04em;
+  border-bottom:1px solid var(--border-glow);margin:0 20px 16px;
+}
+.node-func-tag{
+  font-family:var(--font-mono);font-size:9px;font-weight:500;
+  padding:2px 8px;border-radius:4px;
+  background:var(--purple-bg);color:var(--purple);border:1px solid rgba(139,92,246,0.15);
+}
+.node-stats{display:flex;gap:10px;margin-top:4px;font-family:var(--font-mono);font-size:9px;color:var(--text-muted)}
+.node-actions{display:flex;flex-direction:column;gap:4px;opacity:0;transition:opacity .2s;flex-shrink:0}
+.agent-node:hover .node-actions{opacity:1}
+.node-btn{
+  font-family:var(--font-mono);font-size:10px;font-weight:500;
+  padding:5px 12px;border-radius:6px;cursor:pointer;
+  border:1px solid var(--border-dim);background:transparent;
+  color:var(--text-muted);transition:all .2s;white-space:nowrap;
+}
+.node-btn:hover{border-color:var(--accent);color:var(--accent);background:var(--accent-bg)}
+
+.flat-grid{display:flex;flex-wrap:wrap;justify-content:center;gap:20px;padding:20px}
+.flat-grid .agent-node{width:300px}
+
+.view-toggle{display:flex;gap:2px;background:var(--bg-input);border-radius:6px;padding:2px;border:1px solid var(--border-dim)}
+.view-toggle-btn{
+  width:26px;height:22px;border:none;background:transparent;color:var(--text-muted);
+  cursor:pointer;border-radius:4px;display:flex;align-items:center;justify-content:center;
+  font-size:12px;transition:all .15s;padding:0;
+}
+.view-toggle-btn:hover{color:var(--text-secondary)}
+.view-toggle-btn.active{background:var(--accent-bg);color:var(--accent);border:1px solid rgba(34,211,238,0.2)}
+
+.compact-grid{display:flex;flex-wrap:wrap;gap:8px;padding:20px}
+.compact-node{
+  display:flex;align-items:center;gap:10px;padding:8px 12px;
+  background:var(--bg-surface);border:1px solid var(--border-dim);
+  border-radius:8px;cursor:pointer;transition:all .2s;width:240px;position:relative;
+}
+.compact-node:hover{border-color:var(--border-active);box-shadow:0 2px 12px rgba(0,0,0,0.2)}
+.compact-node .node-avatar{width:28px;height:28px;border-radius:8px;font-size:10px;flex-shrink:0}
+.compact-node .compact-info{flex:1;min-width:0}
+.compact-node .compact-name{font-family:var(--font-sans);font-size:12px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.compact-node .compact-alias{font-family:var(--font-mono);font-size:9px;color:var(--text-muted)}
+.compact-node .compact-status{width:6px;height:6px;border-radius:50%;flex-shrink:0}
+.compact-node .compact-status.active{background:var(--green)}
+.compact-node .compact-status.inactive{background:var(--text-muted);opacity:.4}
+.compact-node .compact-menu{
+  opacity:0;transition:opacity .15s;font-size:14px;color:var(--text-muted);
+  cursor:pointer;padding:2px 4px;border:none;background:none;
+}
+.compact-node:hover .compact-menu{opacity:1}
+
+.compact-ctx{position:absolute;top:100%;right:0;z-index:200;min-width:120px;background:var(--bg-surface);border:1px solid var(--border-glow);border-radius:8px;box-shadow:0 8px 24px rgba(0,0,0,0.4);padding:4px;display:none}
+.compact-ctx.open{display:block}
+.compact-ctx a{display:block;padding:6px 10px;font-size:11px;font-weight:500;color:var(--text-secondary);text-decoration:none;border-radius:5px;cursor:pointer}
+.compact-ctx a:hover{background:var(--accent-bg);color:var(--accent)}
+
+.list-view{padding:20px}
+.list-table{width:100%;border-collapse:separate;border-spacing:0}
+.list-table th{
+  position:sticky;top:0;z-index:10;
+  font-family:var(--font-mono);font-size:10px;font-weight:600;
+  text-transform:uppercase;letter-spacing:.08em;color:var(--text-muted);
+  padding:8px 12px;text-align:left;cursor:pointer;user-select:none;
+  background:var(--bg-deep);border-bottom:1px solid var(--border-glow);
+  white-space:nowrap;transition:color .15s;
+}
+.list-table th:hover{color:var(--accent)}
+.list-table th .sort-arrow{font-size:9px;margin-left:4px;opacity:.4}
+.list-table th.sorted .sort-arrow{opacity:1;color:var(--accent)}
+.list-table td{
+  font-size:12px;padding:8px 12px;
+  border-bottom:1px solid var(--border-dim);
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:200px;
+}
+.list-table tr{cursor:pointer;transition:background .15s}
+.list-table tr:hover td{background:var(--accent-bg)}
+.list-table tr .row-avatar{
+  width:24px;height:24px;border-radius:6px;font-size:9px;
+  background:var(--accent-bg);border:1px solid var(--accent);
+  display:inline-flex;align-items:center;justify-content:center;
+  font-family:var(--font-mono);font-weight:600;color:var(--accent);
+  vertical-align:middle;margin-right:8px;overflow:hidden;
+}
+.list-table tr .row-avatar img{width:100%;height:100%;object-fit:cover;border-radius:inherit}
+.list-table tr .row-status{display:inline-block;width:7px;height:7px;border-radius:50%;vertical-align:middle}
+.list-table tr .row-status.active{background:var(--green)}
+.list-table tr .row-status.inactive{background:var(--text-muted);opacity:.3}
+
+.bench{margin-top:48px;padding-top:24px;border-top:1px solid var(--border-dim);text-align:center}
+.bench-label{font-family:var(--font-mono);font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:.14em;color:var(--text-muted);margin-bottom:16px}
+.bench-grid{display:flex;flex-wrap:wrap;justify-content:center;gap:16px}
+.bench-grid .agent-node{width:280px}
+
+.empty-org{text-align:center;padding:80px 20px;color:var(--text-muted)}
+.empty-org-icon{font-size:48px;opacity:.3;margin-bottom:12px}
+.empty-org-text{font-size:14px;font-weight:500;margin-bottom:4px}
+.empty-org-sub{font-size:12px;opacity:.6}
+
+.modal-overlay{
+  position:fixed;inset:0;z-index:1000;
+  background:rgba(0,0,0,0.6);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);
+  display:none;align-items:center;justify-content:center;animation:fadeIn .2s ease-out;
+}
+.modal-overlay.show{display:flex}
+@keyframes fadeIn{from{opacity:0}to{opacity:1}}
+
+.modal{
+  width:580px;max-width:94vw;max-height:88vh;overflow-y:auto;
+  background:var(--bg-surface);border:1px solid var(--border-glow);
+  border-radius:16px;padding:0;
+  box-shadow:0 8px 40px rgba(0,0,0,0.4),0 0 60px rgba(34,211,238,0.06);
+  animation:modalIn .25s ease-out;
+}
+@keyframes modalIn{from{opacity:0;transform:scale(.96) translateY(8px)}to{opacity:1;transform:none}}
+
+.modal-header{display:flex;align-items:center;justify-content:space-between;padding:20px 24px 16px;border-bottom:1px solid var(--border-dim)}
+.modal-title{font-family:var(--font-display);font-size:18px;font-weight:700}
+.modal-close{
+  width:32px;height:32px;border-radius:8px;border:1px solid var(--border-dim);
+  background:transparent;color:var(--text-muted);cursor:pointer;
+  display:flex;align-items:center;justify-content:center;font-size:16px;transition:all .2s;
+}
+.modal-close:hover{border-color:var(--border-glow);color:var(--text-secondary)}
+
+.modal-tabs{display:flex;border-bottom:1px solid var(--border-dim);padding:0 24px}
+.modal-tab{
+  font-family:var(--font-sans);font-size:13px;font-weight:600;
+  color:var(--text-muted);background:none;border:none;
+  padding:12px 16px;cursor:pointer;position:relative;transition:color .2s;
+}
+.modal-tab:hover{color:var(--text-secondary)}
+.modal-tab.active{color:var(--accent)}
+.modal-tab.active::after{content:'';position:absolute;bottom:-1px;left:8px;right:8px;height:2px;background:var(--accent);border-radius:1px}
+.modal-tab-content{display:none}
+.modal-tab-content.active{display:block}
+
+.modal-body{padding:20px 24px}
+
+.avatar-picker-section{margin-bottom:16px}
+.avatar-picker-preview{display:flex;align-items:center;gap:12px;margin-bottom:8px}
+.avatar-picker-thumb{width:48px;height:48px;border-radius:12px;background:var(--accent-bg);border:1px solid var(--border-dim);display:flex;align-items:center;justify-content:center;font-family:var(--font-mono);font-size:16px;font-weight:700;color:var(--accent);overflow:hidden;flex-shrink:0}
+.avatar-picker-thumb img{width:100%;height:100%;object-fit:cover;border-radius:inherit}
+.avatar-picker-btn{font-size:12px;padding:4px 12px;border-radius:6px;border:1px solid var(--border-dim);background:transparent;color:var(--text-secondary);cursor:pointer;transition:all .2s}
+.avatar-picker-btn:hover{border-color:var(--accent);color:var(--accent)}
+.avatar-picker-grid{display:none;grid-template-columns:repeat(10,1fr);gap:6px;padding:10px;background:var(--bg-surface);border:1px solid var(--border-dim);border-radius:10px;max-height:240px;overflow-y:auto;margin-top:8px}
+.avatar-picker-grid.open{display:grid}
+.avatar-picker-grid .avatar-option{width:100%;aspect-ratio:1;border-radius:8px;border:2px solid transparent;cursor:pointer;overflow:hidden;transition:all .15s;background:var(--bg-card)}
+.avatar-picker-grid .avatar-option:hover{border-color:var(--accent);transform:scale(1.08)}
+.avatar-picker-grid .avatar-option.selected{border-color:var(--accent);box-shadow:0 0 8px rgba(34,211,238,0.3)}
+.avatar-picker-grid .avatar-option img{width:100%;height:100%;object-fit:cover;border-radius:6px}
+
+.form-group{margin-bottom:16px}
+.form-label{display:block;font-family:var(--font-mono);font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:.08em;color:var(--text-muted);margin-bottom:6px}
+.form-input{
+  width:100%;padding:10px 14px;border-radius:10px;
+  border:1px solid var(--border-dim);background:var(--bg-input);
+  color:var(--text-primary);font-family:var(--font-sans);font-size:13px;
+  outline:none;transition:border-color .2s;
+}
+.form-input:focus{border-color:var(--accent)}
+.form-input::placeholder{color:var(--text-muted)}
+.form-input:read-only{opacity:.6;cursor:not-allowed}
+.form-hint{font-size:11px;color:var(--text-muted);margin-top:4px}
+.form-row{display:flex;gap:12px}
+.form-row .form-group{flex:1}
+.form-section{font-family:var(--font-mono);font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:.12em;color:var(--accent);margin:20px 0 12px;padding-bottom:6px;border-bottom:1px solid var(--border-dim)}
+.checkbox-group{display:flex;flex-wrap:wrap;gap:6px}
+.checkbox-pill{
+  font-family:var(--font-mono);font-size:10px;font-weight:500;
+  padding:5px 10px;border-radius:6px;cursor:pointer;
+  border:1px solid var(--border-dim);background:transparent;
+  color:var(--text-muted);transition:all .2s;user-select:none;
+}
+.checkbox-pill:hover{border-color:var(--border-glow);color:var(--text-secondary)}
+.checkbox-pill.checked{border-color:var(--accent);background:var(--accent-bg);color:var(--accent)}
+
+.modal-footer{display:flex;justify-content:space-between;align-items:center;padding:16px 24px 20px;border-top:1px solid var(--border-dim)}
+.modal-footer-left{display:flex;flex-direction:column;gap:4px}
+.modal-footer-hint{font-size:11px;color:var(--text-muted)}
+.btn-delete{
+  padding:6px 14px;border-radius:8px;border:1px solid rgba(239,68,68,0.3);
+  background:rgba(239,68,68,0.08);color:#ef4444;cursor:pointer;
+  font-family:var(--font-sans);font-size:11px;font-weight:600;transition:all .2s;align-self:flex-start;
+}
+.btn-delete:hover{background:rgba(239,68,68,0.15);border-color:rgba(239,68,68,0.5)}
+
+.delete-overlay{position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,0.7);backdrop-filter:blur(4px);display:flex;align-items:center;justify-content:center;z-index:2000}
+.delete-overlay.hidden{display:none}
+.delete-modal{background:var(--bg-surface);border:1px solid rgba(239,68,68,0.3);border-radius:16px;padding:32px;max-width:440px;width:90%;box-shadow:0 8px 32px rgba(239,68,68,0.1)}
+.delete-warning-icon{font-size:48px;text-align:center;margin-bottom:8px}
+.delete-title{font-size:18px;font-weight:700;text-align:center;color:#ef4444;margin-bottom:16px}
+.delete-body{font-size:13px;color:var(--text-secondary);line-height:1.6}
+.delete-body ul{margin:8px 0 12px 20px}
+.delete-body li{margin:4px 0}
+.delete-irreversible{color:#ef4444;font-weight:600;margin:12px 0}
+.delete-alias-hint{text-align:center;font-family:var(--font-mono);font-size:16px;font-weight:700;color:var(--text-primary);margin:8px 0;padding:6px;background:var(--bg-input);border-radius:6px}
+.delete-input{width:100%;padding:10px 14px;border:2px solid var(--border-dim);border-radius:8px;background:var(--bg-input);color:var(--text-primary);font-family:var(--font-mono);font-size:14px;text-align:center;transition:border-color .2s;margin-top:8px}
+.delete-input:focus{outline:none;border-color:rgba(239,68,68,0.5)}
+.delete-actions{display:flex;gap:12px;margin-top:20px;justify-content:flex-end}
+.btn-cancel{padding:10px 20px;border-radius:10px;border:1px solid var(--border-dim);background:transparent;color:var(--text-secondary);cursor:pointer;font-family:var(--font-sans);font-size:13px;font-weight:500}
+.btn-cancel:hover{border-color:var(--border-glow);color:var(--text-primary)}
+.btn-confirm-delete{padding:10px 20px;border-radius:10px;border:none;background:#ef4444;color:#fff;cursor:pointer;font-family:var(--font-sans);font-size:13px;font-weight:700;transition:all .2s;opacity:0.4}
+.btn-confirm-delete:disabled{cursor:not-allowed;opacity:0.4}
+.btn-confirm-delete:not(:disabled){opacity:1}
+.btn-confirm-delete:not(:disabled):hover{background:#dc2626}
+
+.mcp-key-card{display:flex;align-items:center;gap:10px;padding:10px 14px;margin:6px 0;border-radius:10px;background:var(--bg-input);border:1px solid var(--border-dim);font-size:13px;transition:border-color .2s}
+.mcp-key-card.connected{border-color:rgba(74,222,128,0.3)}
+.mcp-key-name{font-weight:600;color:var(--text-primary);min-width:100px}
+.mcp-key-status{font-size:11px;padding:2px 8px;border-radius:6px;font-weight:500}
+.mcp-key-status.ok{background:var(--green-bg);color:var(--green)}
+.mcp-key-status.missing{background:var(--amber-bg);color:var(--amber)}
+.mcp-key-input{flex:1;padding:6px 10px;border-radius:6px;border:1px solid var(--border-dim);background:var(--bg-input);color:var(--text-primary);font-family:var(--font-mono);font-size:11px}
+.mcp-key-input:focus{outline:none;border-color:var(--accent)}
+.mcp-key-btn{padding:4px 12px;border-radius:6px;border:1px solid var(--border-glow);background:var(--accent-bg);color:var(--accent);cursor:pointer;font-size:11px;font-weight:600;white-space:nowrap;transition:all .2s}
+.mcp-key-btn:hover{background:var(--accent);color:#000}
+.mcp-key-btn.oauth{border-color:rgba(66,133,244,0.3);background:rgba(66,133,244,0.1);color:#4285F4}
+.mcp-key-btn.oauth:hover{background:#4285F4;color:#fff}
+.mcp-key-btn.disconnect{border-color:rgba(239,68,68,0.3);background:rgba(239,68,68,0.08);color:#ef4444;font-size:10px}
+.mcp-key-btn.disconnect:hover{background:#ef4444;color:#fff}
+.mcp-accordion{margin:4px 0;border-radius:10px;border:1px solid var(--border-dim);overflow:hidden;transition:border-color .2s}
+.mcp-accordion:hover{border-color:var(--border-glow)}
+.mcp-accordion-header{display:flex;align-items:center;gap:8px;padding:10px 14px;cursor:pointer;background:var(--bg-input);user-select:none;transition:background .2s}
+.mcp-accordion-header:hover{background:rgba(139,92,246,0.05)}
+.mcp-accordion-arrow{font-size:10px;color:var(--text-muted);transition:transform .2s;width:12px}
+.mcp-accordion.open .mcp-accordion-arrow{transform:rotate(90deg)}
+.mcp-accordion-name{font-weight:600;font-size:13px;color:var(--text-primary);flex:1}
+.mcp-accordion-summary{font-size:11px;color:var(--text-muted);font-family:var(--font-mono)}
+.mcp-accordion-body{display:none;padding:4px 14px 10px;background:var(--bg-deep)}
+.mcp-accordion.open .mcp-accordion-body{display:block}
+.mcp-category-label{font-family:var(--font-mono);font-size:11px;font-weight:600;color:var(--accent-soft);margin:10px 0 4px;padding:0 4px;letter-spacing:0.03em}
+
+.mcp-auth-modal{width:420px;max-width:92vw;background:var(--bg-surface);border:1px solid var(--border-glow);border-radius:16px;padding:0;box-shadow:0 8px 40px rgba(0,0,0,0.4),0 0 60px rgba(34,211,238,0.06);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);animation:modalIn .25s ease-out}
+.mcp-auth-modal .modal-header{display:flex;align-items:center;justify-content:space-between;padding:20px 24px 16px;border-bottom:1px solid var(--border-dim)}
+.mcp-auth-modal .modal-title{font-family:var(--font-display);font-size:16px;font-weight:700}
+.mcp-auth-modal .mcp-auth-body{padding:20px 24px}
+.mcp-auth-modal .mcp-auth-body .form-group{margin-bottom:14px}
+.mcp-auth-modal .mcp-auth-body .form-label{display:block;font-size:12px;font-weight:600;color:var(--text-secondary);margin-bottom:6px}
+.mcp-auth-modal .mcp-auth-body .form-input{width:100%;padding:8px 12px;border-radius:8px;border:1px solid var(--border-dim);background:var(--bg-input);color:var(--text-primary);font-family:var(--font-mono);font-size:12px;transition:border-color .2s}
+.mcp-auth-modal .mcp-auth-body .form-input:focus{outline:none;border-color:var(--accent)}
+.mcp-auth-modal .mcp-auth-actions{display:flex;justify-content:flex-end;gap:10px;padding:16px 24px;border-top:1px solid var(--border-dim)}
+.mcp-auth-modal .btn-cancel{padding:8px 18px;border-radius:8px;border:1px solid var(--border-dim);background:transparent;color:var(--text-secondary);cursor:pointer;font-size:13px;font-weight:500;transition:all .2s}
+.mcp-auth-modal .btn-cancel:hover{border-color:var(--border-glow);color:var(--text-primary)}
+.mcp-auth-modal .btn-save{padding:8px 18px;border-radius:8px;border:none;background:var(--accent);color:#000;cursor:pointer;font-size:13px;font-weight:600;transition:all .2s}
+.mcp-auth-modal .btn-save:hover{filter:brightness(1.1)}
+.mcp-auth-modal .btn-danger{padding:8px 18px;border-radius:8px;border:none;background:#ef4444;color:#fff;cursor:pointer;font-size:13px;font-weight:600;transition:all .2s}
+.mcp-auth-modal .btn-danger:hover{filter:brightness(1.1)}
+.mcp-auth-modal .mcp-auth-hint{font-size:11px;color:var(--text-muted);margin-top:4px}
+.mcp-auth-modal .mcp-oauth-link{display:inline-flex;align-items:center;gap:6px;padding:6px 14px;border-radius:6px;border:1px solid rgba(66,133,244,0.3);background:rgba(66,133,244,0.1);color:#4285F4;cursor:pointer;font-size:12px;font-weight:600;text-decoration:none;transition:all .2s;margin-bottom:12px}
+.mcp-auth-modal .mcp-oauth-link:hover{background:#4285F4;color:#fff}
+
+.btn-save{padding:10px 24px;border-radius:10px;border:none;background:var(--accent);color:#fff;cursor:pointer;font-family:var(--font-sans);font-size:13px;font-weight:600;transition:all .2s}
+.btn-save:hover{filter:brightness(1.1);transform:scale(1.02)}
+.btn-save:disabled{opacity:.5;cursor:not-allowed;transform:none}
+
+.org-entry{display:flex;gap:8px;align-items:center;margin-bottom:8px}
+.org-entry input{padding:8px 10px;border-radius:8px;border:1px solid var(--border-dim);background:var(--bg-input);color:var(--text-primary);font-family:var(--font-mono);font-size:12px;outline:none;flex:1}
+.entry-remove{width:28px;height:28px;border-radius:6px;border:1px solid var(--border-dim);background:transparent;color:var(--text-muted);cursor:pointer;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:14px}
+.entry-remove:hover{border-color:rgba(239,68,68,.3);color:#ef4444}
+.add-entry-btn{font-family:var(--font-mono);font-size:11px;color:var(--accent);background:none;border:none;cursor:pointer;padding:4px 0}
+.add-entry-btn:hover{text-decoration:underline}
+
+.schedule-entry{padding:14px;margin-bottom:10px;background:var(--bg-input);border:1px solid var(--border-dim);border-radius:10px;position:relative}
+.schedule-entry .entry-remove{position:absolute;top:10px;right:10px}
+.schedule-row{display:flex;gap:8px;align-items:center;margin-bottom:8px;flex-wrap:wrap}
+.schedule-select{padding:7px 10px;border-radius:7px;border:1px solid var(--border-dim);background:var(--bg-deep);color:var(--text-primary);font-family:var(--font-mono);font-size:11px;outline:none;cursor:pointer}
+.schedule-label{font-family:var(--font-sans);font-size:12px;color:var(--text-secondary)}
+.schedule-msg{width:100%;padding:8px 12px;border-radius:8px;border:1px solid var(--border-dim);background:var(--bg-deep);color:var(--text-primary);font-family:var(--font-sans);font-size:12px;outline:none;resize:none;min-height:36px}
+.schedule-msg:focus,.schedule-select:focus{border-color:var(--accent)}
+.schedule-preview{font-family:var(--font-mono);font-size:10px;color:var(--text-muted);margin-top:6px}
+.no-schedules,.no-goals{text-align:center;padding:24px;color:var(--text-muted);font-size:13px}
+
+.goal-entry{padding:14px;margin-bottom:10px;background:var(--bg-input);border:1px solid var(--border-dim);border-radius:10px;position:relative}
+.goal-entry .entry-remove{position:absolute;top:10px;right:10px}
+.goal-row{display:flex;gap:8px;align-items:center;margin-bottom:8px;flex-wrap:wrap}
+.goal-input{width:100%;padding:8px 12px;border-radius:8px;border:1px solid var(--border-dim);background:var(--bg-deep);color:var(--text-primary);font-family:var(--font-sans);font-size:12px;outline:none;box-sizing:border-box}
+.goal-input:focus{border-color:var(--accent)}
+.goal-input::placeholder{color:var(--text-muted)}
+.goal-textarea{width:100%;padding:8px 12px;border-radius:8px;border:1px solid var(--border-dim);background:var(--bg-deep);color:var(--text-primary);font-family:var(--font-sans);font-size:12px;outline:none;resize:none;min-height:48px}
+.goal-textarea:focus{border-color:var(--accent)}
+.goal-textarea::placeholder{color:var(--text-muted)}
+.goal-label{font-family:var(--font-mono);font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:.06em;color:var(--text-muted);margin-bottom:4px;display:block}
+.goal-toggle{display:flex;align-items:center;gap:6px;cursor:pointer;font-family:var(--font-mono);font-size:11px;color:var(--text-secondary)}
+.goal-toggle input{cursor:pointer}
+.goal-select{padding:7px 10px;border-radius:7px;border:1px solid var(--border-dim);background:var(--bg-deep);color:var(--text-primary);font-family:var(--font-mono);font-size:11px;outline:none;cursor:pointer}
+.goal-select:focus{border-color:var(--accent)}
+
+::-webkit-scrollbar{width:6px}
+::-webkit-scrollbar-track{background:transparent}
+::-webkit-scrollbar-thumb{background:var(--border-glow);border-radius:3px}
+</style>
+</head>
+<body>
+<div class="topbar">
+  <a href="/" style="display:flex;align-items:center;gap:10px;margin-right:28px;text-decoration:none">
+    <img class="logo-mark" src="/MyAIforOne-logomark-transparent.svg" alt="MyAIforOne">
+    <span class="logo-text">MyAIforOne Lite</span>
+  </a>
+  <div class="tab-group">
+    <a class="tab-btn" href="/">Chat</a>
+    <a class="tab-btn active" href="/org">Agents</a>
+  </div>
+  <div class="topbar-right">
+    <button class="theme-toggle" onclick="toggleTheme()" title="Toggle theme">&#9728;</button>
+  </div>
+</div>
+
+<div class="sub-nav" id="subNav"></div>
+
+<div class="canvas" id="canvas"></div>
+
+<!-- Agent Modal (create + edit) -->
+<div class="modal-overlay" id="agentModal">
+  <div class="modal">
+    <div class="modal-header">
+      <div class="modal-title" id="modalTitle">New Agent</div>
+      <button class="modal-close" onclick="closeModal()">&#10005;</button>
+    </div>
+    <div class="modal-tabs">
+      <button class="modal-tab active" onclick="switchModalTab('overview',this)">Overview</button>
+      <button class="modal-tab" onclick="switchModalTab('skills',this)">Skills</button>
+      <button class="modal-tab" onclick="switchModalTab('mcps',this)">MCPs</button>
+      <button class="modal-tab" onclick="switchModalTab('schedules',this)">Schedules</button>
+      <button class="modal-tab" onclick="switchModalTab('goals',this)">Goals</button>
+      <button class="modal-tab" onclick="switchModalTab('config',this)">Config</button>
+    </div>
+
+    <!-- Overview Tab -->
+    <div class="modal-tab-content active" id="tab-overview">
+    <div class="modal-body">
+      <div class="form-row">
+        <div class="form-group">
+          <label class="form-label">Agent ID</label>
+          <input class="form-input" id="f-agentId" placeholder="my-agent" oninput="autoAlias()">
+          <div class="form-hint">Lowercase, hyphens only.</div>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Mention Alias</label>
+          <input class="form-input" id="f-alias" placeholder="@myagent">
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">Name</label>
+        <input class="form-input" id="f-name" placeholder="My Agent">
+      </div>
+
+      <!-- Avatar Picker -->
+      <div class="avatar-picker-section">
+        <label class="form-label">Avatar</label>
+        <div class="avatar-picker-preview">
+          <div class="avatar-picker-thumb" id="avatarPreview">?</div>
+          <button type="button" class="avatar-picker-btn" onclick="toggleAvatarGrid()">Choose Avatar</button>
+          <button type="button" class="avatar-picker-btn" onclick="clearAvatar()" style="color:var(--text-muted)">Clear</button>
+          <input type="hidden" id="f-avatar" value="">
+        </div>
+        <div class="avatar-picker-grid" id="avatarGrid"></div>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">Description</label>
+        <input class="form-input" id="f-desc" placeholder="What does this agent do?">
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">Instructions (CLAUDE.md)</label>
+        <textarea class="form-input" id="f-instructions" rows="6" placeholder="System prompt / instructions for this agent..." style="font-family:var(--font-mono);font-size:12px;resize:vertical;min-height:200px"></textarea>
+        <div class="form-hint">Agent system prompt. Written to the agent's CLAUDE.md file.</div>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">Agent Class</label>
+        <select class="form-input" id="f-agentClass">
+          <option value="standard">Standard</option>
+          <option value="builder">Builder</option>
+        </select>
+        <div class="form-hint">Standard (default), Builder (app developer agents).</div>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">Executor</label>
+        <select class="form-input" id="f-executor">
+          <option value="">Platform Default</option>
+          <option value="claude">Claude CLI</option>
+          <option value="anthropic">Anthropic Direct</option>
+          <option value="openai">OpenAI</option>
+          <option value="grok">xAI Grok</option>
+          <option value="gemini">Google Gemini</option>
+          <option value="groq">Groq</option>
+          <option value="together">Together AI</option>
+          <option value="mistral">Mistral</option>
+          <option value="ollama">Ollama Local</option>
+        </select>
+        <div class="form-hint">Override the platform default executor.</div>
+      </div>
+
+      <div class="form-section">Organization</div>
+      <div id="orgEntries"></div>
+      <button class="add-entry-btn" onclick="addOrgEntry()">+ Add Org Entry</button>
+
+      <!-- Heartbeat (collapsed by default) -->
+      <div class="form-section" style="margin-top:24px;cursor:pointer;user-select:none;display:flex;align-items:center;gap:8px" onclick="document.getElementById('heartbeat-collapse').classList.toggle('hidden');this.querySelector('.collapse-arrow').textContent=document.getElementById('heartbeat-collapse').classList.contains('hidden')?'&#9656;':'&#9662;'">
+        <span class="collapse-arrow" style="font-size:11px;color:var(--text-muted)">&#9656;</span>Heartbeat
+        <div class="checkbox-pill" id="f-heartbeatEnabled" onclick="event.stopPropagation();togglePill(this)" style="margin-left:auto;font-size:10px">Enabled</div>
+      </div>
+      <div id="heartbeat-collapse" class="hidden">
+        <div class="form-group">
+          <label class="form-label">Heartbeat Instructions</label>
+          <textarea class="form-input" id="f-heartbeatInstructions" rows="4" style="font-family:var(--font-mono);font-size:12px;resize:vertical;min-height:80px">Check my tasks and work on the highest priority item. If no tasks are pending, report status.</textarea>
+          <div class="form-hint">What the agent does during a heartbeat check.</div>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Schedule</label>
+          <div id="heartbeatScheduleWrap" class="schedule-entry" style="border:none;padding:0;margin:0;background:none">
+            <div class="schedule-row" style="display:flex;align-items:center;gap:8px;flex-wrap:wrap">
+              <span class="schedule-label">Every</span>
+              <select class="schedule-select" id="hb-frequency" onchange="updateHeartbeatFields()">
+                <option value="">Off (manual only)</option>
+                <option value="15min">15 Minutes</option>
+                <option value="30min">30 Minutes</option>
+                <option value="hour">Hour</option>
+                <option value="day">Day</option>
+                <option value="weekdays">Weekday (Mon-Fri)</option>
+                <option value="week">Week</option>
+              </select>
+              <span class="schedule-label" id="hb-day-label" style="display:none">on</span>
+              <select class="schedule-select" id="hb-days" style="display:none">
+                <option value="1">Monday</option><option value="2">Tuesday</option><option value="3">Wednesday</option>
+                <option value="4">Thursday</option><option value="5">Friday</option><option value="6">Saturday</option><option value="0">Sunday</option>
+              </select>
+              <span class="schedule-label" id="hb-time-label" style="display:none">at</span>
+              <select class="schedule-select" id="hb-hour" style="display:none">
+                <option value="12">12</option><option value="1">1</option><option value="2">2</option><option value="3">3</option>
+                <option value="4">4</option><option value="5">5</option><option value="6">6</option><option value="7">7</option>
+                <option value="8">8</option><option value="9" selected>9</option><option value="10">10</option><option value="11">11</option>
+              </select>
+              <span class="schedule-label" id="hb-colon" style="display:none">:</span>
+              <select class="schedule-select" id="hb-min" style="display:none">
+                <option value="0">00</option><option value="15">15</option><option value="30">30</option><option value="45">45</option>
+              </select>
+              <select class="schedule-select" id="hb-ampm" style="display:none">
+                <option value="AM">AM</option><option value="PM">PM</option>
+              </select>
+            </div>
+          </div>
+          <div class="form-hint">Leave "Off" for manual-only heartbeats.</div>
+        </div>
+      </div>
+
+      <!-- Wiki Sync (collapsed by default) -->
+      <div class="form-section" style="margin-top:24px;cursor:pointer;user-select:none;display:flex;align-items:center;gap:8px" onclick="document.getElementById('wikisync-collapse').classList.toggle('hidden');this.querySelector('.collapse-arrow').textContent=document.getElementById('wikisync-collapse').classList.contains('hidden')?'&#9656;':'&#9662;'">
+        <span class="collapse-arrow" style="font-size:11px;color:var(--text-muted)">&#9656;</span>Wiki Sync
+        <div class="checkbox-pill" id="f-wikiSyncEnabled" onclick="event.stopPropagation();togglePill(this)" style="margin-left:auto;font-size:10px">Enabled</div>
+      </div>
+      <div id="wikisync-collapse" class="hidden">
+        <div class="form-group">
+          <label class="form-label">Wiki Sync Instructions</label>
+          <textarea class="form-input" id="f-wikiSyncInstructions" rows="4" style="font-family:var(--font-mono);font-size:12px;resize:vertical;min-height:80px">Review learned.md for new facts. Cross-check against context.md. Merge verified facts. Flag contradictions but don't overwrite — leave a note for human review.</textarea>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Schedule</label>
+          <div id="wikiSyncScheduleWrap" class="schedule-entry" style="border:none;padding:0;margin:0;background:none">
+            <div class="schedule-row" style="display:flex;align-items:center;gap:8px;flex-wrap:wrap">
+              <span class="schedule-label">Every</span>
+              <select class="schedule-select" id="ws-frequency" onchange="updateWikiSyncFields()">
+                <option value="">Off (manual only)</option>
+                <option value="15min">15 Minutes</option>
+                <option value="30min">30 Minutes</option>
+                <option value="hour">Hour</option>
+                <option value="day" selected>Day</option>
+                <option value="weekdays">Weekday (Mon-Fri)</option>
+                <option value="week">Week</option>
+              </select>
+              <span class="schedule-label" id="ws-day-label" style="display:none">on</span>
+              <select class="schedule-select" id="ws-days" style="display:none">
+                <option value="1">Monday</option><option value="2">Tuesday</option><option value="3">Wednesday</option>
+                <option value="4">Thursday</option><option value="5">Friday</option><option value="6">Saturday</option><option value="0">Sunday</option>
+              </select>
+              <span class="schedule-label" id="ws-time-label">at</span>
+              <select class="schedule-select" id="ws-hour">
+                <option value="12">12</option><option value="1">1</option><option value="2">2</option><option value="3">3</option>
+                <option value="4">4</option><option value="5">5</option><option value="6">6</option><option value="7">7</option>
+                <option value="8">8</option><option value="9">9</option><option value="10">10</option><option value="11">11</option>
+              </select>
+              <span class="schedule-label" id="ws-colon">:</span>
+              <select class="schedule-select" id="ws-min">
+                <option value="0" selected>00</option><option value="15">15</option><option value="30">30</option><option value="45">45</option>
+              </select>
+              <select class="schedule-select" id="ws-ampm">
+                <option value="AM" selected>AM</option><option value="PM">PM</option>
+              </select>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    </div>
+
+    <!-- Skills Tab -->
+    <div class="modal-tab-content" id="tab-skills">
+    <div class="modal-body">
+      <div class="form-group" id="defaultSkillsSection" style="display:none">
+        <label class="form-label" style="color:var(--text-muted);font-size:11px">Global Default Skills</label>
+        <div id="defaultSkillsList" style="display:flex;flex-wrap:wrap;gap:4px;padding:4px 0"></div>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Skills</label>
+        <div class="checkbox-group" id="f-skills"></div>
+        <div class="form-hint" id="f-skills-hint">Loading installed skills...</div>
+      </div>
+      <div class="form-section">Tools</div>
+      <div class="form-group">
+        <div class="checkbox-group" id="f-tools">
+          <div class="checkbox-pill checked" data-val="Read" onclick="togglePill(this)">Read</div>
+          <div class="checkbox-pill checked" data-val="Edit" onclick="togglePill(this)">Edit</div>
+          <div class="checkbox-pill checked" data-val="Write" onclick="togglePill(this)">Write</div>
+          <div class="checkbox-pill checked" data-val="Glob" onclick="togglePill(this)">Glob</div>
+          <div class="checkbox-pill checked" data-val="Grep" onclick="togglePill(this)">Grep</div>
+          <div class="checkbox-pill checked" data-val="Bash" onclick="togglePill(this)">Bash</div>
+          <div class="checkbox-pill checked" data-val="WebFetch" onclick="togglePill(this)">WebFetch</div>
+          <div class="checkbox-pill checked" data-val="WebSearch" onclick="togglePill(this)">WebSearch</div>
+        </div>
+      </div>
+    </div>
+    </div>
+
+    <!-- MCPs Tab -->
+    <div class="modal-tab-content" id="tab-mcps">
+    <div class="modal-body">
+      <div class="form-section">Available MCPs</div>
+      <div class="form-group">
+        <div class="checkbox-group" id="f-mcps"></div>
+        <div class="form-hint" id="f-mcps-hint">Loading available MCPs...</div>
+      </div>
+      <div class="form-section" id="mcpKeysSection" style="display:none">MCP Connections</div>
+      <div id="mcpKeysArea" style="display:none">
+        <div class="form-hint">Connect API keys or authorize services for the selected MCPs.</div>
+        <div id="mcpKeysList"></div>
+      </div>
+    </div>
+    </div>
+
+    <!-- Schedules Tab -->
+    <div class="modal-tab-content" id="tab-schedules">
+    <div class="modal-body">
+      <div class="form-section">Scheduled Messages</div>
+      <div id="scheduleEntries">
+        <div class="no-schedules" id="noSchedules">No scheduled messages yet</div>
+      </div>
+      <button class="add-entry-btn" onclick="addScheduleEntry()">+ Add Schedule</button>
+    </div>
+    </div>
+
+    <!-- Goals Tab -->
+    <div class="modal-tab-content" id="tab-goals">
+    <div class="modal-body">
+      <div id="goalEntries">
+        <div class="no-goals" id="noGoals">No goals yet</div>
+      </div>
+      <button class="add-entry-btn" onclick="addGoalEntry()">+ Add Goal</button>
+    </div>
+    </div>
+
+    <!-- Config Tab -->
+    <div class="modal-tab-content" id="tab-config">
+    <div class="modal-body">
+      <div class="form-group">
+        <label class="form-label">Workspace</label>
+        <input class="form-input" id="f-workspace" placeholder="~" value="~">
+        <div class="form-hint">Directory Claude can access.</div>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Agent Home</label>
+        <input class="form-input" id="f-agentHome" readonly style="opacity:.6;cursor:not-allowed;font-family:var(--font-mono);font-size:12px">
+        <div class="form-hint">Auto-derived directory where agent files live.</div>
+      </div>
+      <div class="form-section">Session</div>
+      <div class="form-group">
+        <div class="checkbox-group">
+          <div class="checkbox-pill checked" id="f-persistent" onclick="togglePill(this)">Persistent Session</div>
+          <div class="checkbox-pill" id="f-streaming" onclick="togglePill(this)">Streaming</div>
+          <div class="checkbox-pill checked" id="f-advancedMemory" onclick="togglePill(this)">Advanced Memory</div>
+          <div class="checkbox-pill" id="f-wiki" onclick="toggleWikiPill(this)">Wiki Learning</div>
+          <div class="checkbox-pill checked" id="f-autonomousCapable" onclick="togglePill(this)">Autonomous Capable</div>
+          <div class="checkbox-pill" id="f-autoCommit" onclick="togglePill(this)">Auto Commit</div>
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label class="form-label">Timeout (seconds)</label>
+          <input class="form-input" id="f-timeout" type="number" min="30" step="30" placeholder="14400" value="14400" style="font-family:var(--font-mono);font-size:12px">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Claude Account</label>
+          <select class="form-input" id="f-claudeAccount">
+            <option value="">Default</option>
+          </select>
+        </div>
+      </div>
+    </div>
+    </div>
+
+    <div class="modal-footer">
+      <div class="modal-footer-left">
+        <button class="btn-delete hidden" id="deleteBtn" onclick="showDeleteConfirm()">Delete Agent</button>
+        <div class="modal-footer-hint" id="modalHint">Agent files created in ~/Desktop/MyAIforOne Drive/PersonalAgents/</div>
+      </div>
+      <button class="btn-save" id="saveBtn" onclick="saveAgent()">Create Agent</button>
+    </div>
+  </div>
+</div>
+
+<!-- Delete Confirmation Modal -->
+<div class="delete-overlay hidden" id="deleteOverlay" onclick="hideDeleteConfirm()">
+  <div class="delete-modal" onclick="event.stopPropagation()">
+    <div class="delete-warning-icon">&#x26A0;</div>
+    <div class="delete-title">Delete Agent Permanently</div>
+    <div class="delete-body">
+      <p>This will <strong>permanently delete</strong> this agent including:</p>
+      <ul>
+        <li>All conversation history and memory</li>
+        <li>System prompt (CLAUDE.md)</li>
+        <li>All files in the agent's home directory</li>
+        <li>MCP keys and skills</li>
+        <li>Config entry</li>
+      </ul>
+      <p class="delete-irreversible">This action cannot be undone.</p>
+      <p>Type the agent's alias to confirm:</p>
+      <div class="delete-alias-hint" id="deleteAliasHint"></div>
+      <input type="text" class="delete-input" id="deleteConfirmInput" placeholder="@alias" oninput="checkDeleteInput()">
+    </div>
+    <div class="delete-actions">
+      <button class="btn-cancel" onclick="hideDeleteConfirm()">Cancel</button>
+      <button class="btn-confirm-delete" id="confirmDeleteBtn" onclick="executeDelete()" disabled>Delete Forever</button>
+    </div>
+  </div>
+</div>
+
+<!-- MCP Auth Modal -->
+<div class="modal-overlay" id="mcpAuthModal">
+  <div class="mcp-auth-modal" onclick="event.stopPropagation()">
+    <div class="modal-header">
+      <div class="modal-title" id="mcpAuthTitle">Add Account</div>
+      <button class="modal-close" onclick="closeMcpAuthModal()">&#10005;</button>
+    </div>
+    <div class="mcp-auth-body" id="mcpAuthBody"></div>
+    <div class="mcp-auth-actions" id="mcpAuthActions"></div>
+  </div>
+</div>
+
+<!-- Datalists for org autocomplete -->
+<datalist id="dl-orgs"></datalist>
+<datalist id="dl-functions"></datalist>
+<datalist id="dl-titles"></datalist>
+<datalist id="dl-aliases"></datalist>
+
+<script src="/auth.js"></script>
+<script src="/server-mode.js"></script>
+<script src="/lite-mode.js"></script>
+<script>
+// ─── JAVASCRIPT FOR ORG.HTML (LITE) ─────────────────────────────
+// This file is intentionally continued in a second script block below
+</script>
+<script>
+let agents = [];
+let viewMode = localStorage.getItem('orgViewMode') || 'compact';
+let orgs = [];
+let availableMcps = [];
+let availableSkills = [];
+let availableAccounts = [];
+let editingAgentId = null;
+
+// ─── Theme ─────────────────────────────────────────────────────
+function toggleTheme(){
+  var c = document.documentElement.getAttribute('data-theme') || 'dark';
+  var n = c === 'dark' ? 'light' : 'dark';
+  document.documentElement.setAttribute('data-theme', n);
+  localStorage.setItem('theme', n);
+  var btn = document.querySelector('.theme-toggle');
+  if(btn) btn.textContent = n === 'dark' ? '\u2600' : '\u263E';
+}
+(function(){
+  var t = localStorage.getItem('theme') || 'dark';
+  document.documentElement.setAttribute('data-theme', t);
+  var btn = document.querySelector('.theme-toggle');
+  if(btn) btn.textContent = t === 'dark' ? '\u2600' : '\u263E';
+})();
+
+// ─── Auto-open from URL params ─────────────────────────────────
+(function() {
+  const params = new URLSearchParams(window.location.search);
+  const editId = params.get('edit');
+  const tab = params.get('tab');
+  if (editId) {
+    setTimeout(() => {
+      openModal(editId).then(() => {
+        if (tab) {
+          const tabBtn = [...document.querySelectorAll('.modal-tab')].find(t => t.textContent.toLowerCase() === tab);
+          if (tabBtn) switchModalTab(tab, tabBtn);
+        }
+      });
+    }, 500);
+  }
+})();
+
+// ─── Data ──────────────────────────────────────────────────────
+async function fetchData() {
+  const dashRes = await fetch('/api/dashboard');
+  const data = await dashRes.json();
+  agents = data.agents;
+  agents.sort((a, b) => (a.name || a.id || '').localeCompare(b.name || b.id || ''));
+  availableAccounts = data.claudeAccounts || [];
+
+  // Collect unique orgs
+  const orgSet = new Set();
+  orgSet.add('All Agents');
+  for (const a of agents) {
+    for (const o of (a.org || [])) {
+      orgSet.add(o.organization);
+    }
+  }
+  orgs = [...orgSet];
+
+  // Populate dropdown
+  const select = document.getElementById('orgSelect');
+  const prev = select.value;
+  select.innerHTML = orgs.map(o => `<option value="${o}">${o}</option>`).join('');
+  if (prev && orgs.includes(prev)) select.value = prev;
+
+  buildDataLists();
+  renderOrg();
+}
+
+function buildDataLists() {
+  const orgNames = new Set();
+  const funcNames = new Set();
+  const titleNames = new Set();
+  const aliasNames = new Set();
+  for (const a of agents) {
+    for (const al of (a.aliases || [])) aliasNames.add(al);
+    for (const o of (a.org || [])) {
+      orgNames.add(o.organization);
+      if (o.function) funcNames.add(o.function);
+      if (o.title) titleNames.add(o.title);
+    }
+  }
+  document.getElementById('dl-orgs').innerHTML = [...orgNames].map(v => `<option value="${escapeHtml(v)}">`).join('');
+  document.getElementById('dl-functions').innerHTML = [...funcNames].map(v => `<option value="${escapeHtml(v)}">`).join('');
+  document.getElementById('dl-titles').innerHTML = [...titleNames].map(v => `<option value="${escapeHtml(v)}">`).join('');
+  document.getElementById('dl-aliases').innerHTML = [...aliasNames].map(v => `<option value="${escapeHtml(v)}">`).join('');
+}
+
+// ─── Search ────────────────────────────────────────────────────
+let searchQuery = '';
+
+function handleSearch() {
+  searchQuery = (document.getElementById('agentSearch')?.value || '').trim().toLowerCase();
+  if (searchQuery) document.getElementById('orgSelect').value = 'All Agents';
+  renderOrg();
+}
+
+function matchesSearch(agent) {
+  if (!searchQuery) return true;
+  const q = searchQuery;
+  const name = (agent.name || '').toLowerCase();
+  const alias = ((agent.aliases?.[0] || agent.mentionAliases?.[0]) || '').toLowerCase();
+  const title = ((agent.orgData?.title) || (agent.org?.[0]?.title) || '').toLowerCase();
+  const desc = (agent.description || '').toLowerCase();
+  return name.includes(q) || alias.includes(q) || title.includes(q) || desc.includes(q);
+}
+
+// ─── Render ────────────────────────────────────────────────────
+function renderOrg() {
+  const selected = document.getElementById('orgSelect').value;
+  const canvas = document.getElementById('canvas');
+
+  if (selected === 'All Agents') {
+    renderFlatGrid(canvas);
+    return;
+  }
+
+  // Find agents in this org
+  const nodesInOrg = [];
+  for (const a of agents) {
+    if (!matchesSearch(a)) continue;
+    const orgEntry = (a.org || []).find(o => o.organization === selected);
+    if (orgEntry) {
+      nodesInOrg.push({ ...a, orgData: orgEntry });
+    }
+  }
+
+  if (nodesInOrg.length === 0) {
+    canvas.innerHTML = `<div class="empty-org"><div class="empty-org-icon">&#9671;</div><div class="empty-org-text">No agents in ${escapeHtml(selected)}</div></div>`;
+    return;
+  }
+
+  // Compact view for single org
+  if (viewMode === 'compact') {
+    let html = renderOrgBanner(selected);
+    html += '<div class="compact-grid">';
+    for (const a of nodesInOrg.sort((a,b)=>(a.name||a.id||'').localeCompare(b.name||b.id||''))) {
+      html += renderCompactNode(a);
+    }
+    html += '</div>';
+    canvas.innerHTML = html;
+    return;
+  }
+
+  // List view for single org
+  if (viewMode === 'list') {
+    const fakeGroups = {}; fakeGroups[selected] = nodesInOrg;
+    const origFn = window.getFilteredAgents;
+    window.getFilteredAgents = () => ({ orgGroups: fakeGroups, noOrg: [] });
+    renderListView(canvas);
+    window.getFilteredAgents = origFn;
+    return;
+  }
+
+  // Grid/Hierarchy view: tree hierarchy
+  const aliasesInOrg = new Set(nodesInOrg.flatMap(n => n.aliases || []));
+  const roots = nodesInOrg.filter(n => !n.orgData.reportsTo || !aliasesInOrg.has(n.orgData.reportsTo));
+
+  const childMap = {};
+  for (const n of nodesInOrg) {
+    if (n.orgData.reportsTo && aliasesInOrg.has(n.orgData.reportsTo)) {
+      if (!childMap[n.orgData.reportsTo]) childMap[n.orgData.reportsTo] = [];
+      childMap[n.orgData.reportsTo].push(n);
+    }
+  }
+
+  const levels = [];
+  let currentLevel = roots;
+  const visited = new Set();
+  while (currentLevel.length > 0) {
+    levels.push(currentLevel);
+    for (const n of currentLevel) visited.add(n.id);
+    const nextLevel = [];
+    for (const node of currentLevel) {
+      for (const alias of (node.aliases || [])) {
+        if (childMap[alias]) {
+          for (const child of childMap[alias]) {
+            if (!visited.has(child.id)) nextLevel.push(child);
+          }
+        }
+      }
+    }
+    currentLevel = nextLevel;
+  }
+
+  let html = renderOrgBanner(selected);
+  html += '<div style="display:flex;flex-direction:column;align-items:center;gap:0;padding:0 20px 20px">';
+  for (let i = 0; i < levels.length; i++) {
+    if (i > 0) html += '<div class="level-connector"></div>';
+    const levelNodes = levels[i];
+    const deptGroups = {};
+    for (const node of levelNodes) {
+      const dept = node.orgData?.function || '';
+      if (!deptGroups[dept]) deptGroups[dept] = [];
+      deptGroups[dept].push(node);
+    }
+    const deptKeys = Object.keys(deptGroups);
+    const showZones = deptKeys.length > 1 && levelNodes.length > 2;
+
+    html += '<div style="display:flex;justify-content:center;gap:' + (showZones ? '16' : '24') + 'px;flex-wrap:wrap">';
+    if (showZones) {
+      for (const dept of deptKeys.sort()) {
+        const nodes = deptGroups[dept];
+        html += '<div class="dept-zone">';
+        if (dept) html += '<div class="dept-zone-label">' + escapeHtml(dept) + '</div>';
+        for (const node of nodes) html += renderNode(node, false, i === 0);
+        html += '</div>';
+      }
+    } else {
+      for (const node of levelNodes) html += renderNode(node, false, i === 0);
+    }
+    html += '</div>';
+  }
+  html += '</div>';
+  canvas.innerHTML = html;
+}
+
+function renderFlatGrid(canvas) {
+  if (viewMode === 'compact') return renderCompactGrid(canvas);
+  if (viewMode === 'list') return renderListView(canvas);
+
+  const { orgGroups, noOrg } = getFilteredAgents();
+  let html = '';
+  for (const orgName of Object.keys(orgGroups).sort()) {
+    html += renderOrgBanner(orgName);
+    html += '<div class="flat-grid">';
+    for (const a of [...orgGroups[orgName]].sort((a,b)=>(a.name||a.id||'').localeCompare(b.name||b.id||''))) {
+      html += renderNode(a);
+    }
+    html += '</div>';
+  }
+  noOrg.sort((a, b) => (a.name || a.id || '').localeCompare(b.name || b.id || ''));
+  if (noOrg.length > 0) {
+    html += '<div class="org-title-banner" style="opacity:.5">Unassigned</div>';
+    html += '<div class="flat-grid">';
+    for (const a of noOrg) html += renderNode(a);
+    html += '</div>';
+  }
+  canvas.innerHTML = html;
+}
+
+function getNodeAvatarContent(a, initials) {
+  const avatarId = a.avatar || a.icon;
+  if (avatarId && avatarId.startsWith('avatar-')) {
+    return `<img src="/avatars/${avatarId}.png" alt="${escapeHtml(a.name)}">`;
+  }
+  return initials;
+}
+
+function renderNode(a, dimmed, isLead) {
+  const initials = (a.aliases?.[0] || a.id).replace('@','').slice(0,2).toUpperCase();
+  const orgData = a.orgData || (a.org && a.org[0]);
+  const title = orgData?.title || '';
+  const func = orgData?.function || '';
+  const isActive = a.sessionActive;
+  const isRecent = a.lastMessage !== 'never' && (Date.now() - new Date(a.lastMessage).getTime()) < 3600000;
+  const hasAutomation = (a.activeGoals || 0) + (a.activeCron || 0) > 0;
+  const opacity = dimmed ? 'opacity:.5;' : '';
+  const leadClass = isLead ? ' is-lead' : '';
+
+  return `<div class="agent-node${leadClass}" style="${opacity};width:300px" data-agent-id="${a.id}">
+    <div class="node-avatar ${(isActive || isRecent) ? 'active' : ''}${hasAutomation ? ' automated' : ''}">${getNodeAvatarContent(a, initials)}</div>
+    <div class="node-info">
+      ${title ? `<div class="node-title">${escapeHtml(title)}</div>` : ''}
+      <div class="node-name">${escapeHtml(a.name)}</div>
+      <div class="node-alias">${a.aliases?.[0] || a.id}</div>
+      ${func ? `<div style="margin-top:4px"><span class="node-func-tag">${escapeHtml(func)}</span></div>` : ''}
+      <div class="node-stats">
+        <span>${a.messageCount} msgs</span>
+        <span>${a.persistent ? 'persistent' : 'single-shot'}</span>
+      </div>
+    </div>
+    <div class="node-actions">
+      <button class="node-btn" onclick="event.stopPropagation();window.location='/ui#${a.id}'">Chat</button>
+      <button class="node-btn" onclick="event.stopPropagation();openModal('${a.id}')">Config</button>
+    </div>
+  </div>`;
+}
+
+// ─── View Mode ──────────────────────────────────────────────────
+function setViewMode(mode) {
+  viewMode = mode;
+  localStorage.setItem('orgViewMode', mode);
+  document.querySelectorAll('.view-toggle-btn').forEach(b => b.classList.toggle('active', b.dataset.view === mode));
+  renderOrg();
+}
+
+// ─── Compact Node ───────────────────────────────────────────────
+function renderCompactNode(a) {
+  const initials = (a.aliases?.[0] || a.id).replace('@','').slice(0,2).toUpperCase();
+  const isActive = a.sessionActive || (a.lastMessage !== 'never' && (Date.now() - new Date(a.lastMessage).getTime()) < 3600000);
+
+  return `<div class="compact-node" data-agent-id="${a.id}" onclick="openModal('${a.id}')">
+    <div class="node-avatar ${isActive ? 'active' : ''}" style="width:28px;height:28px;border-radius:8px;font-size:10px">${getNodeAvatarContent(a, initials)}</div>
+    <div class="compact-info">
+      <div class="compact-name">${escapeHtml(a.name)}</div>
+      <div class="compact-alias">${a.aliases?.[0] || a.id}</div>
+    </div>
+    <span class="compact-status ${isActive ? 'active' : 'inactive'}"></span>
+    <button class="compact-menu" onclick="event.stopPropagation();toggleCompactMenu(this)" title="Actions">&#8943;</button>
+    <div class="compact-ctx">
+      <a onclick="event.stopPropagation();window.location='/ui#${a.id}'">Chat</a>
+      <a onclick="event.stopPropagation();openModal('${a.id}')">Config</a>
+    </div>
+  </div>`;
+}
+
+function toggleCompactMenu(btn) {
+  const ctx = btn.nextElementSibling;
+  document.querySelectorAll('.compact-ctx.open').forEach(m => { if (m !== ctx) m.classList.remove('open'); });
+  ctx.classList.toggle('open');
+}
+document.addEventListener('click', e => {
+  if (!e.target.closest('.compact-menu') && !e.target.closest('.compact-ctx')) {
+    document.querySelectorAll('.compact-ctx.open').forEach(m => m.classList.remove('open'));
+  }
+});
+
+function renderCompactGrid(canvas) {
+  const { orgGroups, noOrg } = getFilteredAgents();
+  let html = '';
+  for (const orgName of Object.keys(orgGroups).sort()) {
+    html += renderOrgBanner(orgName);
+    html += '<div class="compact-grid">';
+    for (const a of orgGroups[orgName].sort((a,b)=>(a.name||a.id||'').localeCompare(b.name||b.id||''))) {
+      html += renderCompactNode(a);
+    }
+    html += '</div>';
+  }
+  if (noOrg.length > 0) {
+    html += '<div class="org-title-banner" style="opacity:.5">Unassigned</div>';
+    html += '<div class="compact-grid">';
+    for (const a of noOrg.sort((a,b)=>(a.name||a.id||'').localeCompare(b.name||b.id||''))) {
+      html += renderCompactNode(a);
+    }
+    html += '</div>';
+  }
+  canvas.innerHTML = html;
+}
+
+// ─── Relative Time Helper ───────────────────────────────────────
+function formatRelativeTime(ts) {
+  if (!ts || ts === 'never') return 'never';
+  const diff = Date.now() - new Date(ts).getTime();
+  if (diff < 0) return 'just now';
+  const mins = Math.floor(diff / 60000);
+  if (mins < 1) return 'just now';
+  if (mins < 60) return mins + 'm ago';
+  const hrs = Math.floor(mins / 60);
+  if (hrs < 24) return hrs + 'h ago';
+  const days = Math.floor(hrs / 24);
+  if (days < 30) return days + 'd ago';
+  return Math.floor(days / 30) + 'mo ago';
+}
+
+// ─── List/Table Render ──────────────────────────────────────────
+let listSortCol = 'lastActive';
+let listSortAsc = false;
+
+function sortList(col) {
+  if (listSortCol === col) listSortAsc = !listSortAsc;
+  else { listSortCol = col; listSortAsc = true; }
+  renderOrg();
+}
+
+function renderListView(canvas) {
+  const { orgGroups, noOrg } = getFilteredAgents();
+  const all = [];
+  for (const orgName of Object.keys(orgGroups)) {
+    for (const a of orgGroups[orgName]) all.push({ ...a, _org: orgName });
+  }
+  for (const a of noOrg) all.push({ ...a, _org: '' });
+
+  all.sort((a, b) => {
+    let va, vb;
+    switch (listSortCol) {
+      case 'name': va = (a.name||a.id||'').toLowerCase(); vb = (b.name||b.id||'').toLowerCase(); break;
+      case 'alias': va = (a.aliases?.[0]||a.id||'').toLowerCase(); vb = (b.aliases?.[0]||b.id||'').toLowerCase(); break;
+      case 'org': va = (a._org||'').toLowerCase(); vb = (b._org||'').toLowerCase(); break;
+      case 'status': va = a.sessionActive ? 0 : 1; vb = b.sessionActive ? 0 : 1; break;
+      case 'msgs': va = a.messageCount||0; vb = b.messageCount||0; break;
+      case 'lastActive': va = a.lastMessage === 'never' ? 0 : new Date(a.lastMessage).getTime(); vb = b.lastMessage === 'never' ? 0 : new Date(b.lastMessage).getTime(); break;
+      default: va = ''; vb = '';
+    }
+    if (va < vb) return listSortAsc ? -1 : 1;
+    if (va > vb) return listSortAsc ? 1 : -1;
+    return 0;
+  });
+
+  const arrow = col => `<span class="sort-arrow">${listSortCol === col ? (listSortAsc ? '\u25B2' : '\u25BC') : '\u21C5'}</span>`;
+  const sorted = col => listSortCol === col ? ' sorted' : '';
+
+  let html = '<div class="list-view"><table class="list-table"><thead><tr>';
+  html += `<th class="${sorted('name')}" onclick="sortList('name')">Name ${arrow('name')}</th>`;
+  html += `<th class="${sorted('alias')}" onclick="sortList('alias')">Alias ${arrow('alias')}</th>`;
+  html += `<th class="${sorted('org')}" onclick="sortList('org')">Org ${arrow('org')}</th>`;
+  html += `<th class="${sorted('status')}" onclick="sortList('status')">Status ${arrow('status')}</th>`;
+  html += `<th class="${sorted('lastActive')}" onclick="sortList('lastActive')">Last Active ${arrow('lastActive')}</th>`;
+  html += `<th class="${sorted('msgs')}" onclick="sortList('msgs')">Msgs ${arrow('msgs')}</th>`;
+  html += '</tr></thead><tbody>';
+
+  for (const a of all) {
+    const initials = (a.aliases?.[0] || a.id).replace('@','').slice(0,2).toUpperCase();
+    const isActive = a.sessionActive || (a.lastMessage !== 'never' && (Date.now() - new Date(a.lastMessage).getTime()) < 3600000);
+    html += `<tr data-agent-id="${a.id}" onclick="openModal('${a.id}')">`;
+    html += `<td><span class="row-avatar">${getNodeAvatarContent(a, initials)}</span>${escapeHtml(a.name)}</td>`;
+    html += `<td style="font-family:var(--font-mono);font-size:11px;color:var(--text-muted)">${a.aliases?.[0] || a.id}</td>`;
+    html += `<td>${escapeHtml(a._org)}</td>`;
+    html += `<td><span class="row-status ${isActive ? 'active' : 'inactive'}"></span> ${isActive ? 'Active' : 'Idle'}</td>`;
+    html += `<td style="font-family:var(--font-mono);font-size:11px;color:var(--text-muted)">${formatRelativeTime(a.lastMessage)}</td>`;
+    html += `<td style="font-family:var(--font-mono);font-size:11px">${a.messageCount||0}</td>`;
+    html += '</tr>';
+  }
+  html += '</tbody></table></div>';
+  canvas.innerHTML = html;
+}
+
+// ─── Shared: get filtered agents grouped by org ─────────────────
+function getFilteredAgents() {
+  const orgGroups = {};
+  const noOrg = [];
+  for (const a of agents) {
+    if (!matchesSearch(a)) continue;
+    if (!a.org || a.org.length === 0) {
+      noOrg.push(a);
+    } else {
+      const orgsAdded = new Set();
+      for (const o of a.org) {
+        if (!orgsAdded.has(o.organization)) {
+          const merged = { ...a, orgData: o };
+          if (!orgGroups[o.organization]) orgGroups[o.organization] = [];
+          orgGroups[o.organization].push(merged);
+          orgsAdded.add(o.organization);
+        }
+      }
+    }
+  }
+  return { orgGroups, noOrg };
+}
+
+function renderOrgBanner(orgName) {
+  return `<div class="org-title-banner">${escapeHtml(orgName)}</div>`;
+}
+
+function escapeHtml(s) {
+  return (s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
+// ─── Modal Tabs ────────────────────────────────────────────────
+function switchModalTab(tabId, btn) {
+  document.querySelectorAll('.modal-tab').forEach(t => t.classList.remove('active'));
+  document.querySelectorAll('.modal-tab-content').forEach(t => t.classList.remove('active'));
+  btn.classList.add('active');
+  document.getElementById('tab-' + tabId).classList.add('active');
+}
+
+function togglePill(el) { el.classList.toggle('checked'); }
+
+// ─── Avatar Picker ──────────────────────────────────────────────
+function toggleAvatarGrid() {
+  const grid = document.getElementById('avatarGrid');
+  grid.classList.toggle('open');
+  if (grid.classList.contains('open') && grid.children.length === 0) {
+    let html = '';
+    for (let i = 1; i <= 80; i++) {
+      const id = 'avatar-' + String(i).padStart(2, '0');
+      html += `<div class="avatar-option" onclick="selectAvatar('${id}')"><img src="/avatars/${id}.png" alt="${id}"></div>`;
+    }
+    grid.innerHTML = html;
+  }
+}
+function selectAvatar(id) {
+  document.getElementById('f-avatar').value = id;
+  setAvatarPreview(id);
+  document.getElementById('avatarGrid').classList.remove('open');
+}
+function clearAvatar() {
+  document.getElementById('f-avatar').value = '';
+  setAvatarPreview(null);
+}
+function setAvatarPreview(id) {
+  const thumb = document.getElementById('avatarPreview');
+  if (id && id.startsWith('avatar-')) {
+    thumb.innerHTML = `<img src="/avatars/${id}.png">`;
+  } else {
+    thumb.textContent = '?';
+  }
+}
+
+// ─── Wiki Learning toggle ───────────────────────────────────────
+function toggleWikiPill(el) {
+  const isOn = el.classList.contains('checked');
+  if (isOn) { el.classList.remove('checked'); return; }
+  if (confirm('Wiki Learning adds extra token usage to every conversation.\n\nEnable Wiki Learning?')) {
+    el.classList.add('checked');
+  }
+}
+
+// ─── Auto Alias ─────────────────────────────────────────────────
+function autoAlias() {
+  if (editingAgentId) return;
+  const id = document.getElementById('f-agentId')?.value || '';
+  const aliasEl = document.getElementById('f-alias');
+  if (!aliasEl.value || aliasEl.value === '@' + aliasEl.dataset.auto) {
+    const clean = id.trim().replace(/-/g, '');
+    aliasEl.value = clean ? '@' + clean : '';
+    aliasEl.dataset.auto = clean;
+  }
+  const homeEl = document.getElementById('f-agentHome');
+  homeEl.value = id.trim() ? '~/Desktop/MyAIforOne Drive/PersonalAgents/' + id.trim() : '~/Desktop/MyAIforOne Drive/PersonalAgents/(agent-id)';
+}
+
+// ─── Open Modal ─────────────────────────────────────────────────
+async function openModal(agentId) {
+  editingAgentId = agentId;
+
+  try { const res = await fetch('/api/mcps'); const data = await res.json(); availableMcps = data.mcps || []; } catch { availableMcps = []; }
+  try { const res = await fetch('/api/marketplace/skills'); const data = await res.json(); availableSkills = (data.items || []).filter(s => s.installed); } catch { availableSkills = []; }
+
+  const accountSelect = document.getElementById('f-claudeAccount');
+  accountSelect.innerHTML = '<option value="">Default</option>' + availableAccounts.map(a => `<option value="${a}">${a}</option>`).join('');
+
+  const idField = document.getElementById('f-agentId');
+  const aliasField = document.getElementById('f-alias');
+  const nameField = document.getElementById('f-name');
+  const descField = document.getElementById('f-desc');
+  const instrField = document.getElementById('f-instructions');
+  const wsField = document.getElementById('f-workspace');
+  const homeField = document.getElementById('f-agentHome');
+  const persistPill = document.getElementById('f-persistent');
+  const streamPill = document.getElementById('f-streaming');
+
+  if (agentId) {
+    const a = agents.find(x => x.id === agentId);
+    if (!a) return;
+    document.getElementById('modalTitle').textContent = 'Edit Agent';
+    document.getElementById('saveBtn').textContent = 'Save Changes';
+    document.getElementById('modalHint').textContent = 'Changes will rebuild the project.';
+    document.getElementById('deleteBtn').classList.remove('hidden');
+    document.getElementById('deleteBtn').dataset.agentId = agentId;
+    document.getElementById('deleteBtn').dataset.alias = a.aliases?.[0] || agentId;
+
+    idField.value = agentId; idField.readOnly = true;
+    aliasField.value = a.aliases?.[0] || '';
+    nameField.value = a.name;
+    setAvatarPreview(a.avatar || a.icon);
+    descField.value = a.description || '';
+    wsField.value = a.workspace || '~';
+    homeField.value = a.agentHome || '';
+
+    instrField.value = 'Loading...';
+    try { const r = await fetch(`/api/agents/${agentId}/instructions`); const d = await r.json(); instrField.value = d.instructions || ''; if (d.heartbeatInstructions) document.getElementById('f-heartbeatInstructions').value = d.heartbeatInstructions; } catch { instrField.value = ''; }
+
+    const hbCron = (a.cron || []).find(c => c.message === '[HEARTBEAT]');
+    loadHeartbeatSchedule(hbCron?.schedule || '');
+    const hbEnabledPill = document.getElementById('f-heartbeatEnabled');
+    if (hbCron?.enabled !== false) hbEnabledPill.classList.add('checked'); else hbEnabledPill.classList.remove('checked');
+
+    const memPill = document.getElementById('f-advancedMemory');
+    const autoPill = document.getElementById('f-autonomousCapable');
+    if (a.persistent) persistPill.classList.add('checked'); else persistPill.classList.remove('checked');
+    if (a.streaming) streamPill.classList.add('checked'); else streamPill.classList.remove('checked');
+    if (a.advancedMemory) memPill.classList.add('checked'); else memPill.classList.remove('checked');
+    const wikiPill = document.getElementById('f-wiki');
+    if (a.wiki) wikiPill.classList.add('checked'); else wikiPill.classList.remove('checked');
+    const wikiSyncEnabledPill = document.getElementById('f-wikiSyncEnabled');
+    if (a.wikiSync?.enabled) wikiSyncEnabledPill.classList.add('checked'); else wikiSyncEnabledPill.classList.remove('checked');
+    if (a.wikiSync?.instructions) document.getElementById('f-wikiSyncInstructions').value = a.wikiSync.instructions;
+    setWikiSyncFromCron(a.wikiSync?.schedule || '0 0 * * *');
+    if (a.autonomousCapable !== false) autoPill.classList.add('checked'); else autoPill.classList.remove('checked');
+
+    accountSelect.value = a.claudeAccount || '';
+    const agentClassEl = document.getElementById('f-agentClass');
+    if (agentClassEl) agentClassEl.value = a.agentClass || 'standard';
+
+    document.getElementById('f-executor').value = a.executor || '';
+    const commitPill = document.getElementById('f-autoCommit');
+    if (a.autoCommit) commitPill.classList.add('checked'); else commitPill.classList.remove('checked');
+    document.getElementById('f-timeout').value = Math.round((a.timeout || 120000) / 1000);
+
+    renderSkillPills(a.skills || []);
+    const agentTools = a.tools || [];
+    document.querySelectorAll('#f-tools .checkbox-pill').forEach(p => { if (agentTools.includes(p.dataset.val)) p.classList.add('checked'); else p.classList.remove('checked'); });
+    renderMcpPills(a.mcps || []);
+    loadMcpKeys(agentId, a.mcps || []);
+
+    const orgContainer = document.getElementById('orgEntries'); orgContainer.innerHTML = '';
+    for (const o of (a.org || [])) addOrgEntry(o.organization, o.function, o.title, o.reportsTo);
+
+    const schedContainer = document.getElementById('scheduleEntries');
+    schedContainer.innerHTML = '<div class="no-schedules" id="noSchedules" style="display:none">No scheduled messages yet</div>';
+    const cronJobs = a.cron || [];
+    if (cronJobs.length > 0) { for (let ci = 0; ci < cronJobs.length; ci++) { const job = cronJobs[ci]; const parsed = cronToHuman(job.schedule); addScheduleEntry(parsed.frequency, parsed.days, parsed.time, job.message, job.channel, job.chatId, parsed.min, ci, job.enabled); } }
+    else { document.getElementById('noSchedules').style.display = ''; }
+
+    const goalContainer = document.getElementById('goalEntries');
+    goalContainer.innerHTML = '<div class="no-goals" id="noGoals" style="display:none">No goals yet</div>';
+    const agentGoals = a.goals || [];
+    if (agentGoals.length > 0) { for (const g of agentGoals) addGoalEntry(g); }
+    else { document.getElementById('noGoals').style.display = ''; }
+  } else {
+    document.getElementById('modalTitle').textContent = 'Create New Agent';
+    document.getElementById('saveBtn').textContent = 'Create Agent';
+    document.getElementById('modalHint').textContent = 'Agent files created in ~/Desktop/MyAIforOne Drive/PersonalAgents/';
+    document.getElementById('deleteBtn').classList.add('hidden');
+
+    idField.value = ''; idField.readOnly = false;
+    aliasField.value = ''; aliasField.dataset.auto = '';
+    nameField.value = ''; setAvatarPreview(null);
+    descField.value = '';
+    instrField.value = '# Agent Name\n\nDescription of what this agent does.\n\n## Identity\n- Mention alias: @alias\n- Respond when mentioned\n\n## Guidelines\n- Keep responses concise\n- If a task requires multiple steps, summarize what you did\n';
+    wsField.value = '~';
+    homeField.value = '~/Desktop/MyAIforOne Drive/PersonalAgents/(agent-id)';
+    persistPill.classList.add('checked'); streamPill.classList.remove('checked');
+    document.getElementById('f-advancedMemory')?.classList.add('checked');
+    document.getElementById('f-wiki')?.classList.remove('checked');
+    document.getElementById('f-autonomousCapable')?.classList.add('checked');
+    document.getElementById('f-autoCommit')?.classList.remove('checked');
+    document.getElementById('f-timeout').value = '14400';
+    renderSkillPills([]);
+    document.getElementById('f-heartbeatInstructions').value = 'Check my tasks and work on the highest priority item. If no tasks are pending, report status.';
+    loadHeartbeatSchedule('');
+    document.getElementById('f-heartbeatEnabled').classList.remove('checked');
+    document.getElementById('heartbeat-collapse')?.classList.add('hidden');
+    document.getElementById('f-wikiSyncEnabled')?.classList.remove('checked');
+    setWikiSyncFromCron('0 0 * * *');
+    document.getElementById('wikisync-collapse')?.classList.add('hidden');
+    document.querySelectorAll('#f-tools .checkbox-pill').forEach(p => p.classList.add('checked'));
+    accountSelect.value = '';
+    renderMcpPills([]);
+    document.getElementById('mcpKeysSection').style.display = 'none';
+    document.getElementById('mcpKeysArea').style.display = 'none';
+    document.getElementById('orgEntries').innerHTML = '';
+    document.getElementById('scheduleEntries').innerHTML = '<div class="no-schedules" id="noSchedules">No scheduled messages yet</div>';
+    document.getElementById('goalEntries').innerHTML = '<div class="no-goals" id="noGoals">No goals yet</div>';
+  }
+
+  document.querySelectorAll('.modal-tab').forEach((t, i) => t.classList.toggle('active', i === 0));
+  document.querySelectorAll('.modal-tab-content').forEach((t, i) => t.classList.toggle('active', i === 0));
+  document.getElementById('agentModal').classList.add('show');
+}
+
+// ─── Skills Pills ─────────────────────────────────────────────
+function renderSkillPills(selectedSkills) {
+  const group = document.getElementById('f-skills');
+  const hint = document.getElementById('f-skills-hint');
+  const defaultsSection = document.getElementById('defaultSkillsSection');
+  const defaultsList = document.getElementById('defaultSkillsList');
+  const defaults = availableSkills.filter(s => s.isPlatformDefault);
+  if (defaults.length > 0) { defaultsSection.style.display = ''; defaultsList.innerHTML = defaults.map(s => `<span style="display:inline-block;padding:2px 8px;font-size:11px;font-family:var(--font-mono);background:var(--bg-input);border:1px solid var(--border-dim);border-radius:4px;color:var(--text-muted)">${s.name || s.id}</span>`).join(''); }
+  else { defaultsSection.style.display = 'none'; }
+  const assignable = availableSkills.filter(s => !s.isPlatformDefault);
+  if (assignable.length > 0) { group.innerHTML = assignable.map(s => { const checked = selectedSkills.includes(s.id) ? ' checked' : ''; return `<div class="checkbox-pill${checked}" data-val="${s.id}" onclick="togglePill(this)">${s.name || s.id}</div>`; }).join(''); hint.textContent = 'Select which skills this agent can use.'; }
+  else { group.innerHTML = ''; hint.textContent = 'No additional skills available.'; }
+}
+function getSelectedSkills() { return [...document.querySelectorAll('#f-skills .checkbox-pill.checked')].map(p => p.dataset.val); }
+
+// ─── MCP Pills ──────────────────────────────────────────────────
+function renderMcpPills(selectedMcps) {
+  const mcpGroup = document.getElementById('f-mcps');
+  const mcpHint = document.getElementById('f-mcps-hint');
+  if (availableMcps.length > 0) { mcpGroup.innerHTML = availableMcps.map(m => { const checked = selectedMcps.includes(m) ? ' checked' : ''; return `<div class="checkbox-pill${checked}" data-val="${m}" onclick="toggleMcpPill(this)">${m}</div>`; }).join(''); mcpHint.textContent = 'Select which MCP servers this agent can use.'; }
+  else { mcpGroup.innerHTML = ''; mcpHint.textContent = 'No MCPs registered.'; }
+}
+function toggleMcpPill(el) { togglePill(el); const selectedMcps = getSelectedMcps(); if (editingAgentId) loadMcpKeys(editingAgentId, selectedMcps); else showCreateModeConnections(selectedMcps); }
+function getSelectedMcps() { return [...document.querySelectorAll('#f-mcps .checkbox-pill.checked')].map(p => p.dataset.val); }
+function showCreateModeConnections(selectedMcps) { const section = document.getElementById('mcpKeysSection'); const area = document.getElementById('mcpKeysArea'); if (!selectedMcps.length) { section.style.display = 'none'; area.style.display = 'none'; return; } section.style.display = ''; area.style.display = ''; document.getElementById('mcpKeysList').innerHTML = '<div style="font-size:12px;color:var(--text-muted);padding:8px 0">Save the agent first, then connect credentials.</div>'; }
+
+// ─── MCP Keys ───────────────────────────────────────────────────
+let mcpCatalog = {};
+async function loadMcpKeys(agentId, agentMcps) {
+  const section = document.getElementById('mcpKeysSection');
+  const area = document.getElementById('mcpKeysArea');
+  const list = document.getElementById('mcpKeysList');
+  section.style.display = ''; area.style.display = '';
+  if (!agentMcps.length) { list.innerHTML = '<div style="font-size:12px;color:var(--text-muted);padding:8px 0">Select MCPs above to configure connections.</div>'; return; }
+  list.innerHTML = '<div style="font-size:12px;color:var(--text-muted)">Loading...</div>';
+  try {
+    const [catalogRes, keysRes, connRes] = await Promise.all([fetch('/api/mcp-catalog'), fetch(`/api/agents/${agentId}/mcp-keys`), fetch(`/api/agents/${agentId}/mcp-connections`)]);
+    const catalogData = await catalogRes.json(); const keysData = await keysRes.json(); const connData = await connRes.json();
+    mcpCatalog = catalogData.mcps || {};
+    const configured = keysData.configured || {};
+    const connections = connData.connections || {};
+    const connectionsByBase = {};
+    for (const [name, info] of Object.entries(connections)) { const base = info.baseMcp; if (!connectionsByBase[base]) connectionsByBase[base] = []; connectionsByBase[base].push({ name, ...info }); }
+    const baseMcps = agentMcps.filter(m => !Object.keys(connections).includes(m));
+    let html = '';
+    for (const mcpName of baseMcps.sort()) {
+      const cat = mcpCatalog[mcpName]; const isConfigured = !!configured[mcpName]; const requiredKeys = cat?.requiredKeys || [];
+      const isOAuth = cat?.oauth || mcpName.startsWith('gmail') || mcpName.startsWith('google');
+      const label = cat?.name || mcpName; const namedConns = connectionsByBase[mcpName] || [];
+      const noKeyRequired = requiredKeys.length === 0 && !isOAuth;
+      const connCount = namedConns.length + (isConfigured ? 1 : 0);
+      const isReady = noKeyRequired || isConfigured || connCount > 0;
+      const statusDot = isReady ? '&#x1F7E2;' : '&#x1F534;';
+      let summary = noKeyRequired ? 'Ready' : connCount > 0 ? `${connCount} account${connCount>1?'s':''}` : 'Not connected';
+      let innerHtml = '';
+      if (!noKeyRequired && !isOAuth) {
+        if (isConfigured) { innerHtml += `<div class="mcp-key-card connected"><span class="mcp-key-name">Default Key</span><span class="mcp-key-status ok">Connected</span><button class="mcp-key-btn disconnect" onclick="event.stopPropagation();disconnectMcpKey('${agentId}','${mcpName}')">Disconnect</button></div>`; }
+        else if (connCount === 0) { const envVar = requiredKeys[0]?.env || mcpName.toUpperCase().replace(/-/g,'_')+'_API_KEY'; const keyLabel = requiredKeys[0]?.label || 'API Key'; innerHtml += `<div class="mcp-key-card"><input class="mcp-key-input" id="mcpkey-${mcpName}" placeholder="${escapeHtml(keyLabel)}"><button class="mcp-key-btn" onclick="event.stopPropagation();saveMcpKey('${agentId}','${mcpName}','${envVar}')">Save</button></div>`; }
+      }
+      for (const conn of namedConns) { const cc = !!configured[conn.name]; innerHtml += `<div class="mcp-key-card ${cc?'connected':''}"><span class="mcp-key-name">${escapeHtml(conn.label)}</span><span class="mcp-key-status ${cc?'ok':'missing'}">${cc?'Connected':'Pending'}</span><button class="mcp-key-btn disconnect" onclick="event.stopPropagation();deleteConnection('${agentId}','${conn.name}')">Remove</button></div>`; }
+      if (requiredKeys.length > 0 || isOAuth) { innerHtml += `<div style="margin:4px 0"><button class="mcp-key-btn" style="font-size:10px" onclick="event.stopPropagation();showAddAccount('${agentId}','${mcpName}','${isOAuth}')">+ Add Account</button></div>`; }
+      html += `<div class="mcp-accordion"><div class="mcp-accordion-header" onclick="this.parentElement.classList.toggle('open')"><span class="mcp-accordion-arrow">&#9656;</span><span class="mcp-accordion-name">${escapeHtml(label)}</span><span class="mcp-accordion-summary">${statusDot} ${summary}</span></div><div class="mcp-accordion-body">${innerHtml}</div></div>`;
+    }
+    list.innerHTML = html || '<div style="font-size:12px;color:var(--text-muted);padding:8px 0">All selected MCPs are ready.</div>';
+  } catch { list.innerHTML = '<div style="font-size:12px;color:var(--amber)">Failed to load MCP keys</div>'; }
+}
+
+function openMcpAuthModal(title, bodyHtml, actionsHtml) { document.getElementById('mcpAuthTitle').textContent = title; document.getElementById('mcpAuthBody').innerHTML = bodyHtml; document.getElementById('mcpAuthActions').innerHTML = actionsHtml; document.getElementById('mcpAuthModal').classList.add('show'); }
+function closeMcpAuthModal() { document.getElementById('mcpAuthModal').classList.remove('show'); }
+
+function showAddAccount(agentId, baseMcp, isOAuth) {
+  const cat = mcpCatalog[baseMcp]; const isOAuthBool = isOAuth === 'true' || isOAuth === true;
+  const keyLabel = cat?.requiredKeys?.[0]?.label || 'API Key'; const displayName = cat?.name || baseMcp;
+  let bodyHtml = `<div class="form-group"><label class="form-label">Account Label</label><input class="form-input" id="mcpAuthLabel" placeholder="e.g. Work, Personal"></div><div class="form-group"><label class="form-label">Description</label><input class="form-input" id="mcpAuthDesc" placeholder="e.g. email address"></div><div class="form-group"><label class="form-label">${isOAuthBool ? 'Refresh Token' : escapeHtml(keyLabel)}</label><input class="form-input" id="mcpAuthToken" placeholder="${isOAuthBool ? 'Paste refresh token' : escapeHtml(keyLabel)}"></div>`;
+  const actionsHtml = `<button class="btn-cancel" onclick="closeMcpAuthModal()">Cancel</button><button class="btn-save" onclick="submitAddAccount('${agentId}','${baseMcp}')">Save</button>`;
+  openMcpAuthModal('Add Account \u2014 ' + displayName, bodyHtml, actionsHtml);
+}
+function submitAddAccount(agentId, baseMcp) { const label = document.getElementById('mcpAuthLabel')?.value?.trim(); const token = document.getElementById('mcpAuthToken')?.value?.trim(); if (!label || !token) return; closeMcpAuthModal(); createConnection(agentId, baseMcp, label, document.getElementById('mcpAuthDesc')?.value?.trim()||'', token); }
+async function createConnection(agentId, baseMcp, label, description, value) { const slug = label.toLowerCase().replace(/[^a-z0-9]+/g,'-'); const envVar = (baseMcp.toUpperCase().replace(/-/g,'_')+'_'+slug.toUpperCase().replace(/-/g,'_')).replace(/__+/g,'_'); try { const res = await fetch(`/api/agents/${agentId}/mcp-connections`,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({baseMcp,label,envVar,value,description})}); const data = await res.json(); if (data.ok) loadMcpKeys(agentId, getSelectedMcps()); else alert('Failed: '+(data.error||'Unknown')); } catch(e) { alert('Failed: '+e.message); } }
+async function deleteConnection(agentId, instanceName) { if (!confirm('Remove connection '+instanceName+'?')) return; try { await fetch(`/api/agents/${agentId}/mcp-connections/${instanceName}`,{method:'DELETE'}); loadMcpKeys(agentId, getSelectedMcps()); } catch(e) { alert(e.message); } }
+async function saveMcpKey(agentId, mcpName, envVar) { const input = document.getElementById('mcpkey-'+mcpName); if (!input?.value?.trim()) return; try { const res = await fetch(`/api/agents/${agentId}/mcp-keys`,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({mcpName,envVar,value:input.value.trim()})}); const data = await res.json(); if (data.ok) { input.value=''; loadMcpKeys(agentId, getSelectedMcps()); } else alert('Failed: '+(data.error||'')); } catch(e) { alert(e.message); } }
+async function disconnectMcpKey(agentId, mcpName) { if (!confirm('Disconnect '+mcpName+'?')) return; try { await fetch(`/api/agents/${agentId}/mcp-keys/${mcpName}`,{method:'DELETE'}); loadMcpKeys(agentId, getSelectedMcps()); } catch(e) { alert(e.message); } }
+
+// ─── Close Modal ────────────────────────────────────────────────
+function closeModal() { document.getElementById('agentModal').classList.remove('show'); editingAgentId = null; }
+
+// ─── Org Entries ────────────────────────────────────────────────
+function addOrgEntry(org, func, title, reportsTo) {
+  const container = document.getElementById('orgEntries');
+  const div = document.createElement('div'); div.className = 'org-entry';
+  div.innerHTML = `<input placeholder="Organization" value="${escapeHtml(org||'')}" list="dl-orgs" style="flex:1"><input placeholder="Function" value="${escapeHtml(func||'')}" list="dl-functions" style="flex:1"><input placeholder="Title" value="${escapeHtml(title||'')}" list="dl-titles" style="flex:1"><input placeholder="Reports To" value="${escapeHtml(reportsTo||'')}" list="dl-aliases" style="flex:0.7"><button class="entry-remove" onclick="this.parentElement.remove()">&times;</button>`;
+  container.appendChild(div);
+}
+
+// ─── Schedule Entries ──────────────────────────────────────────
+function addScheduleEntry(frequency, days, time, message, channel, chatId, minute, cronIndex, cronEnabled) {
+  const container = document.getElementById('scheduleEntries');
+  const noMsg = document.getElementById('noSchedules'); if (noMsg) noMsg.style.display = 'none';
+  const channels = ['telegram','slack','imessage'];
+  const div = document.createElement('div'); div.className = 'schedule-entry';
+  const h24 = parseInt(time||'9'); const isPM = h24>=12; const h12 = h24===0?12:h24>12?h24-12:h24; const m = minute||'0';
+  const hide = ['hour','30min','15min'].includes(frequency||'');
+  const hourOpts = Array.from({length:12},(_,i)=>{const hr=i===0?12:i;return '<option value="'+hr+'" '+(hr===h12?'selected':'')+'>'+hr+'</option>';}).join('');
+  const minOpts = ['0','15','30','45'].map(v=>'<option value="'+v+'" '+(v===m?'selected':'')+'>'+(v==='0'?'00':v)+'</option>').join('');
+  div.innerHTML = `<button class="entry-remove" onclick="removeSchedule(this)">&times;</button>
+    <div class="schedule-row"><span class="schedule-label">Every</span><select class="schedule-select" data-field="frequency" onchange="toggleScheduleFields(this.closest('.schedule-entry'));updateSchedulePreview(this.closest('.schedule-entry'))"><option value="day" ${frequency==='day'?'selected':''}>Day</option><option value="weekdays" ${frequency==='weekdays'?'selected':''}>Weekday</option><option value="week" ${frequency==='week'?'selected':''}>Week</option><option value="hour" ${frequency==='hour'?'selected':''}>Hour</option><option value="30min" ${frequency==='30min'?'selected':''}>30 Min</option><option value="15min" ${frequency==='15min'?'selected':''}>15 Min</option></select>
+    <span class="schedule-label day-label" style="${frequency!=='week'?'display:none':''}">on</span><select class="schedule-select day-select" data-field="days" style="${frequency!=='week'?'display:none':''}"><option value="1" ${days==='1'?'selected':''}>Mon</option><option value="2" ${days==='2'?'selected':''}>Tue</option><option value="3" ${days==='3'?'selected':''}>Wed</option><option value="4" ${days==='4'?'selected':''}>Thu</option><option value="5" ${days==='5'?'selected':''}>Fri</option><option value="6" ${days==='6'?'selected':''}>Sat</option><option value="0" ${days==='0'?'selected':''}>Sun</option></select>
+    <span class="schedule-label time-label" style="${hide?'display:none':''}">at</span><select class="schedule-select" data-field="timeHour" style="${hide?'display:none':''}">${hourOpts}</select><span class="schedule-label time-label" style="${hide?'display:none':''}">:</span><select class="schedule-select" data-field="timeMin" style="${hide?'display:none':''}">${minOpts}</select><select class="schedule-select" data-field="timeAmpm" style="${hide?'display:none':''}"><option value="AM" ${isPM?'':'selected'}>AM</option><option value="PM" ${isPM?'selected':''}>PM</option></select></div>
+    <div class="schedule-row"><span class="schedule-label">Message:</span></div><textarea class="schedule-msg" placeholder="What should the agent do?">${escapeHtml(message||'')}</textarea>
+    <div class="schedule-row" style="margin-top:8px"><span class="schedule-label">Reply on:</span><select class="schedule-select" data-field="channel">${channels.map(c=>`<option value="${c}" ${c===channel?'selected':''}>${c}</option>`).join('')}</select><input class="schedule-select" style="flex:1;min-width:100px" placeholder="Chat/Channel ID" value="${escapeHtml(chatId||'')}" data-field="chatId"></div>
+    <div class="schedule-preview"></div>`;
+  container.appendChild(div);
+  toggleScheduleFields(div); updateSchedulePreview(div);
+}
+function removeSchedule(btn) { btn.closest('.schedule-entry').remove(); if (!document.querySelector('.schedule-entry')) document.getElementById('noSchedules').style.display = ''; }
+function toggleScheduleFields(entry) { const freq = entry.querySelector('[data-field="frequency"]')?.value||'day'; const showDay = freq==='week'; const showTime = !['hour','30min','15min'].includes(freq); entry.querySelector('.day-label').style.display = showDay?'':'none'; entry.querySelector('.day-select').style.display = showDay?'':'none'; entry.querySelectorAll('.time-label').forEach(el=>el.style.display=showTime?'':'none'); entry.querySelectorAll('[data-field="timeHour"],[data-field="timeMin"],[data-field="timeAmpm"]').forEach(el=>el.style.display=showTime?'':'none'); }
+function updateSchedulePreview(entry) { const cron = buildCronFromEntry(entry); const preview = entry.querySelector('.schedule-preview'); if (preview) preview.textContent = 'Cron: '+cron; }
+function buildCronFromEntry(entry) { const freq = entry.querySelector('[data-field="frequency"]')?.value||'day'; const day = entry.querySelector('[data-field="days"]')?.value||'1'; let hr = parseInt(entry.querySelector('[data-field="timeHour"]')?.value||'9'); const min = entry.querySelector('[data-field="timeMin"]')?.value||'0'; const ampm = entry.querySelector('[data-field="timeAmpm"]')?.value||'AM'; if(ampm==='PM'&&hr!==12)hr+=12; if(ampm==='AM'&&hr===12)hr=0; switch(freq){case'day':return`${min} ${hr} * * *`;case'weekdays':return`${min} ${hr} * * 1-5`;case'week':return`${min} ${hr} * * ${day}`;case'hour':return'0 * * * *';case'30min':return'*/30 * * * *';case'15min':return'*/15 * * * *';default:return`${min} ${hr} * * *`;} }
+function getSchedulesFromForm() { return [...document.querySelectorAll('.schedule-entry')].map(entry=>{const cron=buildCronFromEntry(entry);const msg=entry.querySelector('.schedule-msg')?.value?.trim();const ch=entry.querySelector('[data-field="channel"]')?.value;const cid=entry.querySelector('[data-field="chatId"]')?.value?.trim();return(msg&&cid)?{schedule:cron,message:msg,channel:ch,chatId:cid}:null;}).filter(Boolean); }
+
+// ─── Heartbeat schedule ─────────────────────────────────────────
+function updateHeartbeatFields() { const freq=document.getElementById('hb-frequency').value; const showDay=freq==='week'; const showTime=!['','hour','30min','15min'].includes(freq); document.getElementById('hb-day-label').style.display=showDay?'':'none'; document.getElementById('hb-days').style.display=showDay?'':'none'; document.getElementById('hb-time-label').style.display=showTime?'':'none'; document.getElementById('hb-hour').style.display=showTime?'':'none'; document.getElementById('hb-colon').style.display=showTime?'':'none'; document.getElementById('hb-min').style.display=showTime?'':'none'; document.getElementById('hb-ampm').style.display=showTime?'':'none'; }
+function loadHeartbeatSchedule(cronStr) { if(!cronStr){document.getElementById('hb-frequency').value='';updateHeartbeatFields();return;} const p=cronToHuman(cronStr); document.getElementById('hb-frequency').value=p.frequency; if(p.frequency==='week')document.getElementById('hb-days').value=p.days||'1'; if(!['hour','30min','15min'].includes(p.frequency)){const h24=parseInt(p.time||'9');const isPM=h24>=12;const h12=h24===0?12:h24>12?h24-12:h24;document.getElementById('hb-hour').value=String(h12);document.getElementById('hb-min').value=p.min||'0';document.getElementById('hb-ampm').value=isPM?'PM':'AM';} updateHeartbeatFields(); }
+function buildHeartbeatCron() { const freq=document.getElementById('hb-frequency').value; if(!freq)return''; const day=document.getElementById('hb-days').value||'1'; let hr=parseInt(document.getElementById('hb-hour').value||'9'); const min=document.getElementById('hb-min').value||'0'; const ampm=document.getElementById('hb-ampm').value||'AM'; if(ampm==='PM'&&hr!==12)hr+=12; if(ampm==='AM'&&hr===12)hr=0; switch(freq){case'day':return`${min} ${hr} * * *`;case'weekdays':return`${min} ${hr} * * 1-5`;case'week':return`${min} ${hr} * * ${day}`;case'hour':return'0 * * * *';case'30min':return'*/30 * * * *';case'15min':return'*/15 * * * *';default:return'';} }
+
+// ─── Wiki Sync schedule ─────────────────────────────────────────
+function updateWikiSyncFields() { const freq=document.getElementById('ws-frequency').value; const showDay=freq==='week'; const showTime=!['','hour','30min','15min'].includes(freq); document.getElementById('ws-day-label').style.display=showDay?'':'none'; document.getElementById('ws-days').style.display=showDay?'':'none'; document.getElementById('ws-time-label').style.display=showTime?'':'none'; document.getElementById('ws-hour').style.display=showTime?'':'none'; document.getElementById('ws-colon').style.display=showTime?'':'none'; document.getElementById('ws-min').style.display=showTime?'':'none'; document.getElementById('ws-ampm').style.display=showTime?'':'none'; }
+function buildWikiSyncCron() { const freq=document.getElementById('ws-frequency').value; if(!freq)return''; const day=document.getElementById('ws-days').value||'1'; let hr=parseInt(document.getElementById('ws-hour').value||'12'); const min=document.getElementById('ws-min').value||'0'; const ampm=document.getElementById('ws-ampm').value||'AM'; if(ampm==='PM'&&hr!==12)hr+=12; if(ampm==='AM'&&hr===12)hr=0; switch(freq){case'day':return`${min} ${hr} * * *`;case'weekdays':return`${min} ${hr} * * 1-5`;case'week':return`${min} ${hr} * * ${day}`;case'hour':return'0 * * * *';case'30min':return'*/30 * * * *';case'15min':return'*/15 * * * *';default:return'';} }
+function setWikiSyncFromCron(cron) { if(!cron){document.getElementById('ws-frequency').value='';updateWikiSyncFields();return;} const p=cronToHuman(cron); document.getElementById('ws-frequency').value=p.frequency; document.getElementById('ws-days').value=p.days||'1'; const h24=parseInt(p.time||'12');const isPM=h24>=12;const h12=h24===0?12:h24>12?h24-12:h24; document.getElementById('ws-hour').value=String(h12); document.getElementById('ws-min').value=p.min||'0'; document.getElementById('ws-ampm').value=isPM?'PM':'AM'; updateWikiSyncFields(); }
+
+// ─── Cron parser ────────────────────────────────────────────────
+function cronToHuman(cron) { const parts=cron.split(' '); if(parts.length!==5)return{frequency:'day',days:'1',time:'9'}; const[min,hour,,,dow]=parts; if(min==='*/15')return{frequency:'15min',days:'1',time:'9'}; if(min==='*/30')return{frequency:'30min',days:'1',time:'9'}; if(hour==='*')return{frequency:'hour',days:'1',time:'9'}; if(dow==='1-5')return{frequency:'weekdays',days:'1',time:hour,min:min}; if(dow==='*')return{frequency:'day',days:'1',time:hour,min:min}; return{frequency:'week',days:dow,time:hour,min:min}; }
+
+// ─── Goal Entries ───────────────────────────────────────────────
+function addGoalEntry(goal) {
+  const container = document.getElementById('goalEntries');
+  const noMsg = document.getElementById('noGoals'); if(noMsg) noMsg.style.display='none';
+  const channels = ['telegram','slack','imessage'];
+  const g = goal||{}; const enabled=g.enabled!==false; const id=g.id||''; const desc=g.description||''; const criteria=g.successCriteria||''; const instructions=g.instructions||'';
+  const budget=g.budget&&g.budget.maxDailyUsd!=null?g.budget.maxDailyUsd:'';
+  const reportTargets=g.reportTo?(Array.isArray(g.reportTo)?g.reportTo:[g.reportTo]):[];
+  const reportChannel=reportTargets[0]?reportTargets[0].split(':')[0]:''; const reportChatId=reportTargets[0]?reportTargets[0].split(':').slice(1).join(':'):'';
+  const hb=g.heartbeat?cronToHuman(g.heartbeat):{frequency:'day',days:'1',time:'9',min:'0'};
+  const h24=parseInt(hb.time||'9');const isPM=h24>=12;const h12=h24===0?12:h24>12?h24-12:h24;const gm=hb.min||'0';
+  const hideTime=hb.frequency==='hour';
+  const hourOpts=Array.from({length:12},(_,i)=>{const hr=i===0?12:i;return'<option value="'+hr+'" '+(hr===h12?'selected':'')+'>'+hr+'</option>';}).join('');
+  const minOpts=['0','15','30','45'].map(v=>'<option value="'+v+'" '+(v===gm?'selected':'')+'>'+(v==='0'?'00':v)+'</option>').join('');
+  const div = document.createElement('div'); div.className='goal-entry';
+  div.innerHTML = `<button class="entry-remove" onclick="removeGoal(this)">&times;</button>
+    <div class="goal-row"><label class="goal-toggle"><input type="checkbox" data-field="goalEnabled" ${enabled?'checked':''}> Enabled</label></div>
+    <div class="goal-row"><div style="flex:1"><label class="goal-label">Description</label><input class="goal-input" data-field="goalDesc" placeholder="What is this agent responsible for" value="${escapeHtml(desc)}" oninput="autoGoalId(this.closest('.goal-entry'))"></div></div>
+    <div class="goal-row"><div style="flex:1"><label class="goal-label">ID</label><input class="goal-input" data-field="goalId" placeholder="auto-generated" value="${escapeHtml(id)}" style="font-family:var(--font-mono);font-size:11px"></div></div>
+    <div class="goal-row"><div style="flex:1"><label class="goal-label">Success Criteria</label><input class="goal-input" data-field="goalCriteria" placeholder="How do we know it's done" value="${escapeHtml(criteria)}"></div></div>
+    <div class="goal-row"><div style="flex:1"><label class="goal-label">Instructions (optional)</label><textarea class="goal-textarea" data-field="goalInstructions" placeholder="Step by step guidance">${escapeHtml(instructions)}</textarea></div></div>
+    <div class="goal-row"><div style="flex:1"><label class="goal-label">Heartbeat</label><div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap"><span class="schedule-label">Every</span><select class="goal-select" data-field="goalFreq" onchange="toggleGoalHeartbeatFields(this.closest('.goal-entry'))"><option value="day" ${hb.frequency==='day'?'selected':''}>Day</option><option value="weekdays" ${hb.frequency==='weekdays'?'selected':''}>Weekday</option><option value="week" ${hb.frequency==='week'?'selected':''}>Week</option><option value="hour" ${hb.frequency==='hour'?'selected':''}>Hour</option></select>
+    <span class="schedule-label goal-day-label" style="${hb.frequency!=='week'?'display:none':''}">on</span><select class="goal-select goal-day-select" data-field="goalDays" style="${hb.frequency!=='week'?'display:none':''}"><option value="1" ${hb.days==='1'?'selected':''}>Mon</option><option value="2" ${hb.days==='2'?'selected':''}>Tue</option><option value="3" ${hb.days==='3'?'selected':''}>Wed</option><option value="4" ${hb.days==='4'?'selected':''}>Thu</option><option value="5" ${hb.days==='5'?'selected':''}>Fri</option><option value="6" ${hb.days==='6'?'selected':''}>Sat</option><option value="0" ${hb.days==='0'?'selected':''}>Sun</option></select>
+    <span class="schedule-label goal-time-label" style="${hideTime?'display:none':''}">at</span><select class="goal-select" data-field="goalTimeHour" style="${hideTime?'display:none':''}">${hourOpts}</select><span class="schedule-label goal-time-label" style="${hideTime?'display:none':''}">:</span><select class="goal-select" data-field="goalTimeMin" style="${hideTime?'display:none':''}">${minOpts}</select><select class="goal-select" data-field="goalTimeAmpm" style="${hideTime?'display:none':''}"><option value="AM" ${isPM?'':'selected'}>AM</option><option value="PM" ${isPM?'selected':''}>PM</option></select></div></div></div>
+    <div class="goal-row"><div style="flex:0.4"><label class="goal-label">Budget ($/day)</label><input class="goal-input" data-field="goalBudget" type="number" step="0.01" min="0" placeholder="5.00" value="${budget}"></div><div style="flex:0.6"><label class="goal-label">Report To</label><div style="display:flex;gap:6px"><select class="goal-select" data-field="goalReportChannel" style="width:100px"><option value="">None</option>${channels.map(c=>'<option value="'+c+'" '+(c===reportChannel?'selected':'')+'>'+c+'</option>').join('')}</select><input class="goal-input" data-field="goalReportChatId" placeholder="Chat/Channel ID" value="${escapeHtml(reportChatId)}" style="flex:1"></div></div></div>`;
+  container.appendChild(div); toggleGoalHeartbeatFields(div);
+}
+function toggleGoalHeartbeatFields(entry) { const freq=entry.querySelector('[data-field="goalFreq"]')?.value||''; const showDay=freq==='week'; const showTime=freq!=='hour'; entry.querySelector('.goal-day-label').style.display=showDay?'':'none'; entry.querySelector('.goal-day-select').style.display=showDay?'':'none'; entry.querySelectorAll('.goal-time-label').forEach(el=>el.style.display=showTime?'':'none'); entry.querySelectorAll('[data-field="goalTimeHour"],[data-field="goalTimeMin"],[data-field="goalTimeAmpm"]').forEach(el=>el.style.display=showTime?'':'none'); }
+function autoGoalId(entry) { const desc=entry.querySelector('[data-field="goalDesc"]').value.trim(); const idField=entry.querySelector('[data-field="goalId"]'); if(!idField.dataset.manual){idField.value=desc.toLowerCase().replace(/[^a-z0-9\s-]/g,'').replace(/\s+/g,'-').slice(0,50);} }
+function removeGoal(btn) { btn.closest('.goal-entry').remove(); if(!document.querySelector('.goal-entry'))document.getElementById('noGoals').style.display=''; }
+function buildGoalCron(entry) { const freq=entry.querySelector('[data-field="goalFreq"]')?.value||'day'; const day=entry.querySelector('[data-field="goalDays"]')?.value||'1'; let hr=parseInt(entry.querySelector('[data-field="goalTimeHour"]')?.value||'9'); const min=entry.querySelector('[data-field="goalTimeMin"]')?.value||'0'; const ampm=entry.querySelector('[data-field="goalTimeAmpm"]')?.value||'AM'; if(ampm==='PM'&&hr!==12)hr+=12; if(ampm==='AM'&&hr===12)hr=0; switch(freq){case'day':return`${min} ${hr} * * *`;case'weekdays':return`${min} ${hr} * * 1-5`;case'week':return`${min} ${hr} * * ${day}`;case'hour':return'0 * * * *';default:return`${min} ${hr} * * *`;} }
+function getGoalsFromForm() { return [...document.querySelectorAll('.goal-entry')].map(entry=>{const id=entry.querySelector('[data-field="goalId"]')?.value?.trim(); const enabled=entry.querySelector('[data-field="goalEnabled"]')?.checked??true; const description=entry.querySelector('[data-field="goalDesc"]')?.value?.trim(); if(!id||!description)return null; const goal={id,enabled,description,heartbeat:buildGoalCron(entry)}; const sc=entry.querySelector('[data-field="goalCriteria"]')?.value?.trim(); if(sc)goal.successCriteria=sc; const ins=entry.querySelector('[data-field="goalInstructions"]')?.value?.trim(); if(ins)goal.instructions=ins; const bv=entry.querySelector('[data-field="goalBudget"]')?.value?.trim(); if(bv)goal.budget={maxDailyUsd:parseFloat(bv)}; const rch=entry.querySelector('[data-field="goalReportChannel"]')?.value; const rcid=entry.querySelector('[data-field="goalReportChatId"]')?.value?.trim(); if(rch&&rcid)goal.reportTo=rch+':'+rcid; return goal;}).filter(Boolean); }
+
+async function triggerGoal(goalId) { if(!editingAgentId)return; if(!confirm('Trigger goal "'+goalId+'" now?'))return; try{const res=await fetch(`/api/agents/${editingAgentId}/goals/${goalId}/trigger`,{method:'POST'});const data=await res.json();if(data.ok)alert('Triggered!');else alert(data.error||'Failed');}catch(e){alert(e.message);} }
+async function toggleGoal(goalId) { if(!editingAgentId)return; try{await fetch(`/api/agents/${editingAgentId}/goals/${goalId}/toggle`,{method:'POST'});await fetchData();}catch(e){alert(e.message);} }
+async function triggerCron(index) { if(!editingAgentId)return; if(!confirm('Trigger now?'))return; try{const res=await fetch(`/api/agents/${editingAgentId}/cron/${index}/trigger`,{method:'POST'});const data=await res.json();if(data.ok)alert('Triggered!');else alert(data.error||'Failed');}catch(e){alert(e.message);} }
+async function toggleCron(index) { if(!editingAgentId)return; try{await fetch(`/api/agents/${editingAgentId}/cron/${index}/toggle`,{method:'POST'});await fetchData();}catch(e){alert(e.message);} }
+
+// ─── Save Agent ─────────────────────────────────────────────────
+async function saveAgent() {
+  const btn = document.getElementById('saveBtn'); btn.disabled = true; const orig = btn.textContent; btn.textContent = 'Saving...';
+  const agentId = document.getElementById('f-agentId')?.value?.trim();
+  const alias = document.getElementById('f-alias')?.value?.trim();
+  const name = document.getElementById('f-name')?.value?.trim();
+  const description = document.getElementById('f-desc')?.value?.trim();
+  const instructions = document.getElementById('f-instructions')?.value || '';
+  const workspace = document.getElementById('f-workspace')?.value?.trim() || '~';
+  const persistent = document.getElementById('f-persistent')?.classList.contains('checked');
+  const streaming = document.getElementById('f-streaming')?.classList.contains('checked');
+  const advancedMemory = document.getElementById('f-advancedMemory')?.classList?.contains('checked') ?? true;
+  const wiki = document.getElementById('f-wiki')?.classList?.contains('checked') ?? false;
+  const wikiSyncEnabled = document.getElementById('f-wikiSyncEnabled')?.classList?.contains('checked') ?? false;
+  const wikiSync = { enabled: wikiSyncEnabled, schedule: buildWikiSyncCron()||'0 0 * * *', instructions: document.getElementById('f-wikiSyncInstructions')?.value?.trim()||'' };
+  const autonomousCapable = document.getElementById('f-autonomousCapable')?.classList?.contains('checked') ?? true;
+  const autoCommit = document.getElementById('f-autoCommit')?.classList?.contains('checked') ?? false;
+  const timeout = (parseInt(document.getElementById('f-timeout')?.value||'14400')||14400)*1000;
+  const claudeAccount = document.getElementById('f-claudeAccount')?.value || undefined;
+  const agentClass = document.getElementById('f-agentClass')?.value || 'standard';
+  const executor = document.getElementById('f-executor')?.value || undefined;
+  const skills = getSelectedSkills();
+  const avatar = document.getElementById('f-avatar')?.value || undefined;
+  const heartbeatInstructions = document.getElementById('f-heartbeatInstructions')?.value?.trim() || undefined;
+  const heartbeatCron = buildHeartbeatCron() || undefined;
+  const heartbeatEnabled = document.getElementById('f-heartbeatEnabled')?.classList?.contains('checked') ?? false;
+
+  const tools = [...document.querySelectorAll('#f-tools .checkbox-pill.checked')].map(el=>el.dataset.val).filter(Boolean);
+  const mcps = [...document.querySelectorAll('#f-mcps .checkbox-pill.checked')].map(el=>el.dataset.val).filter(Boolean);
+  const orgEls = document.querySelectorAll('.org-entry');
+  const org = [...orgEls].map(el=>{const inputs=el.querySelectorAll('input');const entry={organization:inputs[0]?.value?.trim()||'',function:inputs[1]?.value?.trim()||'',title:inputs[2]?.value?.trim()||''};const rt=inputs[3]?.value?.trim()||'';if(rt)entry.reportsTo=rt;return entry;}).filter(o=>o.organization);
+
+  if (!agentId||!name||!alias) { alert('Agent ID, Name, and Alias are required.'); btn.disabled=false; btn.textContent=orig; return; }
+
+  try {
+    const url = editingAgentId ? `/api/agents/${editingAgentId}` : '/api/agents';
+    const method = editingAgentId ? 'PUT' : 'POST';
+    const cron = getSchedulesFromForm(); const goals = getGoalsFromForm();
+    const res = await fetch(url, { method, headers:{'Content-Type':'application/json'}, body:JSON.stringify({agentId,name,description,alias,workspace,persistent,streaming,advancedMemory,wiki,wikiSync,autonomousCapable,autoCommit,timeout,tools,mcps,skills:skills.length?skills:undefined,org,cron,goals,instructions:instructions||undefined,claudeAccount,agentClass,executor,heartbeatInstructions,heartbeatCron,heartbeatEnabled,avatar}) });
+    const data = await res.json();
+    if (data.ok) { closeModal(); await fetchData(); }
+    else if (data.upgradeRequired) { showUpgradePrompt(data.error); }
+    else { alert('Error: '+(data.error||'Unknown')); }
+  } catch(err) { alert('Error: '+err.message); }
+  btn.disabled=false; btn.textContent=orig;
+}
+
+function showUpgradePrompt(message) {
+  var existing=document.getElementById('upgradePromptOverlay'); if(existing)existing.remove();
+  var overlay=document.createElement('div'); overlay.id='upgradePromptOverlay';
+  overlay.style.cssText='position:fixed;inset:0;z-index:99999;background:rgba(0,0,0,0.75);display:flex;align-items:center;justify-content:center;backdrop-filter:blur(6px)';
+  overlay.innerHTML='<div style="background:var(--bg-surface);border:1px solid var(--border-glow);border-radius:16px;padding:36px;max-width:440px;width:90%;text-align:center"><div style="font-size:36px;margin-bottom:12px">&#x1F680;</div><h2 style="font-size:18px;font-weight:700;margin-bottom:8px">Upgrade to Pro</h2><p style="font-size:13px;color:var(--text-secondary);line-height:1.6;margin-bottom:20px">'+(message||'Agent limit reached.')+'<br>Upgrade to <strong style="color:var(--accent)">MyAIforOne Pro</strong> for unlimited agents.</p><div style="display:flex;gap:10px;justify-content:center"><button onclick="document.getElementById(\'upgradePromptOverlay\').remove()" style="padding:10px 20px;border-radius:10px;border:1px solid var(--border-dim);background:transparent;color:var(--text-secondary);font-size:13px;cursor:pointer">Close</button><a href="/admin?tab=settings" style="padding:10px 20px;border-radius:10px;border:none;background:var(--accent);color:#000;font-size:13px;font-weight:600;cursor:pointer;text-decoration:none">Go to Settings</a></div></div>';
+  document.body.appendChild(overlay);
+  overlay.addEventListener('click',function(e){if(e.target===overlay)overlay.remove();});
+}
+
+// ─── Delete Agent ───────────────────────────────────────────────
+let deleteTargetId=null, deleteTargetAlias=null;
+function showDeleteConfirm() { const btn=document.getElementById('deleteBtn'); deleteTargetId=btn.dataset.agentId; deleteTargetAlias=btn.dataset.alias; document.getElementById('deleteAliasHint').textContent=deleteTargetAlias; document.getElementById('deleteConfirmInput').value=''; document.getElementById('confirmDeleteBtn').disabled=true; document.getElementById('deleteOverlay').classList.remove('hidden'); setTimeout(()=>document.getElementById('deleteConfirmInput').focus(),100); }
+function hideDeleteConfirm() { document.getElementById('deleteOverlay').classList.add('hidden'); deleteTargetId=null; deleteTargetAlias=null; }
+function checkDeleteInput() { document.getElementById('confirmDeleteBtn').disabled=(document.getElementById('deleteConfirmInput').value.trim()!==deleteTargetAlias); }
+async function executeDelete() { if(!deleteTargetId)return; const btn=document.getElementById('confirmDeleteBtn'); btn.textContent='Deleting...'; btn.disabled=true; try{ const res=await fetch(`/api/agents/${deleteTargetId}`,{method:'DELETE',headers:{'Content-Type':'application/json'},body:JSON.stringify({confirmAlias:deleteTargetAlias})}); const data=await res.json(); if(data.ok){hideDeleteConfirm();closeModal();await fetchData();} else{alert('Failed: '+data.error);btn.textContent='Delete Forever';btn.disabled=false;} }catch(e){alert(e.message);btn.textContent='Delete Forever';btn.disabled=false;} }
+
+// ─── Event Listeners ────────────────────────────────────────────
+document.getElementById('agentModal').addEventListener('click', function(e) { if (e.target === this) closeModal(); });
+document.getElementById('mcpAuthModal').addEventListener('click', function(e) { if (e.target === this) closeMcpAuthModal(); });
+document.addEventListener('keydown', e => { if (e.key === 'Escape') { if (document.getElementById('mcpAuthModal').classList.contains('show')) closeMcpAuthModal(); else if (!document.getElementById('deleteOverlay').classList.contains('hidden')) hideDeleteConfirm(); else closeModal(); } });
+
+// ─── Sub-nav & Init ─────────────────────────────────────────────
+const subNav = document.getElementById('subNav');
+subNav.innerHTML = `
+  <div class="agent-controls" id="agentControlsBar">
+    <div class="view-toggle" id="viewToggle">
+      <button class="view-toggle-btn${viewMode==='compact'?' active':''}" data-view="compact" onclick="setViewMode('compact')" title="Compact view">&#9642;&#9642;</button>
+      <button class="view-toggle-btn${viewMode==='grid'?' active':''}" data-view="grid" onclick="setViewMode('grid')" title="Hierarchy view">&#9638;</button>
+      <button class="view-toggle-btn${viewMode==='list'?' active':''}" data-view="list" onclick="setViewMode('list')" title="List view">&#9776;</button>
+    </div>
+    <input type="text" id="agentSearch" class="topbar-control" placeholder="Search..." oninput="handleSearch()" style="width:120px">
+    <select class="org-select" id="orgSelect" onchange="renderOrg()"></select>
+    <button class="add-agent-btn-top" onclick="openModal(null)">+ New Agent</button>
+  </div>
+`;
+
+fetchData();
+setInterval(fetchData, 30000);
+</script>
+</body>
+</html>

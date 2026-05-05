@@ -85,7 +85,7 @@ export function startWebUI(opts: WebUIOptions): void {
       try {
         let content = readFileSync(filePath, "utf8");
         // Inject Work/AI Gym nav toggle on pages with a topbar (skip home2, gym, mini, docs)
-        const skipToggle = ["home2.html", "gym.html", "mini.html", "mcp-docs.html", "api-docs.html"];
+        const skipToggle = ["home2.html", "gym.html", "mini.html", "mcp-docs.html", "api-docs.html", "org.html"];
         if (!skipToggle.includes(filename) && content.includes('class="topbar"')) {
           content = content.replace("</body>", '<script src="/nav-toggle.js"></script></body>');
         }
@@ -108,6 +108,7 @@ export function startWebUI(opts: WebUIOptions): void {
   const serveHome = (_req: any, res: any) => servePage(res, "home2.html", "/org");
   app.get("/", (_req: any, res: any) => servePage(res, "index.html"));
   app.get("/ui", (_req, res) => servePage(res, "index.html"));
+  app.get("/org", (_req, res) => servePage(res, "org.html"));
   app.get("/settings", (_req, res) => servePage(res, "settings.html"));
 
   // ─── Auth System — API Keys ──────────────────────────────────────────
