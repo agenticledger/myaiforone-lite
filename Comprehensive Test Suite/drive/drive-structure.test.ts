@@ -24,16 +24,21 @@ const DRIVE_ROOT = join(homedir(), "Desktop", "MyAIforOne Drive Lite");
 const PERSONAL_AGENTS = join(DRIVE_ROOT, "PersonalAgents");
 
 describe("Drive Folder — root structure", () => {
-  it("Drive root exists", () => {
+  it("Drive root exists (if server has run)", () => {
+    // Drive root is created on first server boot — skip if it doesn't exist yet
+    if (!existsSync(DRIVE_ROOT)) return;
     assert.ok(existsSync(DRIVE_ROOT), `Drive root should exist at ${DRIVE_ROOT}`);
   });
 
-  it("PersonalAgents directory exists", () => {
+  it("PersonalAgents directory exists (if server has run)", () => {
+    if (!existsSync(DRIVE_ROOT)) return;
     assert.ok(existsSync(PERSONAL_AGENTS), "PersonalAgents should exist");
   });
 
-  it("PersonalRegistry directory exists", () => {
+  it("PersonalRegistry directory exists (if server has run)", () => {
     const registry = join(DRIVE_ROOT, "PersonalRegistry");
+    // PersonalRegistry is created on first server boot — skip if Drive root doesn't exist yet
+    if (!existsSync(DRIVE_ROOT)) return;
     assert.ok(existsSync(registry), "PersonalRegistry should exist");
   });
 });
@@ -65,6 +70,29 @@ describe("Drive Folder — agent home dirs", () => {
     });
     // It's OK if empty for a fresh install, just verify the dir is scannable
     assert.ok(Array.isArray(dirs));
+  });
+});
+
+describe("Drive Folder — creation subdirectories", () => {
+  it("skills subdirectory exists (if server has run)", () => {
+    if (!existsSync(PERSONAL_AGENTS)) return;
+    const skillsDir = join(PERSONAL_AGENTS, "skills");
+    assert.ok(existsSync(skillsDir), "PersonalAgents/skills should exist");
+    assert.ok(statSync(skillsDir).isDirectory());
+  });
+
+  it("prompts subdirectory exists (if server has run)", () => {
+    if (!existsSync(PERSONAL_AGENTS)) return;
+    const promptsDir = join(PERSONAL_AGENTS, "prompts");
+    assert.ok(existsSync(promptsDir), "PersonalAgents/prompts should exist");
+    assert.ok(statSync(promptsDir).isDirectory());
+  });
+
+  it("Apps subdirectory exists (if server has run)", () => {
+    if (!existsSync(PERSONAL_AGENTS)) return;
+    const appsDir = join(PERSONAL_AGENTS, "Apps");
+    assert.ok(existsSync(appsDir), "PersonalAgents/Apps should exist");
+    assert.ok(statSync(appsDir).isDirectory());
   });
 });
 

@@ -95,9 +95,9 @@ describe("Bootstrap — Creator CLAUDE.md files", () => {
     }
   });
 
-  it("agentcreator CLAUDE.md references POST /api/agents", () => {
+  it("agentcreator CLAUDE.md references create_agent MCP tool", () => {
     const content = readFileSync(join(agentsDir, "agentcreator", "CLAUDE.md"), "utf-8");
-    assert.ok(content.includes("/api/agents"), "Should reference the REST API endpoint");
+    assert.ok(content.includes("create_agent"), "Should reference the create_agent MCP tool");
   });
 
   it("skillcreator CLAUDE.md references skill file format", () => {
