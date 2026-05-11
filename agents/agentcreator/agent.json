@@ -1,0 +1,7 @@
+{
+  "id": "agentcreator",
+  "name": "Agent Creator",
+  "description": "Creates new AI agents through conversation",
+  "version": "1.0.0",
+  "created": "2026-05-10"
+}

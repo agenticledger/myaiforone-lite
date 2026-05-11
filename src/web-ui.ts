@@ -84,8 +84,8 @@ export function startWebUI(opts: WebUIOptions): void {
       res.setHeader("Cache-Control", "no-cache, no-store, must-revalidate");
       try {
         let content = readFileSync(filePath, "utf8");
-        // Inject Work/AI Gym nav toggle on pages with a topbar (skip home2, gym, mini, docs)
-        const skipToggle = ["home2.html", "gym.html", "mini.html", "mcp-docs.html", "api-docs.html", "org.html"];
+        // Inject Work/AI Gym nav toggle on pages with a topbar — disabled for Lite (no Gym support)
+        const skipToggle = ["index.html", "home2.html", "gym.html", "mini.html", "mcp-docs.html", "api-docs.html", "org.html", "lab.html", "settings.html"];
         if (!skipToggle.includes(filename) && content.includes('class="topbar"')) {
           content = content.replace("</body>", '<script src="/nav-toggle.js"></script></body>');
         }
@@ -110,6 +110,7 @@ export function startWebUI(opts: WebUIOptions): void {
   app.get("/ui", (_req, res) => servePage(res, "index.html"));
   app.get("/org", (_req, res) => servePage(res, "org.html"));
   app.get("/settings", (_req, res) => servePage(res, "settings.html"));
+  app.get("/lab", (_req, res) => servePage(res, "lab.html"));
 
   // ─── Auth System — API Keys ──────────────────────────────────────────
   // Auth is only active when service.auth.enabled is true (default: false).
@@ -351,6 +352,7 @@ export function startWebUI(opts: WebUIOptions): void {
       gymEnabled: (s as any).gymEnabled ?? false,
       aibriefingEnabled: (s as any).aibriefingEnabled ?? false,
       gymOnlyMode: (s as any).gymOnlyMode ?? false,
+      labEnabled: (s as any).labEnabled ?? false,
       sharedAgentsEnabled,
       voiceModeEnabled: (s as any).voiceModeEnabled ?? false,
       platformDefaultVoice: (s as any).platformDefaultVoice || "browser",
@@ -364,7 +366,7 @@ export function startWebUI(opts: WebUIOptions): void {
   // PUT /api/config/service — update service settings
   app.put("/api/config/service", (req, res) => {
     try {
-      const { defaultClaudeAccount } = req.body as { defaultClaudeAccount?: string };
+      const { defaultClaudeAccount, labEnabled } = req.body as { defaultClaudeAccount?: string; labEnabled?: boolean };
       const raw = JSON.parse(readFileSync(configFilePath(), "utf-8"));
       if (!raw.service) raw.service = {};
       if (defaultClaudeAccount !== undefined) {
@@ -373,6 +375,10 @@ export function startWebUI(opts: WebUIOptions): void {
         if (opts.config.service.claudeAccounts) {
           (opts.config.service.claudeAccounts as any)._defaultAccount = defaultClaudeAccount || undefined;
         }
+      }
+      if (labEnabled !== undefined) {
+        raw.service.labEnabled = labEnabled;
+        (opts.config.service as any).labEnabled = labEnabled;
       }
       writeFileSync(configFilePath(), JSON.stringify(raw, null, 2));
       res.json({ ok: true, note: "Saved. Some changes may require a restart." });

@@ -550,7 +550,7 @@ html,body{
     <img class="logo-mark" src="/MyAIforOne-logomark-transparent.svg" alt="MyAIforOne">
     <span class="logo-text">MyAIforOne Lite</span>
   </a>
-  <div class="tab-group">
+  <div class="tab-group" id="mainTabGroup">
     <a class="tab-btn" href="/">Chat</a>
     <a class="tab-btn active" href="/org">Agents</a>
   </div>
@@ -558,6 +558,7 @@ html,body{
     <button class="theme-toggle" onclick="toggleTheme()" title="Toggle theme">&#9728;</button>
   </div>
 </div>
+<script>(async()=>{try{const r=await fetch('/api/config/service');const s=await r.json();if(s.labEnabled){const g=document.getElementById('mainTabGroup');if(g){const a=document.createElement('a');a.href='/lab';a.className='tab-btn';a.textContent='Lab';g.appendChild(a)}}}catch{}})()</script>
 
 <div class="sub-nav" id="subNav"></div>
 

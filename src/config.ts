@@ -162,6 +162,7 @@ export interface ServiceConfig {
   voiceAutoPlay?: boolean;           // false (default) = user clicks Play; true = agent replies auto-play
   voiceMaxChars?: number;            // truncate TTS input to this many chars (default: 2000)
   gymEnabled?: boolean;                   // false = gym hidden, true = gym active
+  labEnabled?: boolean;                   // false = lab hidden, true = lab active (build agents, skills, prompts, apps)
   aibriefingEnabled?: boolean;            // false = no AI briefing feed, true = weekly AI news via web search
   gymOnlyMode?: boolean;
   sharedAgentsEnabled?: boolean;          // false (default) = shared agents feature hidden; true = enabled (also requires license feature "sharedAgents")

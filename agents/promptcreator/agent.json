@@ -1,0 +1,7 @@
+{
+  "id": "promptcreator",
+  "name": "Prompt Creator",
+  "description": "Creates reusable prompt templates through conversation",
+  "version": "1.0.0",
+  "created": "2026-05-10"
+}

@@ -870,7 +870,7 @@ text-decoration:none;}
     <img class="logo-mark" src="/MyAIforOne-logomark-transparent.svg" alt="MyAIforOne Lite">
     <span class="logo-text">MyAIforOne Lite</span>
   </a>
-  <div class="tab-group">
+  <div class="tab-group" id="mainTabGroup">
     <a href="/" class="tab-btn active">Chat</a>
     <a href="/org" class="tab-btn">Agents</a>
   </div>
@@ -879,6 +879,7 @@ text-decoration:none;}
     <button class="theme-toggle" onclick="toggleTheme()" title="Toggle theme">☀</button>
   </div>
 </div>
+<script>(async()=>{try{const r=await fetch('/api/config/service');const s=await r.json();if(s.labEnabled){const g=document.getElementById('mainTabGroup');if(g){const a=document.createElement('a');a.href='/lab';a.className='tab-btn';a.textContent='Lab';g.appendChild(a)}}}catch{}})()</script>
 
 <div class="app">
   <!-- Sidebar -->

@@ -74,6 +74,7 @@ function bootstrapConfigIfMissing(configPath: string): void {
       edition: "lite",
       webUI: { enabled: true, port: 4889 },
       voiceModeEnabled: false,
+      labEnabled: false,
       licenseKey: "",
       auth: { enabled: false },
     },
@@ -97,6 +98,38 @@ function bootstrapConfigIfMissing(configPath: string): void {
         routes: [],
         avatar: "avatar-12",
       },
+      ...(() => {
+        const creatorMeta: Record<string, { name: string; desc: string; alias: string[]; avatar: string }> = {
+          "agentcreator":  { name: "Agent Creator",  desc: "Creates new AI agents through conversation",   alias: ["@agentcreator"],  avatar: "avatar-70" },
+          "skillcreator":  { name: "Skill Creator",  desc: "Creates reusable skills through conversation", alias: ["@skillcreator"],  avatar: "avatar-71" },
+          "appcreator":    { name: "App Creator",    desc: "Builds web applications through conversation", alias: ["@appcreator"],    avatar: "avatar-72" },
+          "promptcreator": { name: "Prompt Creator", desc: "Creates reusable prompt templates",            alias: ["@promptcreator"], avatar: "avatar-73" },
+        };
+        const creators: Record<string, any> = {};
+        for (const [id, meta] of Object.entries(creatorMeta)) {
+          const creatorData = join(dir, "agents", id);
+          mkdirSync(creatorData, { recursive: true });
+          creators[id] = {
+            name: meta.name,
+            description: meta.desc,
+            agentHome: join(agentRes, id),
+            claudeMd: join(agentRes, id, "CLAUDE.md"),
+            memoryDir: creatorData,
+            mentionAliases: meta.alias,
+            workspace: homedir(),
+            allowedTools: ["Read", "Edit", "Write", "Glob", "Grep", "Bash", "WebFetch", "WebSearch"],
+            mcps: ["myaiforone-lite"],
+            persistent: true,
+            streaming: true,
+            autoCommit: false,
+            autoCommitBranch: "",
+            routes: [],
+            agentClass: "platform",
+            avatar: meta.avatar,
+          };
+        }
+        return creators;
+      })(),
     },
     mcps: {
       "myaiforone-lite": {
@@ -196,6 +229,49 @@ async function main(): Promise<void> {
       raw.defaultMcps.push("myaiforone-registry");
       changed = true;
       console.log(`[migrate] Added myaiforone-registry to defaultMcps`);
+    }
+    if (changed) writeFileSync(configPath, JSON.stringify(raw, null, 2), "utf-8");
+  } catch { /* ignore migration errors */ }
+
+  // Migrate: ensure Lab creator agents are registered in config.json
+  try {
+    const raw = JSON.parse(readFileSync(configPath, "utf-8"));
+    let changed = false;
+    if (!raw.agents) raw.agents = {};
+    const agentRes = process.env.TAURI_RESOURCE_DIR
+      ? join(process.env.TAURI_RESOURCE_DIR, "agents")
+      : join(baseDir, "agents");
+    const creatorDefs: Record<string, { name: string; desc: string; alias: string[]; avatar: string }> = {
+      "agentcreator":  { name: "Agent Creator",  desc: "Creates new AI agents through conversation",   alias: ["@agentcreator"],  avatar: "avatar-70" },
+      "skillcreator":  { name: "Skill Creator",  desc: "Creates reusable skills through conversation", alias: ["@skillcreator"],  avatar: "avatar-71" },
+      "appcreator":    { name: "App Creator",    desc: "Builds web applications through conversation", alias: ["@appcreator"],    avatar: "avatar-72" },
+      "promptcreator": { name: "Prompt Creator", desc: "Creates reusable prompt templates",            alias: ["@promptcreator"], avatar: "avatar-73" },
+    };
+    for (const [id, meta] of Object.entries(creatorDefs)) {
+      if (!raw.agents[id]) {
+        const creatorData = join(dataDir, "agents", id);
+        mkdirSync(creatorData, { recursive: true });
+        raw.agents[id] = {
+          name: meta.name,
+          description: meta.desc,
+          agentHome: join(agentRes, id),
+          claudeMd: join(agentRes, id, "CLAUDE.md"),
+          memoryDir: creatorData,
+          mentionAliases: meta.alias,
+          workspace: homedir(),
+          allowedTools: ["Read", "Edit", "Write", "Glob", "Grep", "Bash", "WebFetch", "WebSearch"],
+          mcps: ["myaiforone-lite"],
+          persistent: true,
+          streaming: true,
+          autoCommit: false,
+          autoCommitBranch: "",
+          routes: [],
+          agentClass: "platform",
+          avatar: meta.avatar,
+        };
+        changed = true;
+        console.log(`[migrate] Added Lab creator agent: ${id}`);
+      }
     }
     if (changed) writeFileSync(configPath, JSON.stringify(raw, null, 2), "utf-8");
   } catch { /* ignore migration errors */ }
