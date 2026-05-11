@@ -364,6 +364,131 @@ server.tool("save_mcp_key", "Save an API key for an agent's MCP connection", {
 });
 
 // ═══════════════════════════════════════════════════════════════════
+//  AGENT CREATION & MANAGEMENT
+// ═══════════════════════════════════════════════════════════════════
+
+server.tool("create_agent", "Create a new agent with full configuration", {
+  agentId: z.string().describe("Unique agent ID (lowercase, hyphens only)"),
+  name: z.string().describe("Display name"),
+  alias: z.string().describe("Mention alias (e.g. myagent for @myagent)"),
+  description: z.string().optional().describe("Agent description"),
+  workspace: z.string().optional().describe("Working directory path"),
+  organization: z.string().optional().describe("Organization name"),
+  function: z.string().optional().describe("Org function/department"),
+  title: z.string().optional().describe("Org title/role"),
+  reportsTo: z.string().optional().describe("Alias of the agent this one reports to (e.g. @pricingstrat)"),
+  persistent: z.boolean().optional().describe("Keep conversation history"),
+  streaming: z.boolean().optional().describe("Enable streaming responses"),
+  advancedMemory: z.boolean().optional().describe("Enable semantic memory"),
+  autonomousCapable: z.boolean().optional().describe("Can run autonomous goals"),
+  tools: z.array(z.string()).optional().describe("Allowed tools list"),
+  skills: z.array(z.string()).optional().describe("Shared skill names"),
+  mcps: z.array(z.string()).optional().describe("MCP server names"),
+  prompts: z.array(z.string()).optional().describe("Prompt template names"),
+  instructions: z.string().optional().describe("CLAUDE.md system prompt content"),
+  subAgents: z.union([z.array(z.string()), z.literal("*")]).optional().describe("Sub-agents for group agent"),
+  claudeAccount: z.string().optional().describe("Claude account name"),
+  timeout: z.number().optional().describe("Timeout in ms"),
+  agentClass: z.enum(["standard", "platform", "builder"]).optional().describe("Agent class: standard (default), platform (Lab creators), builder (app builders)"),
+  executor: z.string().optional().describe("Executor override: 'claude' (default) or 'ollama:<model>' (e.g. 'ollama:gemma2')"),
+  wiki: z.boolean().optional().describe("Enable wiki knowledge base for this agent"),
+  wikiSync: z.object({ enabled: z.boolean().optional(), schedule: z.string().optional() }).optional().describe("Wiki sync config: { enabled, schedule (cron expression) }"),
+  conversationLogMode: z.enum(["shared", "per-user"]).optional().describe("Conversation log mode: 'shared' (default) or 'per-user'"),
+  avatar: z.string().optional().describe("Avatar identifier (e.g. 'avatar-01' through 'avatar-80'). Auto-assigned if omitted."),
+}, async (args) => {
+  const body: any = { ...args };
+  if (args.organization) {
+    body.org = [{ organization: args.organization, function: args.function || "", title: args.title || "", reportsTo: args.reportsTo || "" }];
+    delete body.organization; delete body.function; delete body.title; delete body.reportsTo;
+  }
+  return safeCall("create_agent", () => api.createAgent(body));
+});
+
+server.tool("update_agent", "Update an existing agent's configuration", {
+  agentId: z.string().describe("Agent ID to update"),
+  name: z.string().optional(),
+  alias: z.string().optional(),
+  description: z.string().optional(),
+  workspace: z.string().optional(),
+  organization: z.string().optional().describe("Organization name"),
+  function: z.string().optional().describe("Org function/department"),
+  title: z.string().optional().describe("Org title/role"),
+  reportsTo: z.string().optional().describe("Alias of the agent this one reports to"),
+  persistent: z.boolean().optional(),
+  streaming: z.boolean().optional(),
+  advancedMemory: z.boolean().optional(),
+  autonomousCapable: z.boolean().optional().describe("Can run autonomous goals"),
+  timeout: z.number().optional(),
+  tools: z.array(z.string()).optional(),
+  skills: z.array(z.string()).optional(),
+  mcps: z.array(z.string()).optional(),
+  prompts: z.array(z.string()).optional(),
+  subAgents: z.union([z.array(z.string()), z.literal("*")]).optional().describe("Sub-agents for group agent"),
+  claudeAccount: z.string().optional(),
+  instructions: z.string().optional().describe("Update CLAUDE.md content"),
+  agentClass: z.enum(["standard", "platform", "builder"]).optional().describe("Agent class"),
+  executor: z.string().optional().describe("Executor override: 'claude' or 'ollama:<model>'"),
+  wiki: z.boolean().optional().describe("Enable wiki knowledge base"),
+  wikiSync: z.object({ enabled: z.boolean().optional(), schedule: z.string().optional() }).optional().describe("Wiki sync config"),
+  conversationLogMode: z.enum(["shared", "per-user"]).optional().describe("Conversation log mode"),
+  avatar: z.string().optional().describe("Avatar identifier. Set to empty string to remove."),
+}, async ({ agentId, ...body }) => {
+  const payload: any = { ...body };
+  if (body.organization !== undefined) {
+    payload.org = [{ organization: body.organization, function: body.function || "", title: body.title || "", reportsTo: body.reportsTo || "" }];
+    delete payload.organization; delete payload.function; delete payload.title; delete payload.reportsTo;
+  }
+  return safeCall("update_agent", () => api.updateAgent(agentId, payload));
+});
+
+// ═══════════════════════════════════════════════════════════════════
+//  MARKETPLACE & CREATION
+// ═══════════════════════════════════════════════════════════════════
+
+server.tool("browse_registry", "Browse the marketplace/registry by type (skills, prompts, agents, mcps, apps)", {
+  type: z.enum(["skills", "prompts", "agents", "mcps", "apps"]).describe("Registry type"),
+  source: z.string().optional().describe("Filter by source: 'personal', 'platform', or omit for all"),
+}, async ({ type, source }) => {
+  return safeCall("browse_registry", () => api.marketplace(type, source));
+});
+
+server.tool("assign_to_agents", "Assign a skill, prompt, or MCP to one or more agents", {
+  type: z.enum(["skill", "prompt", "mcp"]).describe("Item type"),
+  id: z.string().describe("Item ID to assign"),
+  agentIds: z.array(z.string()).describe("Agent IDs to assign to"),
+}, async ({ type, id, agentIds }) => {
+  return safeCall("assign_to_agents", () => api.assignToAgents(type, id, agentIds));
+});
+
+server.tool("create_skill", "Create a skill file and register it", {
+  id: z.string().describe("Skill ID (lowercase, hyphenated)"),
+  name: z.string().describe("Display name"),
+  description: z.string().optional().describe("One-line description"),
+  content: z.string().describe("Skill body content (instructions, steps)"),
+  scope: z.enum(["personal"]).optional().describe("Scope — always 'personal' in Lite"),
+}, async (args) => {
+  return safeCall("create_skill", () => api.createSkill(args));
+});
+
+server.tool("create_prompt", "Create a new prompt template", {
+  id: z.string().describe("Prompt ID (lowercase, hyphenated)"),
+  name: z.string().describe("Display name"),
+  content: z.string().describe("Full prompt content (with frontmatter)"),
+}, async ({ id, name, content }) => {
+  return safeCall("create_prompt", () => api.createPrompt(id, name, content));
+});
+
+server.tool("create_app", "Register a new app in the marketplace", {
+  id: z.string().describe("App ID (lowercase, hyphenated)"),
+  name: z.string().describe("Display name"),
+  description: z.string().optional().describe("App description"),
+  url: z.string().optional().describe("App URL"),
+}, async (args) => {
+  const body = { ...args };
+  return safeCall("create_app", () => api.createApp(body));
+});
+
+// ═══════════════════════════════════════════════════════════════════
 //  UPGRADE
 // ═══════════════════════════════════════════════════════════════════
 

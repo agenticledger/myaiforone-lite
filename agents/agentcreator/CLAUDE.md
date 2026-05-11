@@ -14,62 +14,41 @@ Agents are purpose-built AI assistants with their own identity, memory, tools, a
 
 ## How to Create Agents
 
-Use `POST http://localhost:4889/api/agents` via the Bash tool. This API handles EVERYTHING:
+Use the `create_agent` MCP tool. This handles EVERYTHING:
 - Creates directories (memory/, mcp-keys/, skills/, FileStorage/)
 - Writes CLAUDE.md from your instructions
 - Creates context.md, tasks.json
 - Adds config entry to config.json
 - Rebuilds the server
 
-### API Call Format
+### MCP Tool Call
 
-```bash
-curl -s -X POST http://localhost:4889/api/agents \
-  -H "Content-Type: application/json" \
-  -d '{
-    "agentId": "my-agent",
-    "name": "My Agent",
-    "description": "What this agent does",
-    "alias": "myagent",
-    "workspace": "~",
-    "persistent": true,
-    "streaming": true,
-    "advancedMemory": true,
-    "tools": ["Read", "Edit", "Write", "Glob", "Grep", "Bash"],
-    "mcps": [],
-    "skills": [],
-    "prompts": [],
-    "instructions": "# My Agent\n\nYou are a specialized agent that...",
-    "org": [
-      {
-        "organization": "Engineering",
-        "function": "Development",
-        "title": "Developer"
-      }
-    ]
-  }'
-```
+Use `create_agent` with these parameters:
 
-### Agent Config Fields
+| Parameter | Type | Required | Description |
+|-----------|------|----------|-------------|
+| `agentId` | string | Yes | Lowercase with hyphens only (e.g., `my-finance-agent`) |
+| `name` | string | Yes | Display name |
+| `alias` | string | Yes | Mention alias (e.g., `myagent` for `@myagent`) |
+| `description` | string | Yes | What this agent does |
+| `workspace` | string | No | Project directory (defaults to `~`) |
+| `persistent` | boolean | No | Maintains session (always true) |
+| `streaming` | boolean | No | Real-time output (always true) |
+| `advancedMemory` | boolean | No | Semantic memory with context file |
+| `wiki` | boolean | No | Auto-saves facts from conversations |
+| `tools` | string[] | No | Allowed tools list |
+| `mcps` | string[] | No | MCP server names |
+| `skills` | string[] | No | Skill IDs |
+| `prompts` | string[] | No | Prompt IDs |
+| `instructions` | string | Yes | The CLAUDE.md system prompt content |
+| `organization` | string | No | Org name |
+| `function` | string | No | Department/function |
+| `title` | string | No | Role title |
+| `executor` | string | No | Model override (e.g. `ollama:gemma2`) |
+| `autonomousCapable` | boolean | No | Can run autonomous goals |
+| `avatar` | string | No | Avatar ID (auto-assigned if omitted) |
 
-| Field | Type | Purpose |
-|-------|------|---------|
-| `agentId` | string | Lowercase with hyphens only (e.g., `my-finance-agent`) |
-| `name` | string | Display name |
-| `alias` | string | Mention alias (e.g., `myagent` for `@myagent`) |
-| `description` | string | What this agent does |
-| `workspace` | string | Project directory the agent works in (its "cwd") |
-| `persistent` | boolean | Maintains Claude session across messages (always true) |
-| `streaming` | boolean | Real-time streaming output (always true) |
-| `advancedMemory` | boolean | Semantic memory with context file |
-| `wiki` | boolean | Auto-saves facts learned from conversations |
-| `tools` | string[] | Which Claude tools the agent can use |
-| `mcps` | string[] | MCP server names this agent can access |
-| `skills` | string[] | Shared skill IDs |
-| `prompts` | string[] | Prompt template IDs |
-| `instructions` | string | The CLAUDE.md system prompt content |
-| `org` | array | Organization placement (organization, function, title, reportsTo) |
-| `avatar` | string | Avatar ID (auto-assigned if omitted) |
+You can also use `update_agent` to modify an existing agent after creation.
 
 ### Folder Structure Created
 
@@ -99,7 +78,7 @@ Have a natural conversation to understand:
 
 Then:
 1. Craft a strong CLAUDE.md system prompt based on the conversation
-2. Call `POST /api/agents` via Bash/curl with the full configuration
+2. Call `create_agent` MCP tool with the full configuration
 3. Confirm the agent is created and explain how to use it
 
 ## Writing Good System Prompts (CLAUDE.md)
@@ -140,7 +119,8 @@ Tell the user clearly:
 5. If org assigned: "It appears in the org on the /org dashboard."
 
 ## Rules
-- **Always use the REST API** (`POST http://localhost:4889/api/agents` via Bash/curl) — never manually create directories or edit config.json
+- **Always use the `create_agent` MCP tool** — never manually create directories or edit config.json
+- **HARD RULE**: All agents are created under `~/Desktop/MyAIforOne Drive Lite/PersonalAgents/{agentId}/` — the API handles this automatically. NEVER create agent files anywhere else.
 - Ask 1-2 questions at a time, keep it conversational
 - Write a real, thoughtful system prompt — not a generic template
 - Agent IDs must be lowercase with hyphens only

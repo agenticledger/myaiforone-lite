@@ -3649,6 +3649,116 @@ export function startWebUI(opts: WebUIOptions): void {
     }
   });
 
+  // ─── API: Create Skill ───────────────────────────────────────────
+  app.post("/api/skills/create", (req, res) => {
+    const { id, name, description, content } = req.body as {
+      id?: string; name?: string; description?: string; content?: string;
+    };
+    if (!id || !name || !content) {
+      return res.status(400).json({ error: "Missing required fields: id, name, content" });
+    }
+    try {
+      const skillsDir = join(tilde(getPersonalAgentsDir(opts.config)), "skills");
+      mkdirSync(skillsDir, { recursive: true });
+      const filePath = join(skillsDir, `${id}.md`);
+
+      // Build frontmatter + content
+      const frontmatter = [
+        "---",
+        `name: ${name}`,
+        ...(description ? [`description: ${description}`] : []),
+        "---",
+        "",
+      ].join("\n");
+      writeFileSync(filePath, frontmatter + content);
+
+      // Register in PersonalRegistry/skills.json
+      const registryPath = join(getPersonalRegistryDir(opts.config), "skills.json");
+      mkdirSync(dirname(registryPath), { recursive: true });
+      let registry: any = { skills: [] };
+      try { registry = JSON.parse(readFileSync(registryPath, "utf-8")); } catch { /* fresh */ }
+      if (!Array.isArray(registry.skills)) registry.skills = [];
+
+      registry.skills = registry.skills.filter((s: any) => s.id !== id);
+      registry.skills.push({
+        id, name, description: description || "",
+        provider: "me", category: "personal", verified: false,
+        source: "local", tags: ["personal"],
+        localPath: filePath,
+      });
+      writeFileSync(registryPath, JSON.stringify(registry, null, 2));
+
+      log.info(`[Skills] Created skill "${id}" → ${filePath}`);
+      res.json({ ok: true, id, path: filePath });
+    } catch (e: any) {
+      res.status(500).json({ error: e.message });
+    }
+  });
+
+  // ─── API: Create Prompt ─────────────────────────────────────────
+  app.post("/api/marketplace/create-prompt", (req, res) => {
+    const { id, name, content } = req.body as {
+      id?: string; name?: string; content?: string;
+    };
+    if (!id || !name || !content) {
+      return res.status(400).json({ error: "Missing required fields: id, name, content" });
+    }
+    try {
+      const promptsDir = join(tilde(getPersonalAgentsDir(opts.config)), "prompts");
+      mkdirSync(promptsDir, { recursive: true });
+      const filePath = join(promptsDir, `${id}.md`);
+
+      writeFileSync(filePath, content);
+
+      // Register in PersonalRegistry/prompts.json
+      const registryPath = join(getPersonalRegistryDir(opts.config), "prompts.json");
+      mkdirSync(dirname(registryPath), { recursive: true });
+      let registry: any = { prompts: [] };
+      try { registry = JSON.parse(readFileSync(registryPath, "utf-8")); } catch { /* fresh */ }
+      if (!Array.isArray(registry.prompts)) registry.prompts = [];
+
+      registry.prompts = registry.prompts.filter((p: any) => p.id !== id);
+      registry.prompts.push({
+        id, name, description: "",
+        provider: "me", category: "personal", verified: false,
+        source: "local", tags: ["personal"],
+        localPath: filePath,
+      });
+      writeFileSync(registryPath, JSON.stringify(registry, null, 2));
+
+      log.info(`[Prompts] Created prompt "${id}" → ${filePath}`);
+      res.json({ ok: true, id, path: filePath });
+    } catch (e: any) {
+      res.status(500).json({ error: e.message });
+    }
+  });
+
+  // ─── API: Create App ───────────────────────────────────────────
+  app.post("/api/apps", (req, res) => {
+    const { id, name, description, url, agentDeveloper } = req.body as {
+      id?: string; name?: string; description?: string; url?: string; agentDeveloper?: string;
+    };
+    if (!id || !name) {
+      return res.status(400).json({ error: "Missing required fields: id, name" });
+    }
+    try {
+      const apps = readApps();
+      const filtered = apps.filter((a: any) => a.id !== id);
+      filtered.push({
+        id, name, description: description || "",
+        url: url || "", agentDeveloper: agentDeveloper || "",
+        provider: "me", source: "local",
+        createdAt: new Date().toISOString(),
+      });
+      writeApps(filtered);
+
+      log.info(`[Apps] Created app "${id}"`);
+      res.json({ ok: true, id });
+    } catch (e: any) {
+      res.status(500).json({ error: e.message });
+    }
+  });
+
   // ─── API: Update Goal ─────────────────────────────────────────────
   app.put("/api/agents/:id/goals/:goalId", (req, res) => {
     const { id: agentId, goalId } = req.params;

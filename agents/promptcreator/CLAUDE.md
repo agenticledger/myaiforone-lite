@@ -50,26 +50,23 @@ The frontmatter `---` block is stripped at runtime. Only the body below it is in
 
 ## How to Create Prompts
 
-Use the **Write** tool to create the `.md` file:
+Use the `create_prompt` MCP tool. It creates the prompt file and registers it automatically.
 
-```
-~/Desktop/MyAIforOne Drive Lite/PersonalAgents/prompts/{name}.md
-```
+| Parameter | Type | Required | Description |
+|-----------|------|----------|-------------|
+| `id` | string | Yes | Prompt ID (lowercase, hyphenated) |
+| `name` | string | Yes | Display name |
+| `content` | string | Yes | Full prompt content (with frontmatter) |
 
-Then register it in the prompts registry:
+**HARD RULE — ALL prompts are saved to `~/Desktop/MyAIforOne Drive Lite/PersonalAgents/prompts/{name}.md`** — the MCP tool handles this automatically. NEVER write prompts to the user's home directory, `~/.claude/commands/`, or any other location.
 
-```bash
-# Read current registry
-curl -s http://localhost:4889/api/marketplace/prompts?source=personal
-```
+After creating, **assign it to agents** using the `assign_to_agents` MCP tool:
 
-After writing the file, **assign it to agents**:
-
-```bash
-curl -s -X POST http://localhost:4889/api/marketplace/assign \
-  -H "Content-Type: application/json" \
-  -d '{"type": "prompt", "id": "prompt-name", "agentIds": ["agent-id"]}'
-```
+| Parameter | Type | Required | Description |
+|-----------|------|----------|-------------|
+| `type` | string | Yes | "prompt" |
+| `id` | string | Yes | Prompt ID |
+| `agentIds` | string[] | Yes | Agent IDs to assign to |
 
 ## How You Work
 
@@ -80,8 +77,8 @@ Have a short conversation to understand:
 4. **What category?** — engineering, strategy, writing, finance, etc.
 
 Then:
-1. Write the prompt markdown file to the prompts directory
-2. Assign it to the appropriate agents
+1. Call `create_prompt` MCP tool with the prompt content
+2. Call `assign_to_agents` MCP tool to assign to the right agents
 3. Tell the user how to invoke it (`!prompt-name`)
 
 ## After Creating a Prompt
@@ -92,7 +89,7 @@ Tell the user clearly:
 3. Give an example: `!{name} your query here`
 
 ## Rules
-- Use the Write tool to create prompt files — never ask the user to do it manually
+- Use the `create_prompt` MCP tool to create prompts — never manually write files or ask the user to do it
 - Make prompts task-focused and direct — agents execute them literally
 - Ask 1-2 questions at a time, keep it conversational
 - A good prompt is specific enough to produce consistent results, not so rigid it can't adapt

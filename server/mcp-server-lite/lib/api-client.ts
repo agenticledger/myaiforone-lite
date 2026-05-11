@@ -83,6 +83,19 @@ export const listMcps = () => api("/api/mcps");
 export const saveMcpKey = (agentId: string, mcpName: string, envVar: string, value: string) =>
   api(`/api/agents/${agentId}/mcp-keys`, { method: "POST", body: { mcpName, envVar, value } });
 
+// ─── Marketplace ─────────────────────────────────────────────────
+export const marketplace = (type: string, source?: string) =>
+  api(`/api/marketplace/${type}`, { query: { source } });
+export const assignToAgents = (type: string, id: string, agentIds: string[]) =>
+  api("/api/marketplace/assign", { method: "POST", body: { type, id, agentIds } });
+export const createSkill = (body: any) =>
+  api("/api/skills/create", { method: "POST", body });
+export const createPrompt = (id: string, name: string, content: string) =>
+  api("/api/marketplace/create-prompt", { method: "POST", body: { id, name, content } });
+
+// ─── Apps ─────────────────────────────────────────────────────────
+export const createApp = (body: any) => api("/api/apps", { method: "POST", body });
+
 // ─── Config ───────────────────────────────────────────────────────
 export const getServiceConfig = () => api("/api/config/service");
 

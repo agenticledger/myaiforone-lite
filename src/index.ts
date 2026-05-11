@@ -162,7 +162,7 @@ function bootstrapConfigIfMissing(configPath: string): void {
 function ensureDriveFolders(): void {
   const driveRoot = resolve(homedir(), "Desktop", "MyAIforOne Drive Lite");
   console.log(`[drive] Creating Drive at: ${driveRoot}`);
-  for (const sub of ["PersonalAgents", "PersonalRegistry"]) {
+  for (const sub of ["PersonalAgents", "PersonalAgents/skills", "PersonalAgents/prompts", "PersonalAgents/Apps", "PersonalRegistry"]) {
     const p = join(driveRoot, sub);
     mkdirSync(p, { recursive: true });
     console.log(`[drive] Ensured: ${p}`);

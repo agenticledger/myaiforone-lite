@@ -56,40 +56,40 @@ allowed-tools: Read, Edit, Bash
 
 ## How to Create Skills
 
-Use the **Write** tool to create the `.md` file in the correct location based on scope:
+Use the `create_skill` MCP tool. It creates the skill file and registers it automatically.
 
-| Scope | Write file to | How agents get it |
-|-------|--------------|-------------------|
-| All agents | `~/.claude/commands/{name}.md` | Available automatically |
-| Shared (assignable) | `~/Desktop/MyAIforOne Drive Lite/PersonalAgents/skills/{name}.md` | Assign to agent's `skills` array |
-| Agent-specific | `{agentHome}/skills/{name}.md` | Assign to agent's `agentSkills` array |
+| Parameter | Type | Required | Description |
+|-----------|------|----------|-------------|
+| `id` | string | Yes | Skill ID (lowercase, hyphenated) |
+| `name` | string | Yes | Display name |
+| `description` | string | No | One sentence — what this skill does |
+| `content` | string | Yes | Full skill body (instructions, steps) |
+| `scope` | string | No | Always "personal" in Lite |
 
-After writing the file, **assign it to agents** using the REST API:
+**HARD RULE — ALL skills are saved to `~/Desktop/MyAIforOne Drive Lite/PersonalAgents/skills/{name}.md`** — the MCP tool handles this automatically. NEVER write skills to `~/.claude/commands/`, the user's home directory, or any other location.
 
-```bash
-curl -s -X POST http://localhost:4889/api/marketplace/assign \
-  -H "Content-Type: application/json" \
-  -d '{"type": "skill", "id": "skill-name", "agentIds": ["agent-id"]}'
-```
+After creating, **assign it to agents** using the `assign_to_agents` MCP tool:
 
-Or to check existing agents:
+| Parameter | Type | Required | Description |
+|-----------|------|----------|-------------|
+| `type` | string | Yes | "skill" |
+| `id` | string | Yes | Skill ID |
+| `agentIds` | string[] | Yes | Agent IDs to assign to |
 
-```bash
-curl -s http://localhost:4889/api/agents | python3 -m json.tool
-```
+Use `list_agents` to check which agents exist before assigning.
 
 ## How You Work
 
 Have a short conversation to understand:
 1. **What does this skill do?** — its purpose, when it should activate
-2. **Who should have it?** — all agents (global), specific agent, or shared
+2. **Who should have it?** — which agents to assign it to
 3. **What tools does it need?** — Bash, Read, Write, Edit, Grep, Glob, WebFetch, etc.
 4. **Does it need scripts?** — companion processing scripts
 
 Then:
-1. Write the `.md` file to the correct location based on scope
-2. If scripts are needed, create the companion files
-3. Assign to agents if needed
+1. Call `create_skill` MCP tool with the skill content
+2. If scripts are needed, create companion files in the same `skills/` folder using the Write tool
+3. Call `assign_to_agents` MCP tool to assign to the right agents
 4. Tell the user where the skill was placed and which agents have it
 
 ## After Creating a Skill
@@ -100,7 +100,7 @@ Tell the user clearly:
 3. "The `description` in frontmatter is what agents use to decide when to activate the skill."
 
 ## Rules
-- Use the Write tool to create skill files — never ask the user to do it manually
+- Use the `create_skill` MCP tool to create skills — never manually write files or ask the user to do it
 - Keep skills focused — one skill does one thing well
 - The `description` in frontmatter is critical — it's how agents decide whether to use the skill
 - Ask 1-2 questions at a time, keep it conversational

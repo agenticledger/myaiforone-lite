@@ -70,14 +70,14 @@ All core items in `CHECKLIST.md` are complete:
 Lab is a conversational builder for creating agents, skills, prompts, and apps. It includes:
 
 - **4 creator agents** (bootstrapped as platform defaults): `agentcreator`, `skillcreator`, `appcreator`, `promptcreator`
-- **CLAUDE.md files** in `agents/{creator}/CLAUDE.md` — adapted for Lite's REST API (no MCP create tools)
+- **CLAUDE.md files** in `agents/{creator}/CLAUDE.md` — use MCP tools (`create_agent`, `create_skill`, `create_prompt`, `create_app`, `assign_to_agents`)
 - **Feature flag**: `labEnabled` in ServiceConfig — off by default, toggled in Settings > Features
 - **Conditional nav tab**: Lab tab appears in Chat + Agents pages when enabled
 - **Access guard**: `/lab` redirects to `/` if `labEnabled` is false
 - **3 views**: Landing tiles → Intake form → Creation chat+canvas (split panel with streaming)
 - **Streaming**: Uses same SSE pattern as main chat (`POST /api/chat/{agentId}/stream` → `GET /api/chat/jobs/{jobId}/stream`)
 
-Creator agents use Lite's REST API via Bash/curl (`POST /api/agents`) and Write tool for file creation, since Lite's MCP does not have `create_agent`/`create_skill`/`create_prompt`/`create_app` tools.
+Creator agents use MCP tools (`create_agent`, `create_skill`, `create_prompt`, `create_app`, `assign_to_agents`, `update_agent`) backed by REST API endpoints on the Lite server.
 
 ## What Lite Does NOT Include
 

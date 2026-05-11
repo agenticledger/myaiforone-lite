@@ -744,8 +744,8 @@ async function loadArtifacts(){
     const skillsData=await skillsRes.json();
     const promptsData=await promptsRes.json();
     const appsData=await appsRes.json();
-    const mySkills=(skillsData.items||[]).filter(s=>s.provider==='me');
-    const myPrompts=(promptsData.items||[]).filter(p=>p.provider==='me');
+    const mySkills=(skillsData.items||[]).filter(s=>s.source==='local');
+    const myPrompts=(promptsData.items||[]).filter(p=>p.source==='local');
     const myApps=appsData.items||[];
     allArtifacts=[
       ...agents.filter(a=>!HIDDEN_AGENT_IDS.includes(a.id)).map(a=>({id:a.id,name:a.name,type:'agent',status:'active',meta:a.id})),
