@@ -26,6 +26,10 @@ I am the **engineer building and expanding myaiforone-lite**. My job is to imple
 | `src/memory/` | Basic + vector memory |
 | `src/wiki-sync.ts` | Wiki learning |
 | `public/index.html` | Chat UI (single page) |
+| `public/lab.html` | Lab UI — conversational builder for agents/skills/apps/prompts |
+| `public/org.html` | Agent management page |
+| `public/settings.html` | Settings page (accounts, service config, features) |
+| `agents/*/CLAUDE.md` | Creator agent instructions (agentcreator, skillcreator, etc.) |
 | `src-tauri/` | Tauri desktop shell |
 | `CHECKLIST.md` | Full build status — check this before starting work |
 
@@ -48,9 +52,10 @@ npm run tauri build
 
 ## Build Status
 
-All core items in `CHECKLIST.md` are complete. Outstanding items:
-- [ ] macOS `.dmg` and Windows `.exe` packaging (CI via `tauri-action`)
-- [ ] Code signing (deferred)
+All core items in `CHECKLIST.md` are complete:
+- [x] macOS `.dmg` and Windows `.exe` packaging (CI via `tauri-action`)
+- [x] macOS code signing + notarization (Developer ID Application cert + Apple notary)
+- [ ] Windows code signing (deferred — requires OV/EV certificate)
 
 ## Architecture Notes
 
@@ -60,6 +65,20 @@ All core items in `CHECKLIST.md` are complete. Outstanding items:
 - Upgrading to full MyAIforOne = just copying the Drive folder over
 - Config lives in `config.json` (same schema as full MyAIforOne, fewer fields used)
 
+## Lab Feature
+
+Lab is a conversational builder for creating agents, skills, prompts, and apps. It includes:
+
+- **4 creator agents** (bootstrapped as platform defaults): `agentcreator`, `skillcreator`, `appcreator`, `promptcreator`
+- **CLAUDE.md files** in `agents/{creator}/CLAUDE.md` — adapted for Lite's REST API (no MCP create tools)
+- **Feature flag**: `labEnabled` in ServiceConfig — off by default, toggled in Settings > Features
+- **Conditional nav tab**: Lab tab appears in Chat + Agents pages when enabled
+- **Access guard**: `/lab` redirects to `/` if `labEnabled` is false
+- **3 views**: Landing tiles → Intake form → Creation chat+canvas (split panel with streaming)
+- **Streaming**: Uses same SSE pattern as main chat (`POST /api/chat/{agentId}/stream` → `GET /api/chat/jobs/{jobId}/stream`)
+
+Creator agents use Lite's REST API via Bash/curl (`POST /api/agents`) and Write tool for file creation, since Lite's MCP does not have `create_agent`/`create_skill`/`create_prompt`/`create_app` tools.
+
 ## What Lite Does NOT Include
 
-No channel drivers (Telegram, Slack, etc.), no Boards/Gym/Projects/Library/Lab/Admin pages, no templates, no team gateways, no multi-agent routing.
+No channel drivers (Telegram, Slack, etc.), no Boards/Gym/Projects/Admin pages, no templates, no team gateways, no multi-agent routing, no AI Gym.
