@@ -909,6 +909,24 @@ export function startWebUI(opts: WebUIOptions): void {
     res.json(result);
   });
 
+  // ─── Browse directories (for Lab directory picker) ───────────────
+  app.get("/api/browse-dirs", (req, res) => {
+    const home = homedir();
+    const requestedPath = (req.query.path as string) || home;
+    const resolved = requestedPath.startsWith("~") ? requestedPath.replace("~", home) : requestedPath;
+    try {
+      const entries = readdirSync(resolved, { withFileTypes: true });
+      const dirs = entries
+        .filter(e => e.isDirectory() && !e.name.startsWith("."))
+        .map(e => e.name)
+        .sort((a, b) => a.toLowerCase().localeCompare(b.toLowerCase()));
+      const tilePath = resolved.startsWith(home) ? resolved.replace(home, "~") : resolved;
+      res.json({ path: tilePath, dirs });
+    } catch {
+      res.status(400).json({ error: "Cannot read directory" });
+    }
+  });
+
   // ─── MCP Diagnostic endpoint ─────────────────────────────────────
   app.get("/api/debug/mcp", (_req, res) => {
     try {
