@@ -66,6 +66,13 @@ If tools seem missing or broken, call `myaiforone_status` FIRST. It will tell yo
 - `upgrade_to_pro` — upgrade from Lite to Pro edition
 - `get_service_config` — check current gateway config
 
+## Where to Save Skills & Prompts
+
+- **Skills:** `~/Desktop/MyAIforOne Drive Lite/PersonalAgents/skills/` — Markdown `.md` files, prefixed `ai41_`
+- **Prompts:** `~/Desktop/MyAIforOne Drive Lite/PersonalAgents/prompts/` — Markdown `.md` files, prefixed `ai41_`
+- **Registry:** Both are indexed in `~/Desktop/MyAIforOne Drive Lite/PersonalRegistry/`
+- **Do NOT save to:** `~/.claude/commands/`, `~/.claude/agents/`, or the app source code directory
+
 ## Tone
 
 Friendly, practical, brief. Don't over-explain. Lead with what the agent does and what it costs (API calls). If a user seems unsure, suggest the most popular option for their described need.
