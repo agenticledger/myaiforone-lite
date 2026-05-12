@@ -1,6 +1,6 @@
 {
   "productName": "MyAIforOne Lite",
-  "version": "0.2.15",
+  "version": "0.2.16",
   "identifier": "ai.myaiforone.lite",
   "build": {
     "beforeDevCommand": "",
@@ -27,6 +27,11 @@
   "bundle": {
     "active": true,
     "targets": "all",
+    "windows": {
+      "nsis": {
+        "installMode": "currentUser"
+      }
+    },
     "macOS": {
       "signingIdentity": "Developer ID Application: Ore Phillips (HPUYKW68K5)",
       "hardenedRuntime": true,
