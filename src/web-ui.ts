@@ -4010,6 +4010,44 @@ export function startWebUI(opts: WebUIOptions): void {
     res.json({ ok: true, uptime: process.uptime() });
   });
 
+  // ─── API: Version check ─────────────────────────────────────────
+  app.get("/api/version", async (_req, res) => {
+    try {
+      // Current version from package.json
+      const pkgPath = join(opts.baseDir, "package.json");
+      let current = "0.0.0";
+      try { current = JSON.parse(readFileSync(pkgPath, "utf-8")).version || "0.0.0"; } catch { /* bundled */ }
+      // Also try tauri.conf.json version (more accurate for Tauri builds)
+      try {
+        const tauriConf = join(opts.baseDir, "..", "tauri.conf.json");
+        if (existsSync(tauriConf)) current = JSON.parse(readFileSync(tauriConf, "utf-8")).version || current;
+      } catch { /* not in Tauri context */ }
+
+      // Fetch latest from GitHub releases
+      let latest = current;
+      let updateAvailable = false;
+      let downloadUrl = "https://github.com/agenticledger/myaiforone-lite/releases/latest";
+      try {
+        const resp = await fetch("https://api.github.com/repos/agenticledger/myaiforone-lite/releases/latest", {
+          signal: AbortSignal.timeout(5000),
+          headers: { "Accept": "application/vnd.github.v3+json" },
+        });
+        if (resp.ok) {
+          const data = await resp.json() as any;
+          latest = (data.tag_name || "").replace(/^v/, "") || current;
+          downloadUrl = data.html_url || downloadUrl;
+          const parse = (v: string) => v.split(".").map(Number);
+          const [cMaj, cMin, cPat] = parse(current);
+          const [lMaj, lMin, lPat] = parse(latest);
+          updateAvailable = lMaj > cMaj || (lMaj === cMaj && lMin > cMin) || (lMaj === cMaj && lMin === cMin && lPat > cPat);
+        }
+      } catch { /* offline or timeout */ }
+      res.json({ ok: true, current, latest, updateAvailable, downloadUrl });
+    } catch (e: any) {
+      res.status(500).json({ error: e.message });
+    }
+  });
+
   // ─── License info ────────────────────────────────────────────────
   app.get("/api/license", async (_req, res) => {
     try {
