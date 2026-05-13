@@ -730,6 +730,7 @@ const TYPE_LABELS={agent:'Agent',skill:'Skill',app:'App',prompt:'Prompt'};
 
 // IDs to hide from artifact list (platform/creator agents)
 const HIDDEN_AGENT_IDS=['agentcreator','skillcreator','appcreator','promptcreator','hub-lite'];
+const HIDDEN_SKILL_IDS=['anyprompt','anyskill','myaiforone-lite-repull','myaiforone-repull'];
 
 // ── Landing: load artifacts ──
 async function loadArtifacts(){
@@ -749,7 +750,7 @@ async function loadArtifacts(){
     const myApps=appsData.items||[];
     allArtifacts=[
       ...agents.filter(a=>!HIDDEN_AGENT_IDS.includes(a.id)).map(a=>({id:a.id,name:a.name,type:'agent',status:'active',meta:a.id})),
-      ...mySkills.map(s=>({id:s.id,name:s.name,type:'skill',status:'active',meta:s.category||''})),
+      ...mySkills.filter(s=>!HIDDEN_SKILL_IDS.includes(s.id)).map(s=>({id:s.id,name:s.name,type:'skill',status:'active',meta:s.category||''})),
       ...myPrompts.map(p=>({id:p.id,name:p.name,type:'prompt',status:'active',meta:p.category||''})),
       ...myApps.map(a=>({id:a.id,name:a.name,type:'app',status:a.status||'draft',meta:a.category||'',url:a.url||'',agentDeveloper:a.agentDeveloper||''})),
     ];
