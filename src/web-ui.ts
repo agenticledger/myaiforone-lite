@@ -111,6 +111,7 @@ export function startWebUI(opts: WebUIOptions): void {
   app.get("/org", (_req, res) => servePage(res, "org.html"));
   app.get("/settings", (_req, res) => servePage(res, "settings.html"));
   app.get("/lab", (_req, res) => servePage(res, "lab.html"));
+  app.get("/a/:agentId", (_req, res) => servePage(res, "index.html"));
 
   // ─── Auth System — API Keys ──────────────────────────────────────────
   // Auth is only active when service.auth.enabled is true (default: false).

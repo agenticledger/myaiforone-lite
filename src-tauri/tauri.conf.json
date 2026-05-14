@@ -1,6 +1,6 @@
 {
   "productName": "MyAIforOne Lite",
-  "version": "0.2.20",
+  "version": "0.2.21",
   "identifier": "ai.myaiforone.lite",
   "build": {
     "beforeDevCommand": "",

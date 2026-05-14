@@ -247,6 +247,21 @@ server.tool("get_agent_instructions", "Get an agent's CLAUDE.md system prompt", 
   return safeCall("get_agent_instructions", () => api.getAgentInstructions(agentId));
 });
 
+server.tool("get_agent_page_url", "Get the direct URL for an agent's dedicated page — shareable via Cloudflare tunnel", {
+  agentId: z.string().describe("Agent ID"),
+}, async ({ agentId }) => {
+  return safeCall("get_agent_page_url", async () => {
+    const agent = await api.getAgent(agentId);
+    if (agent?.error) throw new Error(agent.error);
+    const baseUrl = process.env.MYAGENT_API_URL || "http://localhost:4889";
+    return {
+      agentId,
+      name: agent?.config?.name || agentId,
+      url: `${baseUrl}/a/${agentId}`,
+    };
+  });
+});
+
 server.tool("uninstall_agent", "Remove an installed agent", {
   agentId: z.string().describe("Agent ID to remove"),
   confirmAlias: z.string().describe("Agent alias to confirm deletion (e.g. @finance)"),

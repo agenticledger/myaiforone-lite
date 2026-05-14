@@ -125,6 +125,23 @@ html,body{
 }
 .sidebar-collapse button:hover{border-color:var(--border-glow);color:var(--text-secondary)}
 
+/* ─── Agent Resume Sidebar (/a/:id) ─────────────────────── */
+.template-resume{display:flex;flex-direction:column;gap:16px;padding:20px;overflow-y:auto;flex:1}
+.template-resume-header{display:flex;align-items:flex-start;gap:14px}
+.template-resume-name{font-family:var(--font-display);font-size:20px;font-weight:700;color:var(--text-primary);line-height:1.2}
+.template-resume-role{font-size:12px;color:var(--text-secondary);margin-top:2px}
+.template-resume-class{display:inline-block;font-family:var(--font-mono);font-size:9px;font-weight:600;text-transform:uppercase;letter-spacing:.06em;padding:2px 8px;border-radius:4px;margin-top:4px;background:rgba(34,211,238,0.08);color:var(--accent);border:1px solid rgba(34,211,238,0.15)}
+.template-resume-desc{font-size:13px;font-style:italic;color:var(--text-secondary);line-height:1.5;padding-bottom:12px;border-bottom:1px solid var(--border-dim)}
+.template-resume-section{margin-top:4px}
+.template-resume-section-title{font-family:var(--font-mono);font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:.08em;color:var(--text-muted);margin-bottom:8px;display:flex;align-items:center;gap:8px}
+.template-resume-section-title::after{content:'';flex:1;height:1px;background:var(--border-dim)}
+.template-resume-tags{display:flex;flex-wrap:wrap;gap:5px}
+.template-resume-tag{font-family:var(--font-mono);font-size:10px;padding:3px 9px;border-radius:5px;background:rgba(34,211,238,0.08);color:var(--accent);border:1px solid rgba(34,211,238,0.12)}
+.template-resume-tag.mcp{background:rgba(139,92,246,0.08);color:var(--purple,#a78bfa);border-color:rgba(139,92,246,0.15)}
+.template-resume-initials{width:56px;height:56px;border-radius:16px;display:flex;align-items:center;justify-content:center;font-family:var(--font-display);font-size:18px;font-weight:700;background:rgba(34,211,238,0.08);color:var(--accent);border:1px solid var(--border-glow);flex-shrink:0}
+.template-resume-avatar{width:56px;height:56px;border-radius:16px;object-fit:cover;flex-shrink:0}
+.template-resume-footer{margin-top:auto;padding-top:16px;border-top:1px solid var(--border-dim)}
+
 .main{flex:1;display:flex;flex-direction:column;position:relative;min-width:0;overflow:hidden}
 
 /* ─── Sidebar Header ─────────────────────────────────────────── */
@@ -884,7 +901,14 @@ text-decoration:none;}
     <button class="theme-toggle" onclick="toggleTheme()" title="Toggle theme">☀</button>
   </div>
 </div>
-<script>(async()=>{try{const r=await fetch('/api/config/service');const s=await r.json();if(s.labEnabled){const g=document.getElementById('mainTabGroup');if(g){const a=document.createElement('a');a.href='/lab';a.className='tab-btn';a.textContent='Lab';g.appendChild(a)}}}catch{}})()</script>
+<script>
+if(/^\/a\//.test(location.pathname)){
+  var tg=document.getElementById('mainTabGroup');if(tg)tg.style.display='none';
+  var tr=document.querySelector('.topbar-right');if(tr)tr.style.display='none';
+}else{
+  (async()=>{try{const r=await fetch('/api/config/service');const s=await r.json();if(s.labEnabled){const g=document.getElementById('mainTabGroup');if(g){const a=document.createElement('a');a.href='/lab';a.className='tab-btn';a.textContent='Lab';g.appendChild(a)}}}catch{}})()
+}
+</script>
 
 <div class="app">
   <!-- Sidebar -->
@@ -1007,6 +1031,11 @@ function isAgentOrgHidden(agent) {
   if (!hidden.length) return false;
   return (agent.org || []).some(o => hidden.includes(o.organization));
 }
+
+// ─── Agent Page Mode Detection ────────────────────────────────
+const agentPageMatch = location.pathname.match(/^\/a\/([^/]+)/);
+const agentPageMode = !!agentPageMatch;
+const agentPageId = agentPageMatch ? decodeURIComponent(agentPageMatch[1]) : null;
 
 // ─── State ─────────────────────────────────────────────────────
 let agents = [];
@@ -2119,6 +2148,7 @@ function renderStatus(data) {
 }
 
 function renderAgentList() {
+  if (agentPageMode) return;
   const list = document.getElementById('agentList');
   const allSorted = getFilteredAgents();
 
@@ -2176,6 +2206,55 @@ function renderAgentList() {
 
   if (!html) html = '<div style="padding:20px;text-align:center;color:var(--text-muted);font-size:12px">No agents</div>';
   list.innerHTML = html;
+}
+
+// ─── Agent Resume Sidebar (for /a/:agentId pages) ───────────
+function buildResumeSidebar(agentId) {
+  const a = agents.find(x => x.id === agentId);
+  if (!a) return;
+  document.title = a.name + ' — MyAIforOne Lite';
+  const sidebar = document.querySelector('.sidebar');
+  if (!sidebar) return;
+
+  const avatarId = a.avatar;
+  const avatarHtml = avatarId && avatarId.startsWith('avatar-')
+    ? '<img class="template-resume-avatar" src="/avatars/' + escapeHtml(avatarId) + '.png" alt="' + escapeHtml(a.name) + '">'
+    : '<div class="template-resume-initials">' + (a.name || '??').slice(0, 2).toUpperCase() + '</div>';
+
+  const orgEntry = (a.org && a.org.length > 0) ? a.org[0] : null;
+  const roleParts = [];
+  if (orgEntry && orgEntry.title) roleParts.push(escapeHtml(orgEntry.title));
+  if (orgEntry && orgEntry.function) roleParts.push(escapeHtml(orgEntry.function));
+  const roleLine = roleParts.join(' &middot; ');
+
+  const cls = a.agentClass || 'standard';
+
+  const skills = (a.skills || []);
+  const skillTags = skills.map(function(s) { return '<span class="template-resume-tag">' + escapeHtml(s) + '</span>'; }).join('');
+
+  const mcps = (a.mcps || []);
+  const mcpTags = mcps.map(function(m) { return '<span class="template-resume-tag mcp">' + escapeHtml(m) + '</span>'; }).join('');
+
+  const tools = (a.tools || []);
+  const toolTags = tools.slice(0, 12).map(function(t) { return '<span class="template-resume-tag">' + escapeHtml(t) + '</span>'; }).join('');
+
+  sidebar.innerHTML = '<div class="template-resume">'
+    + '<div class="template-resume-header">'
+    + avatarHtml
+    + '<div>'
+    + '<div class="template-resume-name">' + escapeHtml(a.name) + '</div>'
+    + (roleLine ? '<div class="template-resume-role">' + roleLine + '</div>' : '')
+    + '<div class="template-resume-class">' + escapeHtml(cls) + ' agent</div>'
+    + '</div></div>'
+    + (a.description ? '<div class="template-resume-desc">&ldquo;' + escapeHtml(a.description) + '&rdquo;</div>' : '')
+    + (skillTags ? '<div class="template-resume-section"><div class="template-resume-section-title">Skills</div><div class="template-resume-tags">' + skillTags + '</div></div>' : '')
+    + (mcpTags || toolTags ? '<div class="template-resume-section"><div class="template-resume-section-title">Tools &amp; Integrations</div><div class="template-resume-tags">' + mcpTags + toolTags + '</div></div>' : '')
+    + '<div class="template-resume-footer">'
+    + '<div style="font-size:11px;color:var(--text-muted);margin-bottom:8px">'
+    + (a.persistent ? 'Persistent' : 'Single-shot') + ' &middot; ' + (a.streaming ? 'Streaming' : 'Batch')
+    + '</div>'
+    + '<a href="/" style="font-size:12px;color:var(--accent);text-decoration:none">&larr; Other Agents</a>'
+    + '</div></div>';
 }
 
 // Track which agent the frame was built for — avoid rebuilding header/input unnecessarily
@@ -3224,6 +3303,15 @@ document.addEventListener('click', (e) => {
 
 // ─── Init ──────────────────────────────────────────────────────
 fetchDashboard().then(() => {
+  // ─── Agent page mode: /a/:agentId ─────────────────────────
+  if (agentPageMode && agentPageId) {
+    const target = agents.find(a => a.id === agentPageId);
+    if (!target) { location.href = '/'; return; }
+    selectAgent(agentPageId);
+    buildResumeSidebar(agentPageId);
+    return;
+  }
+
   // Check URL hash for deep-link to agent (from org page "Chat" or activity page)
   // Format: #agentId or #agentId?ts=2026-03-25T12:00:00Z
   const rawHash = window.location.hash.slice(1);
